@@ -22,7 +22,24 @@ const limiter = rateLimit({
   },
 });
 
-app.use(cors());
+// CORS: permitir frontend. CORS_ORIGIN = URL(s) separadas por coma. Si no está definido, acepta cualquier origen.
+const corsOrigins = process.env.CORS_ORIGIN
+  ? process.env.CORS_ORIGIN.split(',').map((o) => o.trim()).filter(Boolean)
+  : [];
+const corsOptions = {
+  origin:
+    corsOrigins.length > 0
+      ? (origin, callback) => {
+          if (!origin) return callback(null, true);
+          const allowed = corsOrigins.some((allowedUrl) => origin === allowedUrl);
+          callback(null, allowed);
+        }
+      : true,
+  credentials: true,
+  methods: ['GET', 'POST', 'PUT', 'PATCH', 'DELETE', 'OPTIONS'],
+  allowedHeaders: ['Content-Type', 'Authorization'],
+};
+app.use(cors(corsOptions));
 // Aumentar límites del cuerpo para permitir cargas más grandes (ej. imágenes Base64)
 app.use(express.json({ limit: '50mb' }));
 app.use(express.urlencoded({ extended: true, limit: '50mb' }));
