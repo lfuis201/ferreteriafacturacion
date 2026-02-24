@@ -44,25 +44,26 @@ function LoginUsuario() {
     try {
       const res = await iniciarSesion(formData);
 
-      // Mostrar SweetAlert después de un pequeño retraso para que el preloader se muestre
-      setTimeout(async () => {
-        await Swal.fire({
-          icon: "success",
-          title: "¡Bienvenido!",
-          text: `Has iniciado sesión correctamente como ${res.usuario.rol}.`,
-          confirmButtonText: "Continuar",
-        });
+      const roleRoutes = {
+        SuperAdmin: "/dashboard-superadmin",
+        Admin: "/dashboard-admin",
+        Cajero: "/dashboard-cajero",
+        Almacenero: "/dashboard-almacenero",
+        Trabajador: "/dashboard-cajero"
+      };
 
-        // Redirigir según el rol
-        const roleRoutes = {
-          "SuperAdmin": "/dashboard-superadmin",
-          "Admin": "/dashboard-admin",
-          "Cajero": "/dashboard-cajero",
-          "Almacenero": "/dashboard-almacenero"
-        };
+      // Redirigir de inmediato (sin esperar al SweetAlert) para evitar recargas
+      navigate(roleRoutes[res.usuario.rol] || "/dashboard", { replace: true });
 
-        navigate(roleRoutes[res.usuario.rol] || "/");
-      }, 300); // Pequeño retraso para que el preloader se muestre
+      // Mostrar mensaje de bienvenida sin bloquear
+      Swal.fire({
+        icon: "success",
+        title: "¡Bienvenido!",
+        text: `Has iniciado sesión correctamente como ${res.usuario.rol}.`,
+        confirmButtonText: "Continuar",
+        timer: 2000,
+        timerProgressBar: true
+      });
     } catch (err) {
       Swal.fire({
         icon: "error",

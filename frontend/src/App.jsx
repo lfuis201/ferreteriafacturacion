@@ -1,4 +1,5 @@
-import { Routes, Route } from "react-router-dom";
+import { useEffect } from "react";
+import { Routes, Route, useNavigate } from "react-router-dom";
 import RutaProtegidaPorRol from './components/rolespermisos/RutaProtegidaPorRol';
 
 // Importar  login y registro de usuarios desde los componentes
@@ -61,6 +62,14 @@ import FormularioProveedores from "./components/proveedores/FormularioProveedore
 
 
 function App() {
+  const navigate = useNavigate();
+
+  useEffect(() => {
+    const onAuthLogout = () => navigate("/", { replace: true });
+    window.addEventListener("auth:logout", onAuthLogout);
+    return () => window.removeEventListener("auth:logout", onAuthLogout);
+  }, [navigate]);
+
   return (
     <Routes>
       {/* Rutas públicas */}

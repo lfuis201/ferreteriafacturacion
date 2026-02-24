@@ -34,10 +34,14 @@ apiClient.interceptors.response.use(
   },
   (error) => {
     if (error.response?.status === 401) {
-      // Token expirado o inválido
-      localStorage.removeItem('token');
-      localStorage.removeItem('usuario');
-      window.location.href = '/';
+      const isLoginRequest = error.config?.url?.includes('/login');
+      // No redirigir en login (para mostrar "credenciales incorrectas" en el formulario)
+      if (!isLoginRequest) {
+        localStorage.removeItem('token');
+        localStorage.removeItem('usuario');
+        // Usar evento para que React Router redirija sin recargar la página
+        window.dispatchEvent(new CustomEvent('auth:logout'));
+      }
     }
     return Promise.reject(error);
   }
