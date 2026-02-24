@@ -1,0 +1,166 @@
+/* Inventario.css */
+
+.inv-container {
+  padding: 20px;
+  background-color: #f5f5f5;
+  min-height: 100vh;
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+}
+
+.inv-section {
+  background-color: #ffffff;
+  border-radius: 8px;
+  padding: 24px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  max-width: 1400px;
+  margin: 0 auto;
+}
+
+.inv-title {
+  font-size: 18px;
+  font-weight: 600;
+  color: #333;
+  margin: 0 0 30px 0;
+}
+
+.inv-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 40px;
+}
+
+.inv-column {
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+}
+
+.inv-config-item {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.inv-config-header {
+  display: flex;
+  align-items: center;
+}
+
+.inv-config-label {
+  font-size: 14px;
+  font-weight: 500;
+  color: #333;
+}
+
+.inv-info-icon {
+  display: inline-block;
+  margin-left: 6px;
+  color: #666;
+  font-size: 14px;
+  cursor: help;
+}
+
+.inv-toggle-container {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.inv-toggle-text {
+  font-size: 14px;
+  color: #666;
+  font-weight: 500;
+  min-width: 25px;
+}
+
+.inv-toggle-switch {
+  position: relative;
+  display: inline-block;
+  width: 50px;
+  height: 24px;
+}
+
+.inv-toggle-switch input {
+  opacity: 0;
+  width: 0;
+  height: 0;
+}
+
+.inv-toggle-slider {
+  position: absolute;
+  cursor: pointer;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: #ccc;
+  transition: 0.3s;
+  border-radius: 24px;
+}
+
+.inv-toggle-slider:before {
+  position: absolute;
+  content: "";
+  height: 18px;
+  width: 18px;
+  left: 3px;
+  bottom: 3px;
+  background-color: white;
+  transition: 0.3s;
+  border-radius: 50%;
+}
+
+.inv-toggle-switch input:checked + .inv-toggle-slider {
+  background-color: #2196F3;
+}
+
+.inv-toggle-switch input:checked + .inv-toggle-slider:before {
+  transform: translateX(26px);
+}
+
+.inv-toggle-switch input:focus + .inv-toggle-slider {
+  box-shadow: 0 0 1px #2196F3;
+}
+
+.inv-btn-generar {
+  background-color: #e74c3c;
+  color: white;
+  border: none;
+  padding: 8px 20px;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 14px;
+  font-weight: 500;
+  transition: background-color 0.2s;
+  width: fit-content;
+}
+
+.inv-btn-generar:hover {
+  background-color: #c0392b;
+}
+
+.inv-btn-generar:active {
+  background-color: #a93226;
+}
+
+/* Responsive */
+@media (max-width: 1024px) {
+  .inv-grid {
+    grid-template-columns: 1fr;
+    gap: 24px;
+  }
+}
+
+@media (max-width: 768px) {
+  .inv-section {
+    padding: 16px;
+  }
+
+  .inv-config-label {
+    font-size: 13px;
+  }
+
+  .inv-toggle-text {
+    font-size: 13px;
+  }
+}

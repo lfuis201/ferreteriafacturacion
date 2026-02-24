@@ -1,0 +1,356 @@
+/* Variables CSS específicas para este componente */
+:root {
+  --motivo-primary: #0d47a1;
+  --motivo-secondary: #1565c0;
+  --motivo-success: #1b5e20;
+  --motivo-danger: #b71c1c;
+  --motivo-warning: #e65100;
+  --motivo-light: #e3f2fd;
+  --motivo-dark: #0d1b2a;
+  --motivo-border: #90a4ae;
+  --motivo-hover: #bbdefb;
+  --motivo-accent: #1976d2;
+  --motivo-text: #263238;
+  --motivo-card: #f5f5f5;
+}
+
+.motivoContainer {
+  padding: 20px;
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  background-color: var(--motivo-light);
+  min-height: 100vh;
+}
+
+.motivoHeader {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 25px;
+  padding-bottom: 15px;
+  border-bottom: 2px solid var(--motivo-border);
+}
+
+.motivoTitle {
+  color: var(--motivo-primary);
+  font-size: 24px;
+  font-weight: 600;
+  margin: 0;
+}
+
+.motivoButton {
+  background-color: var(--motivo-secondary);
+  color: white;
+  border: none;
+  padding: 10px 20px;
+  border-radius: 5px;
+  cursor: pointer;
+  font-size: 14px;
+  font-weight: 500;
+  transition: all 0.3s ease;
+}
+
+.motivoButton:hover {
+  background-color: #0d47a1;
+  transform: translateY(-1px);
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
+}
+
+.motivoTable {
+  width: 100%;
+  border-collapse: collapse;
+  background-color: white;
+  border-radius: 8px;
+  overflow: hidden;
+  box-shadow: 0 2px 12px rgba(0, 0, 0, 0.1);
+}
+
+.motivoTable th {
+  background-color: var(--motivo-primary);
+  color: white;
+  padding: 14px 12px;
+  text-align: left;
+  font-weight: 600;
+  font-size: 14px;
+  border-right: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.motivoTable th:last-child {
+  border-right: none;
+}
+
+.motivoTable td {
+  padding: 12px 12px;
+  border-bottom: 1px solid var(--motivo-border);
+  font-size: 14px;
+  color: var(--motivo-text);
+  border-right: 1px solid var(--motivo-hover);
+}
+
+.motivoTable td:last-child {
+  border-right: none;
+}
+
+.motivoTable tr:hover {
+  background-color: var(--motivo-hover);
+}
+
+.motivoActions {
+  display: flex;
+  gap: 8px;
+}
+
+.motivoCheckbox {
+  width: 18px;
+  height: 18px;
+  cursor: pointer;
+  accent-color: var(--motivo-accent);
+}
+
+/* Modal Styles */
+.motivoModalOverlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: rgba(0, 0, 0, 0.6);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 1000;
+  animation: motivoFadeIn 0.3s ease-out;
+}
+
+@keyframes motivoFadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+.motivoModal {
+  background: white;
+  border-radius: 8px;
+  width: 90%;
+  max-width: 700px;
+  max-height: 90vh;
+  overflow-y: auto;
+  box-shadow: 0 8px 30px rgba(0, 0, 0, 0.3);
+  animation: motivoModalSlideIn 0.3s ease-out;
+}
+
+@keyframes motivoModalSlideIn {
+  from {
+    opacity: 0;
+    transform: scale(0.9) translateY(-20px);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1) translateY(0);
+  }
+}
+
+.motivoModalHeader {
+  background-color: var(--motivo-primary);
+  color: white;
+  padding: 20px;
+  border-radius: 8px 8px 0 0;
+  position: sticky;
+  top: 0;
+  z-index: 10;
+}
+
+.motivoModalTitle {
+  margin: 0;
+  font-size: 20px;
+  font-weight: 600;
+}
+
+.motivoModalSubtitle {
+  margin: 5px 0 0 0;
+  font-size: 16px;
+  font-weight: 500;
+  opacity: 0.9;
+}
+
+.motivoModalBody {
+  padding: 25px;
+}
+
+.motivoFormGrid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 20px;
+  margin-bottom: 25px;
+}
+
+.motivoFormGroup {
+  margin-bottom: 20px;
+}
+
+.motivoFormLabel {
+  display: block;
+  margin-bottom: 8px;
+  font-weight: 600;
+  color: var(--motivo-dark);
+  font-size: 14px;
+}
+
+.motivoFormInput {
+  width: 100%;
+  padding: 10px 12px;
+  border: 1px solid var(--motivo-border);
+  border-radius: 4px;
+  font-size: 14px;
+  box-sizing: border-box;
+  transition: border-color 0.3s ease;
+  color: var(--motivo-text);
+}
+
+.motivoFormInput:focus {
+  outline: none;
+  border-color: var(--motivo-secondary);
+  box-shadow: 0 0 0 2px rgba(21, 101, 192, 0.2);
+}
+
+.motivoCard {
+  background-color: var(--motivo-card);
+  padding: 15px;
+  border-radius: 6px;
+  margin-bottom: 15px;
+  border-left: 4px solid var(--motivo-accent);
+}
+
+.motivoCardTitle {
+  font-size: 16px;
+  font-weight: 600;
+  color: var(--motivo-primary);
+  margin-bottom: 10px;
+}
+
+.motivoRadioGroup {
+  display: flex;
+  gap: 25px;
+  margin: 10px 0;
+}
+
+.motivoRadioItem {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  cursor: pointer;
+}
+
+.motivoRadio {
+  width: 16px;
+  height: 16px;
+  cursor: pointer;
+  accent-color: var(--motivo-accent);
+}
+
+.motivoDivider {
+  height: 1px;
+  background-color: var(--motivo-border);
+  margin: 20px 0;
+  border: none;
+}
+
+.motivoSection {
+  margin-bottom: 20px;
+}
+
+.motivoSectionTitle {
+  font-size: 16px;
+  font-weight: 600;
+  color: var(--motivo-primary);
+  margin-bottom: 15px;
+  padding-bottom: 5px;
+  border-bottom: 2px solid var(--motivo-accent);
+}
+
+.motivoSubsection {
+  margin-left: 15px;
+  margin-bottom: 15px;
+}
+
+.motivoSubsectionTitle {
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--motivo-dark);
+  margin-bottom: 10px;
+}
+
+.motivoList {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.motivoListItem {
+  padding: 5px 0;
+  font-size: 14px;
+  color: var(--motivo-text);
+  position: relative;
+  padding-left: 15px;
+}
+
+.motivoListItem:before {
+  content: "•";
+  color: var(--motivo-accent);
+  position: absolute;
+  left: 0;
+  font-weight: bold;
+}
+
+.motivoListItemStrong {
+  font-weight: 600;
+  color: var(--motivo-primary);
+}
+
+.motivoModalFooter {
+  padding: 20px;
+  background-color: var(--motivo-light);
+  border-radius: 0 0 8px 8px;
+  display: flex;
+  justify-content: flex-end;
+  gap: 12px;
+  position: sticky;
+  bottom: 0;
+}
+
+.motivoButtonSecondary {
+  background-color: var(--motivo-border);
+  color: var(--motivo-dark);
+}
+
+.motivoButtonSecondary:hover {
+  background-color: #78909c;
+}
+
+.motivoButtonSuccess {
+  background-color: var(--motivo-success);
+}
+
+.motivoButtonSuccess:hover {
+  background-color: #164e1a;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+  .motivoFormGrid {
+    grid-template-columns: 1fr;
+    gap: 15px;
+  }
+  
+  .motivoTable {
+    font-size: 12px;
+  }
+  
+  .motivoTable th,
+  .motivoTable td {
+    padding: 8px 6px;
+  }
+  
+  .motivoRadioGroup {
+    flex-direction: column;
+    gap: 10px;
+  }
+}

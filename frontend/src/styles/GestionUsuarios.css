@@ -1,0 +1,351 @@
+/* src/styles/GestionUsuarios.css */
+.gestion-usuarios {
+  padding: 20px;
+  max-width: 1200px;
+  margin: 0 auto;
+  background-color: #f8f9fa;
+  min-height: 100vh;
+}
+
+.header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 30px;
+  padding: 20px;
+  background: white;
+  border-radius: 10px;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+}
+
+.header-left {
+  display: flex;
+  align-items: center;
+  gap: 20px;
+}
+
+.header h1 {
+  margin: 0;
+  color: #2c3e50;
+  font-size: 28px;
+  font-weight: 600;
+}
+
+.btn-volver {
+  background: linear-gradient(135deg, #95a5a6, #7f8c8d);
+  color: white;
+  border: none;
+  padding: 10px 20px;
+  border-radius: 8px;
+  cursor: pointer;
+  font-size: 14px;
+  font-weight: 500;
+  transition: all 0.3s ease;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.btn-volver:hover {
+  background: linear-gradient(135deg, #7f8c8d, #6c7b7d);
+  transform: translateY(-2px);
+  box-shadow: 0 4px 15px rgba(149, 165, 166, 0.3);
+}
+
+.btn-crear {
+  background: linear-gradient(135deg, #3498db, #2980b9);
+  color: white;
+  border: none;
+  padding: 12px 24px;
+  border-radius: 8px;
+  cursor: pointer;
+  font-size: 16px;
+  font-weight: 500;
+  transition: all 0.3s ease;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.btn-crear:hover {
+  background: linear-gradient(135deg, #2980b9, #1f5f8b);
+  transform: translateY(-2px);
+  box-shadow: 0 4px 15px rgba(52, 152, 219, 0.3);
+}
+
+.error-message {
+  background-color: #fee;
+  color: #c33;
+  padding: 15px;
+  border-radius: 8px;
+  margin-bottom: 20px;
+  border-left: 4px solid #e74c3c;
+  font-weight: 500;
+}
+
+.cargando {
+  text-align: center;
+  padding: 50px;
+  font-size: 18px;
+  color: #7f8c8d;
+}
+
+.filtros {
+  display: grid;
+  grid-template-columns: 2fr 1fr 1fr;
+  gap: 15px;
+  margin-bottom: 25px;
+  padding: 20px;
+  background: white;
+  border-radius: 10px;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+}
+
+.filtro-grupo {
+  display: flex;
+  flex-direction: column;
+}
+
+.filtro-busqueda,
+.filtro-select {
+  padding: 12px 16px;
+  border: 2px solid #e1e8ed;
+  border-radius: 8px;
+  font-size: 14px;
+  transition: all 0.3s ease;
+  background: white;
+}
+
+.filtro-busqueda:focus,
+.filtro-select:focus {
+  outline: none;
+  border-color: #3498db;
+  box-shadow: 0 0 0 3px rgba(52, 152, 219, 0.1);
+}
+
+.tabla-container {
+  background: white;
+  border-radius: 10px;
+  overflow: hidden;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+  margin-bottom: 20px;
+}
+
+.tabla-usuarios {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+.tabla-usuarios th {
+  background: linear-gradient(135deg, #34495e, #2c3e50);
+  color: white;
+  padding: 16px 12px;
+  text-align: left;
+  font-weight: 600;
+  font-size: 14px;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.tabla-usuarios td {
+  padding: 16px 12px;
+  border-bottom: 1px solid #ecf0f1;
+  vertical-align: middle;
+}
+
+.tabla-usuarios tr:hover {
+  background-color: #f8f9fa;
+}
+
+.usuario-info {
+  display: flex;
+  flex-direction: column;
+}
+
+.nombre {
+  font-weight: 600;
+  color: #2c3e50;
+  margin-bottom: 2px;
+}
+
+.rol-badge {
+  display: inline-block;
+  padding: 6px 12px;
+  border-radius: 20px;
+  font-size: 12px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.rol-superadmin {
+  background: linear-gradient(135deg, #e74c3c, #c0392b);
+  color: white;
+}
+
+.rol-admin {
+  background: linear-gradient(135deg, #f39c12, #e67e22);
+  color: white;
+}
+
+.rol-cajero {
+  background: linear-gradient(135deg, #3498db, #2980b9);
+  color: white;
+}
+
+.rol-almacenero {
+  background: linear-gradient(135deg, #27ae60, #229954);
+  color: white;
+}
+
+.estado-badge {
+  display: inline-block;
+  padding: 6px 12px;
+  border-radius: 20px;
+  font-size: 12px;
+  font-weight: 600;
+  text-transform: uppercase;
+}
+
+.estado-badge.activo {
+  background-color: #d4edda;
+  color: #155724;
+  border: 1px solid #c3e6cb;
+}
+
+.estado-badge.inactivo {
+  background-color: #f8d7da;
+  color: #721c24;
+  border: 1px solid #f5c6cb;
+}
+
+.acciones {
+  display: flex;
+  gap: 8px;
+  align-items: center;
+}
+
+.btn-editar,
+.btn-eliminar {
+  background: none;
+  border: none;
+  padding: 8px;
+  border-radius: 6px;
+  cursor: pointer;
+  font-size: 16px;
+  transition: all 0.3s ease;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 36px;
+  height: 36px;
+}
+
+.btn-editar {
+  background-color: #fff3cd;
+  color: #856404;
+}
+
+.btn-editar:hover {
+  background-color: #ffeaa7;
+  transform: scale(1.1);
+}
+
+.btn-eliminar {
+  background-color: #f8d7da;
+  color: #721c24;
+}
+
+.btn-eliminar:hover {
+  background-color: #f5c6cb;
+  transform: scale(1.1);
+}
+
+.sin-datos {
+  text-align: center;
+  padding: 40px;
+  color: #7f8c8d;
+  font-style: italic;
+  font-size: 16px;
+}
+
+.resumen {
+  background: white;
+  padding: 15px 20px;
+  border-radius: 10px;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+  text-align: center;
+}
+
+.resumen p {
+  margin: 0;
+  color: #7f8c8d;
+  font-weight: 500;
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+  .gestion-usuarios {
+    padding: 10px;
+  }
+  
+  .header {
+    flex-direction: column;
+    gap: 15px;
+    text-align: center;
+  }
+  
+  .filtros {
+    grid-template-columns: 1fr;
+    gap: 10px;
+  }
+  
+  .tabla-container {
+    overflow-x: auto;
+  }
+  
+  .tabla-usuarios {
+    min-width: 600px;
+  }
+  
+  .tabla-usuarios th,
+  .tabla-usuarios td {
+    padding: 12px 8px;
+    font-size: 13px;
+  }
+  
+  .acciones {
+    flex-direction: column;
+    gap: 4px;
+  }
+  
+  .btn-editar,
+  .btn-eliminar {
+    width: 32px;
+    height: 32px;
+    font-size: 14px;
+  }
+}
+
+@media (max-width: 480px) {
+  .header h1 {
+    font-size: 24px;
+  }
+  
+  .btn-crear {
+    padding: 10px 16px;
+    font-size: 14px;
+  }
+  
+  .tabla-usuarios th,
+  .tabla-usuarios td {
+    padding: 10px 6px;
+    font-size: 12px;
+  }
+  
+  .rol-badge,
+  .estado-badge {
+    font-size: 10px;
+    padding: 4px 8px;
+  }
+}

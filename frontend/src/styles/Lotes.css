@@ -1,0 +1,288 @@
+/* Lotes.css - Estilos específicos para el componente Lotes */
+.lotes-container {
+  padding: 20px;
+  font-family: Arial, sans-serif;
+  background-color: #f5f5f5;
+  min-height: 100vh;
+}
+
+.lotes-header {
+  background: white;
+  padding: 20px;
+  border-radius: 8px;
+  margin-bottom: 20px;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+}
+
+.lotes-title {
+  color: #333;
+  margin: 0 0 10px 0;
+  font-size: 24px;
+  font-weight: bold;
+}
+
+.lotes-subtitle {
+  color: #666;
+  margin: 0 0 5px 0;
+  font-size: 16px;
+}
+
+.lotes-fotos {
+  color: #888;
+  margin: 0;
+  font-size: 14px;
+}
+
+.lotes-actions {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 20px;
+  background: white;
+  padding: 15px 20px;
+  border-radius: 8px;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+}
+
+.lotes-btn-nuevo {
+  background-color: #007bff;
+  color: white;
+  border: none;
+  padding: 10px 20px;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 14px;
+  transition: background-color 0.3s;
+}
+
+.lotes-btn-nuevo:hover {
+  background-color: #0056b3;
+}
+
+.lotes-total {
+  font-weight: bold;
+  color: #333;
+}
+
+.lotes-tabla-container {
+  background: white;
+  border-radius: 8px;
+  overflow: hidden;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+}
+
+.lotes-tabla {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+.lotes-tabla th {
+  background-color: #f8f9fa;
+  padding: 12px 15px;
+  text-align: left;
+  font-weight: bold;
+  color: #333;
+  border-bottom: 2px solid #dee2e6;
+}
+
+.lotes-tabla td {
+  padding: 12px 15px;
+  border-bottom: 1px solid #dee2e6;
+  color: #555;
+}
+
+.lotes-tabla tr:hover {
+  background-color: #f8f9fa;
+}
+
+.lotes-tabla-vacia {
+  text-align: center;
+  color: #999;
+  font-style: italic;
+  padding: 40px !important;
+}
+
+.lotes-acciones {
+  display: flex;
+  gap: 8px;
+}
+
+.lotes-btn-editar {
+  background-color: #28a745;
+  color: white;
+  border: none;
+  padding: 6px 12px;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 12px;
+  transition: background-color 0.3s;
+}
+
+.lotes-btn-editar:hover {
+  background-color: #218838;
+}
+
+.lotes-btn-eliminar {
+  background-color: #dc3545;
+  color: white;
+  border: none;
+  padding: 6px 12px;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 12px;
+  transition: background-color 0.3s;
+}
+
+.lotes-btn-eliminar:hover {
+  background-color: #c82333;
+}
+
+/* Modal Styles */
+.lotes-modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: rgba(0, 0, 0, 0.5);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 1000;
+}
+
+.lotes-modal {
+  background: white;
+  border-radius: 8px;
+  width: 90%;
+  max-width: 800px;
+  max-height: 90vh;
+  overflow-y: auto;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+.lotes-modal-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 20px;
+  border-bottom: 1px solid #dee2e6;
+}
+
+.lotes-modal-title {
+  margin: 0;
+  color: #333;
+  font-size: 20px;
+}
+
+.lotes-modal-cerrar {
+  background: none;
+  border: none;
+  font-size: 24px;
+  cursor: pointer;
+  color: #999;
+  padding: 0;
+  width: 30px;
+  height: 30px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.lotes-modal-cerrar:hover {
+  color: #333;
+}
+
+.lotes-modal-body {
+  padding: 20px;
+}
+
+.lotes-form-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 15px;
+}
+
+.lotes-form-group {
+  display: flex;
+  flex-direction: column;
+}
+
+.lotes-form-label {
+  margin-bottom: 5px;
+  font-weight: bold;
+  color: #333;
+  font-size: 14px;
+}
+
+.lotes-form-input {
+  padding: 8px 12px;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+  font-size: 14px;
+  transition: border-color 0.3s;
+}
+
+.lotes-form-input:focus {
+  outline: none;
+  border-color: #007bff;
+  box-shadow: 0 0 0 2px rgba(0, 123, 255, 0.25);
+}
+
+.lotes-modal-footer {
+  display: flex;
+  justify-content: flex-end;
+  gap: 10px;
+  padding: 20px;
+  border-top: 1px solid #dee2e6;
+}
+
+.lotes-btn-cancelar {
+  background-color: #6c757d;
+  color: white;
+  border: none;
+  padding: 10px 20px;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 14px;
+  transition: background-color 0.3s;
+}
+
+.lotes-btn-cancelar:hover {
+  background-color: #545b62;
+}
+
+.lotes-btn-guardar {
+  background-color: #007bff;
+  color: white;
+  border: none;
+  padding: 10px 20px;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 14px;
+  transition: background-color 0.3s;
+}
+
+.lotes-btn-guardar:hover {
+  background-color: #0056b3;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+  .lotes-form-grid {
+    grid-template-columns: 1fr;
+  }
+  
+  .lotes-acciones {
+    flex-direction: column;
+  }
+  
+  .lotes-tabla {
+    font-size: 14px;
+  }
+  
+  .lotes-tabla th,
+  .lotes-tabla td {
+    padding: 8px 10px;
+  }
+}

@@ -1,0 +1,479 @@
+/* VentasPorProducto.css */
+.ventas-producto-container {
+  max-width: 1400px;
+  margin: 0 auto;
+  padding: 20px;
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  background-color: #f8f9fa;
+  min-height: 100vh;
+}
+
+/* Loading */
+.ventas-producto-loading {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 60px 20px;
+  text-align: center;
+}
+
+.ventas-producto-loading-spinner {
+  width: 40px;
+  height: 40px;
+  border: 4px solid #e9ecef;
+  border-top: 4px solid #3498db;
+  border-radius: 50%;
+  animation: ventas-producto-spin 1s linear infinite;
+  margin-bottom: 20px;
+}
+
+@keyframes ventas-producto-spin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+
+.ventas-producto-loading p {
+  color: #6c757d;
+  font-size: 16px;
+  margin: 0;
+}
+
+/* Header */
+.ventas-producto-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 30px;
+  padding-bottom: 15px;
+  border-bottom: 2px solid #e9ecef;
+}
+
+.ventas-producto-header h2 {
+  color: #2c3e50;
+  font-size: 28px;
+  font-weight: 600;
+  margin: 0;
+}
+
+.ventas-producto-btn-back {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 10px 20px;
+  background-color: #6c757d;
+  color: white;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  font-size: 14px;
+  font-weight: 500;
+  transition: all 0.3s ease;
+}
+
+.ventas-producto-btn-back:hover {
+  background-color: #5a6268;
+  transform: translateY(-1px);
+}
+
+/* Filtros */
+.ventas-producto-filtros {
+  background: white;
+  padding: 25px;
+  border-radius: 12px;
+  box-shadow: 0 2px 10px rgba(0,0,0,0.08);
+  margin-bottom: 25px;
+  border: 1px solid #e9ecef;
+}
+
+.ventas-producto-filtros-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 20px;
+  margin-bottom: 20px;
+}
+
+.ventas-producto-filtro-grupo {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.ventas-producto-filtro-grupo label {
+  font-weight: 600;
+  color: #495057;
+  font-size: 14px;
+}
+
+.ventas-producto-filtro-grupo input,
+.ventas-producto-filtro-grupo select {
+  padding: 10px 12px;
+  border: 2px solid #e9ecef;
+  border-radius: 6px;
+  font-size: 14px;
+  transition: all 0.3s ease;
+  background-color: white;
+}
+
+.ventas-producto-filtro-grupo input:focus,
+.ventas-producto-filtro-grupo select:focus {
+  outline: none;
+  border-color: #3498db;
+  box-shadow: 0 0 0 3px rgba(52, 152, 219, 0.1);
+}
+
+.ventas-producto-filtro-grupo input:hover,
+.ventas-producto-filtro-grupo select:hover {
+  border-color: #bdc3c7;
+}
+
+/* Acciones de filtros */
+.ventas-producto-filtros-acciones {
+  display: flex;
+  gap: 15px;
+  align-items: center;
+  justify-content: flex-end;
+  flex-wrap: wrap;
+}
+
+.ventas-producto-btn-filtrar,
+.ventas-producto-btn-exportar {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 12px 24px;
+  border: none;
+  border-radius: 8px;
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.ventas-producto-btn-filtrar {
+  background-color: #3498db;
+  color: white;
+}
+
+.ventas-producto-btn-filtrar:hover {
+  background-color: #2980b9;
+  transform: translateY(-1px);
+}
+
+.ventas-producto-btn-exportar {
+  background-color: #27ae60;
+  color: white;
+}
+
+.ventas-producto-btn-exportar:hover {
+  background-color: #219a52;
+  transform: translateY(-1px);
+}
+
+/* Resumen */
+.ventas-producto-resumen {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+  gap: 20px;
+  margin-bottom: 25px;
+}
+
+.ventas-producto-resumen-card {
+  background: white;
+  padding: 25px;
+  border-radius: 12px;
+  box-shadow: 0 2px 10px rgba(0,0,0,0.08);
+  display: flex;
+  align-items: center;
+  gap: 15px;
+  border-left: 4px solid #3498db;
+  transition: all 0.3s ease;
+}
+
+.ventas-producto-resumen-card:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 15px rgba(0,0,0,0.12);
+}
+
+.ventas-producto-resumen-card:nth-child(2) {
+  border-left-color: #27ae60;
+}
+
+.ventas-producto-resumen-icon {
+  width: 50px;
+  height: 50px;
+  padding: 12px;
+  background: linear-gradient(135deg, #3498db, #2980b9);
+  color: white;
+  border-radius: 10px;
+  flex-shrink: 0;
+}
+
+.ventas-producto-resumen-card:nth-child(2) .ventas-producto-resumen-icon {
+  background: linear-gradient(135deg, #27ae60, #219a52);
+}
+
+.ventas-producto-resumen-info h3 {
+  color: #2c3e50;
+  font-size: 24px;
+  font-weight: 700;
+  margin: 0 0 5px 0;
+  line-height: 1.2;
+}
+
+.ventas-producto-resumen-info p {
+  color: #6c757d;
+  font-size: 14px;
+  font-weight: 500;
+  margin: 0;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+/* Tabla */
+.ventas-producto-tabla {
+  background: white;
+  padding: 25px;
+  border-radius: 12px;
+  box-shadow: 0 2px 10px rgba(0,0,0,0.08);
+  margin-bottom: 25px;
+  border: 1px solid #e9ecef;
+}
+
+.ventas-producto-tabla h3 {
+  color: #2c3e50;
+  font-size: 20px;
+  font-weight: 600;
+  margin-bottom: 20px;
+  padding-bottom: 10px;
+  border-bottom: 2px solid #3498db;
+}
+
+.ventas-producto-tabla-container {
+  overflow-x: auto;
+  border-radius: 8px;
+  border: 1px solid #e9ecef;
+}
+
+.ventas-producto-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 14px;
+  background: white;
+}
+
+.ventas-producto-table thead {
+  background-color: #34495e;
+  color: white;
+}
+
+.ventas-producto-table th {
+  padding: 15px 12px;
+  text-align: left;
+  font-weight: 600;
+  font-size: 14px;
+  border: none;
+  white-space: nowrap;
+}
+
+.ventas-producto-table tbody tr {
+  border-bottom: 1px solid #e9ecef;
+  transition: background-color 0.2s ease;
+}
+
+.ventas-producto-table tbody tr:hover {
+  background-color: #f8f9fa;
+}
+
+.ventas-producto-table tbody tr:nth-child(even) {
+  background-color: #f8f9fa;
+}
+
+.ventas-producto-table tbody tr:nth-child(even):hover {
+  background-color: #e9ecef;
+}
+
+.ventas-producto-table td {
+  padding: 15px 12px;
+  color: #495057;
+  border: none;
+  white-space: nowrap;
+}
+
+/* Estilos específicos para columnas */
+.ventas-producto-codigo {
+  font-family: 'Courier New', monospace;
+  font-weight: 600;
+  color: #7d3c98;
+  background-color: #f4ecf7;
+  border-radius: 4px;
+  text-align: center;
+}
+
+.ventas-producto-nombre {
+  font-weight: 600;
+  color: #2c3e50;
+  max-width: 200px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.ventas-producto-categoria {
+  color: #6c757d;
+  font-size: 13px;
+  text-transform: capitalize;
+}
+
+.ventas-producto-cantidad {
+  text-align: center;
+  font-weight: 700;
+  color: #e74c3c;
+  background-color: #fdedec;
+  border-radius: 4px;
+}
+
+.ventas-producto-precio {
+  text-align: right;
+  font-weight: 600;
+  color: #3498db;
+}
+
+.ventas-producto-total {
+  text-align: right;
+  font-weight: 700;
+  color: #27ae60;
+  background-color: #eafaf1;
+  border-radius: 4px;
+}
+
+.ventas-producto-stock {
+  text-align: center;
+  font-weight: 600;
+  color: #f39c12;
+}
+
+.ventas-producto-margen {
+  text-align: center;
+  font-weight: 700;
+  color: #8e44ad;
+  background: linear-gradient(135deg, #eafaf1, #f4ecf7);
+  border-radius: 4px;
+}
+
+.ventas-producto-sin-datos {
+  text-align: center;
+  color: #6c757d;
+  font-style: italic;
+  padding: 30px !important;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+  .ventas-producto-container {
+    padding: 15px;
+  }
+  
+  .ventas-producto-header {
+    flex-direction: column;
+    gap: 15px;
+    align-items: flex-start;
+  }
+  
+  .ventas-producto-filtros-grid {
+    grid-template-columns: 1fr;
+  }
+  
+  .ventas-producto-filtros-acciones {
+    justify-content: stretch;
+  }
+  
+  .ventas-producto-btn-filtrar,
+  .ventas-producto-btn-exportar {
+    flex: 1;
+    justify-content: center;
+  }
+  
+  .ventas-producto-resumen {
+    grid-template-columns: 1fr;
+  }
+  
+  .ventas-producto-tabla {
+    padding: 15px;
+  }
+  
+  .ventas-producto-table {
+    min-width: 900px;
+  }
+}
+
+@media (max-width: 480px) {
+  .ventas-producto-header h2 {
+    font-size: 24px;
+  }
+  
+  .ventas-producto-filtros {
+    padding: 15px;
+  }
+  
+  .ventas-producto-resumen-card {
+    padding: 20px;
+    flex-direction: column;
+    text-align: center;
+  }
+  
+  .ventas-producto-resumen-info h3 {
+    font-size: 20px;
+  }
+  
+  .ventas-producto-tabla {
+    padding: 10px;
+  }
+  
+  .ventas-producto-table th,
+  .ventas-producto-table td {
+    padding: 10px 8px;
+    font-size: 13px;
+  }
+}
+
+/* Estados de carga para botones */
+.ventas-producto-btn-filtrar:disabled,
+.ventas-producto-btn-exportar:disabled {
+  background-color: #bdc3c7;
+  cursor: not-allowed;
+  transform: none;
+}
+
+/* Scroll personalizado */
+.ventas-producto-tabla-container::-webkit-scrollbar {
+  height: 8px;
+}
+
+.ventas-producto-tabla-container::-webkit-scrollbar-track {
+  background: #f1f1f1;
+  border-radius: 4px;
+}
+
+.ventas-producto-tabla-container::-webkit-scrollbar-thumb {
+  background: #c1c1c1;
+  border-radius: 4px;
+}
+
+.ventas-producto-tabla-container::-webkit-scrollbar-thumb:hover {
+  background: #a8a8a8;
+}
+
+/* Mejoras visuales para selects */
+.ventas-producto-filtro-grupo select {
+  cursor: pointer;
+  appearance: none;
+  background-image: url("data:image/svg+xml;charset=US-ASCII,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 4 5'><path fill='%236c757d' d='M2 0L0 2h4zm0 5L0 3h4z'/></svg>");
+  background-repeat: no-repeat;
+  background-position: right 12px center;
+  background-size: 12px;
+  padding-right: 35px;
+}
+
+.ventas-producto-filtro-grupo select:focus {
+  background-image: url("data:image/svg+xml;charset=US-ASCII,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 4 5'><path fill='%233498db' d='M2 0L0 2h4zm0 5L0 3h4z'/></svg>");
+}

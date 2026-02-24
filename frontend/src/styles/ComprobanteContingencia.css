@@ -1,0 +1,351 @@
+/* Container principal */
+.contingencia-container {
+  width: 100%;
+  background-color: #f5f5f5;
+  font-family: Arial, sans-serif;
+  padding: 20px;
+  box-sizing: border-box;
+}
+
+/* Header con alerta */
+.contingencia-header {
+  margin-bottom: 20px;
+}
+
+.contingencia-alert {
+  background-color: #ff4444;
+  color: white;
+  padding: 12px 20px;
+  border-radius: 4px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-size: 14px;
+  font-weight: 500;
+}
+
+.contingencia-alert-icon {
+  font-size: 18px;
+}
+
+.contingencia-alert-text {
+  flex: 1;
+}
+
+/* Filtros de búsqueda */
+.contingencia-filtros {
+  background-color: white;
+  padding: 20px;
+  border-radius: 4px;
+  margin-bottom: 20px;
+  border: 1px solid #ddd;
+  display: flex;
+  gap: 15px;
+  align-items: center;
+  flex-wrap: wrap;
+}
+
+.contingencia-filtro-numero {
+  flex: 0 0 200px;
+}
+
+.contingencia-filtro-busqueda {
+  flex: 1;
+  min-width: 200px;
+}
+
+.contingencia-select {
+  width: 100%;
+  padding: 10px 15px;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+  font-size: 14px;
+  color: #6c757d;
+  background-color: white;
+  cursor: pointer;
+  transition: border-color 0.2s;
+}
+
+.contingencia-select:focus {
+  outline: none;
+  border-color: #0066cc;
+}
+
+.contingencia-input-buscar {
+  width: 100%;
+  padding: 10px 15px;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+  font-size: 14px;
+  color: #495057;
+  transition: border-color 0.2s;
+}
+
+.contingencia-input-buscar::placeholder {
+  color: #adb5bd;
+}
+
+.contingencia-input-buscar:focus {
+  outline: none;
+  border-color: #0066cc;
+}
+
+.contingencia-btn-buscar {
+  background-color: #dc3545;
+  color: white;
+  border: none;
+  padding: 10px 30px;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 14px;
+  font-weight: 500;
+  transition: background-color 0.2s;
+  white-space: nowrap;
+}
+
+.contingencia-btn-buscar:hover {
+  background-color: #c82333;
+}
+
+/* Botón y menú de columnas */
+.contingencia-columnas-wrapper {
+  position: relative;
+  margin-left: auto;
+}
+
+.contingencia-btn-columnas {
+  background-color: #dc3545;
+  color: white;
+  border: none;
+  padding: 10px 20px;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 14px;
+  font-weight: 500;
+  transition: background-color 0.2s;
+  white-space: nowrap;
+}
+
+.contingencia-btn-columnas:hover {
+  background-color: #c82333;
+}
+
+.contingencia-menu-columnas {
+  position: absolute;
+  top: calc(100% + 5px);
+  right: 0;
+  background-color: white;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+  padding: 10px 0;
+  min-width: 200px;
+  z-index: 1000;
+}
+
+.contingencia-columna-item {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 10px 20px;
+  cursor: pointer;
+  transition: background-color 0.2s;
+}
+
+.contingencia-columna-item:hover {
+  background-color: #f8f9fa;
+}
+
+.contingencia-columna-item input[type="checkbox"] {
+  width: 16px;
+  height: 16px;
+  cursor: pointer;
+  accent-color: #0066cc;
+}
+
+.contingencia-columna-item span {
+  font-size: 14px;
+  color: #495057;
+  user-select: none;
+}
+
+/* Tabla wrapper */
+.contingencia-table-wrapper {
+  background-color: white;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+  overflow: hidden;
+}
+
+/* Tabla */
+.contingencia-table {
+  width: 100%;
+  border-collapse: collapse;
+  background-color: white;
+}
+
+.contingencia-table-head {
+  background-color: #f8f9fa;
+  border-bottom: 2px solid #dee2e6;
+}
+
+.contingencia-th {
+  padding: 12px 15px;
+  text-align: left;
+  font-size: 13px;
+  font-weight: 600;
+  color: #495057;
+  border-right: 1px solid #dee2e6;
+  white-space: nowrap;
+}
+
+.contingencia-th:last-child {
+  border-right: none;
+}
+
+.contingencia-table-body {
+  background-color: white;
+}
+
+.contingencia-table-row {
+  border-bottom: 1px solid #dee2e6;
+}
+
+.contingencia-table-row:hover {
+  background-color: #f8f9fa;
+}
+
+.contingencia-td {
+  padding: 12px 15px;
+  font-size: 13px;
+  color: #212529;
+  border-right: 1px solid #dee2e6;
+}
+
+.contingencia-td:last-child {
+  border-right: none;
+}
+
+/* Estado vacío */
+.contingencia-empty {
+  padding: 40px 20px;
+  text-align: left;
+  color: #6c757d;
+  font-size: 14px;
+}
+
+.contingencia-empty-content {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+/* Botón de acción */
+.contingencia-btn-accion {
+  background: none;
+  border: none;
+  color: #6c757d;
+  cursor: pointer;
+  font-size: 20px;
+  padding: 5px 10px;
+  transition: color 0.2s;
+}
+
+.contingencia-btn-accion:hover {
+  color: #212529;
+}
+
+/* Footer y paginación */
+.contingencia-footer {
+  padding: 15px 20px;
+  border-top: 1px solid #dee2e6;
+  background-color: #f8f9fa;
+  display: flex;
+  justify-content: center;
+}
+
+.contingencia-pagination {
+  display: flex;
+  gap: 5px;
+  align-items: center;
+}
+
+.contingencia-pagination-btn {
+  background-color: white;
+  border: 1px solid #dee2e6;
+  padding: 6px 12px;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 13px;
+  color: #495057;
+  transition: all 0.2s;
+  min-width: 35px;
+}
+
+.contingencia-pagination-btn:hover:not(:disabled) {
+  background-color: #e9ecef;
+  border-color: #adb5bd;
+}
+
+.contingencia-pagination-btn:disabled {
+  cursor: not-allowed;
+  opacity: 0.5;
+}
+
+.contingencia-pagination-active {
+  background-color: #0066cc;
+  color: white;
+  border-color: #0066cc;
+}
+
+.contingencia-pagination-active:hover {
+  background-color: #0052a3;
+  border-color: #0052a3;
+}
+
+/* Responsive */
+@media (max-width: 1024px) {
+  .contingencia-filtros {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .contingencia-filtro-numero,
+  .contingencia-filtro-busqueda {
+    flex: 1 1 100%;
+  }
+
+  .contingencia-btn-buscar,
+  .contingencia-btn-columnas {
+    width: 100%;
+  }
+
+  .contingencia-columnas-wrapper {
+    margin-left: 0;
+  }
+}
+
+@media (max-width: 768px) {
+  .contingencia-container {
+    padding: 10px;
+  }
+
+  .contingencia-table-wrapper {
+    overflow-x: auto;
+  }
+
+  .contingencia-table {
+    min-width: 1200px;
+  }
+
+  .contingencia-alert {
+    font-size: 12px;
+    padding: 10px 15px;
+  }
+
+  .contingencia-th,
+  .contingencia-td {
+    padding: 8px 10px;
+    font-size: 12px;
+  }
+}

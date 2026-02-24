@@ -1,0 +1,547 @@
+/* PedidosConsolidadoItems.css - Estilos específicos para PedidosConsolidadoItems */
+.pedidos-consolidado-container {
+  padding: 20px;
+  background-color: #f8f9fa;
+  min-height: 100vh;
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}
+
+.pedidos-consolidado-reporte {
+  max-width: 1400px;
+  margin: 0 auto;
+}
+
+/* Header Styles */
+.pedidos-consolidado-header {
+  display: flex;
+  align-items: center;
+  background: white;
+  padding: 15px 20px;
+  border-radius: 8px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  margin-bottom: 20px;
+  border-left: 4px solid #16a085;
+}
+
+.pedidos-consolidado-back-button {
+  background: none;
+  border: none;
+  cursor: pointer;
+  padding: 8px;
+  border-radius: 4px;
+  margin-right: 15px;
+  color: #555;
+  transition: all 0.3s ease;
+}
+
+.pedidos-consolidado-back-button:hover {
+  background-color: #f1f1f1;
+  color: #333;
+}
+
+.pedidos-consolidado-home-icon {
+  width: 20px;
+  height: 20px;
+}
+
+.pedidos-consolidado-breadcrumb {
+  font-size: 14px;
+  color: #666;
+  font-weight: 500;
+}
+
+.pedidos-consolidado-breadcrumb span:last-child {
+  color: #16a085;
+  font-weight: 600;
+}
+
+/* Title Section */
+.pedidos-consolidado-title {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  background: white;
+  padding: 20px;
+  border-radius: 8px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  margin-bottom: 20px;
+  border-left: 4px solid #16a085;
+}
+
+.pedidos-consolidado-title-icon {
+  color: #16a085;
+  width: 28px;
+  height: 28px;
+}
+
+.pedidos-consolidado-title h1 {
+  margin: 0;
+  color: #333;
+  font-size: 24px;
+  font-weight: 600;
+}
+
+/* Filtros Section */
+.pedidos-consolidado-filtros-section {
+  background: white;
+  padding: 20px;
+  border-radius: 8px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  margin-bottom: 20px;
+}
+
+.pedidos-consolidado-filtros-header {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 15px;
+}
+
+.pedidos-consolidado-filter-icon {
+  color: #16a085;
+  width: 20px;
+  height: 20px;
+}
+
+.pedidos-consolidado-filtros-header h3 {
+  margin: 0;
+  color: #333;
+  font-size: 18px;
+  font-weight: 600;
+}
+
+.pedidos-consolidado-filtros-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+  gap: 15px;
+  margin-bottom: 20px;
+}
+
+.pedidos-consolidado-filtro-grupo {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.pedidos-consolidado-filtro-grupo label {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 12px;
+  font-weight: 600;
+  color: #555;
+  text-transform: uppercase;
+}
+
+.pedidos-consolidado-filtro-input,
+.pedidos-consolidado-filtro-select {
+  padding: 10px 12px;
+  border: 1px solid #ddd;
+  border-radius: 6px;
+  font-size: 14px;
+  transition: all 0.3s ease;
+}
+
+.pedidos-consolidado-filtro-input:focus,
+.pedidos-consolidado-filtro-select:focus {
+  outline: none;
+  border-color: #16a085;
+  box-shadow: 0 0 0 2px rgba(22, 160, 133, 0.2);
+}
+
+.pedidos-consolidado-filtros-acciones {
+  display: flex;
+  gap: 12px;
+  justify-content: flex-end;
+}
+
+.pedidos-consolidado-btn-filtrar,
+.pedidos-consolidado-btn-exportar {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 12px 20px;
+  border: none;
+  border-radius: 6px;
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.pedidos-consolidado-btn-filtrar {
+  background-color: #16a085;
+  color: white;
+}
+
+.pedidos-consolidado-btn-filtrar:hover {
+  background-color: #138a72;
+  transform: translateY(-1px);
+}
+
+.pedidos-consolidado-btn-exportar {
+  background-color: #2980b9;
+  color: white;
+}
+
+.pedidos-consolidado-btn-exportar:hover {
+  background-color: #2471a3;
+  transform: translateY(-1px);
+}
+
+/* Resumen Section */
+.pedidos-consolidado-resumen-section {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 15px;
+  margin-bottom: 20px;
+}
+
+.pedidos-consolidado-resumen-card {
+  background: white;
+  padding: 20px;
+  border-radius: 8px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  text-align: center;
+  border-top: 4px solid #16a085;
+  transition: transform 0.3s ease;
+}
+
+.pedidos-consolidado-resumen-card:hover {
+  transform: translateY(-2px);
+}
+
+.pedidos-consolidado-destacado {
+  background: linear-gradient(135deg, #16a085, #1abc9c);
+  color: white;
+}
+
+.pedidos-consolidado-destacado .pedidos-consolidado-resumen-numero,
+.pedidos-consolidado-destacado .pedidos-consolidado-resumen-label {
+  color: white;
+}
+
+.pedidos-consolidado-resumen-numero {
+  font-size: 28px;
+  font-weight: 700;
+  margin-bottom: 5px;
+  color: #2c3e50;
+}
+
+.pedidos-consolidado-resumen-label {
+  font-size: 12px;
+  color: #666;
+  font-weight: 600;
+  text-transform: uppercase;
+}
+
+/* Tabla Section */
+.pedidos-consolidado-tabla-section {
+  background: white;
+  padding: 20px;
+  border-radius: 8px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.pedidos-consolidado-tabla-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 15px;
+}
+
+.pedidos-consolidado-tabla-header h3 {
+  margin: 0;
+  color: #333;
+  font-size: 18px;
+  font-weight: 600;
+}
+
+.pedidos-consolidado-tabla-stats {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 14px;
+  color: #666;
+}
+
+.pedidos-consolidado-tabla-container {
+  overflow-x: auto;
+  border-radius: 6px;
+  border: 1px solid #e1e1e1;
+}
+
+.pedidos-consolidado-reporte-tabla {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 13px;
+}
+
+.pedidos-consolidado-reporte-tabla th {
+  background-color: #f8f9fa;
+  padding: 12px 10px;
+  text-align: left;
+  font-weight: 600;
+  color: #333;
+  border-bottom: 2px solid #e1e1e1;
+  text-transform: uppercase;
+  font-size: 11px;
+  letter-spacing: 0.5px;
+  white-space: nowrap;
+}
+
+.pedidos-consolidado-reporte-tabla td {
+  padding: 12px 10px;
+  border-bottom: 1px solid #e1e1e1;
+  color: #555;
+}
+
+.pedidos-consolidado-reporte-tabla tbody tr {
+  transition: background-color 0.3s ease;
+}
+
+.pedidos-consolidado-reporte-tabla tbody tr:hover {
+  background-color: #f8f9fa;
+}
+
+/* Celdas específicas */
+.pedidos-consolidado-producto-nombre {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-weight: 600;
+  color: #2c3e50;
+}
+
+.pedidos-consolidado-producto-icon {
+  color: #16a085;
+}
+
+.pedidos-consolidado-codigo {
+  font-family: 'Courier New', monospace;
+  font-size: 12px;
+  color: #666;
+}
+
+.pedidos-consolidado-categoria {
+  font-size: 12px;
+  color: #666;
+}
+
+.pedidos-consolidado-cantidad {
+  font-weight: 600;
+  text-align: right;
+  font-family: 'Courier New', monospace;
+}
+
+.pedidos-consolidado-pedida {
+  color: #2980b9;
+}
+
+.pedidos-consolidado-entregada {
+  color: #27ae60;
+}
+
+.pedidos-consolidado-pendiente-highlight {
+  color: #e74c3c;
+  font-weight: 700;
+}
+
+.pedidos-consolidado-completo {
+  color: #27ae60;
+}
+
+/* Progreso Bars */
+.pedidos-consolidado-porcentaje {
+  min-width: 120px;
+}
+
+.pedidos-consolidado-progreso-container {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.pedidos-consolidado-progreso-bar {
+  flex: 1;
+  height: 6px;
+  background-color: #ecf0f1;
+  border-radius: 3px;
+  overflow: hidden;
+}
+
+.pedidos-consolidado-progreso-fill {
+  height: 100%;
+  border-radius: 3px;
+  transition: width 0.3s ease;
+}
+
+.pedidos-consolidado-completado {
+  background-color: #27ae60;
+}
+
+.pedidos-consolidado-alto {
+  background-color: #2ecc71;
+}
+
+.pedidos-consolidado-medio {
+  background-color: #f39c12;
+}
+
+.pedidos-consolidado-bajo {
+  background-color: #e74c3c;
+}
+
+.pedidos-consolidado-progreso-texto {
+  font-size: 11px;
+  font-weight: 600;
+  min-width: 35px;
+  text-align: right;
+}
+
+/* Estados */
+.pedidos-consolidado-estado {
+  padding: 4px 8px;
+  border-radius: 12px;
+  font-size: 10px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  white-space: nowrap;
+}
+
+.pedidos-consolidado-estado-completado {
+  background-color: #d4edda;
+  color: #155724;
+}
+
+.pedidos-consolidado-estado-alto {
+  background-color: #d1ecf1;
+  color: #0c5460;
+}
+
+.pedidos-consolidado-estado-medio {
+  background-color: #fff3cd;
+  color: #856404;
+}
+
+.pedidos-consolidado-estado-bajo {
+  background-color: #f8d7da;
+  color: #721c24;
+}
+
+.pedidos-consolidado-fecha {
+  font-size: 12px;
+  color: #666;
+  font-family: 'Courier New', monospace;
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+  .pedidos-consolidado-container {
+    padding: 10px;
+  }
+  
+  .pedidos-consolidado-header {
+    padding: 12px 15px;
+    flex-wrap: wrap;
+    gap: 10px;
+  }
+  
+  .pedidos-consolidado-title {
+    padding: 15px;
+  }
+  
+  .pedidos-consolidado-title h1 {
+    font-size: 20px;
+  }
+  
+  .pedidos-consolidado-filtros-grid {
+    grid-template-columns: 1fr;
+  }
+  
+  .pedidos-consolidado-resumen-section {
+    grid-template-columns: repeat(2, 1fr);
+  }
+  
+  .pedidos-consolidado-filtros-acciones {
+    flex-direction: column;
+  }
+  
+  .pedidos-consolidado-btn-filtrar,
+  .pedidos-consolidado-btn-exportar {
+    justify-content: center;
+  }
+  
+  .pedidos-consolidado-tabla-header {
+    flex-direction: column;
+    gap: 10px;
+    align-items: flex-start;
+  }
+  
+  .pedidos-consolidado-progreso-container {
+    flex-direction: column;
+    gap: 4px;
+  }
+  
+  .pedidos-consolidado-progreso-texto {
+    text-align: center;
+  }
+}
+
+@media (max-width: 480px) {
+  .pedidos-consolidado-resumen-section {
+    grid-template-columns: 1fr;
+  }
+  
+  .pedidos-consolidado-resumen-card {
+    padding: 15px;
+  }
+  
+  .pedidos-consolidado-resumen-numero {
+    font-size: 24px;
+  }
+}
+
+/* Scrollbar Styling */
+.pedidos-consolidado-tabla-container::-webkit-scrollbar {
+  height: 8px;
+}
+
+.pedidos-consolidado-tabla-container::-webkit-scrollbar-track {
+  background: #f1f1f1;
+  border-radius: 4px;
+}
+
+.pedidos-consolidado-tabla-container::-webkit-scrollbar-thumb {
+  background: #c1c1c1;
+  border-radius: 4px;
+}
+
+.pedidos-consolidado-tabla-container::-webkit-scrollbar-thumb:hover {
+  background: #a8a8a8;
+}
+
+/* Animation for table rows */
+@keyframes pedidos-consolidado-fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.pedidos-consolidado-reporte-tabla tbody tr {
+  animation: pedidos-consolidado-fadeIn 0.3s ease-out;
+}
+
+.pedidos-consolidado-reporte-tabla tbody tr:nth-child(even) {
+  background-color: #fafafa;
+}
+
+.pedidos-consolidado-reporte-tabla tbody tr:nth-child(even):hover {
+  background-color: #f1f1f1;
+}

@@ -1,0 +1,295 @@
+/* MotivoIngreso.css */
+
+.mi-container {
+  padding: 20px;
+  background-color: #f5f5f5;
+  min-height: 100vh;
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+}
+
+.mi-section {
+  background-color: #ffffff;
+  border-radius: 8px;
+  padding: 24px;
+  margin-bottom: 30px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.mi-title {
+  font-size: 18px;
+  font-weight: 600;
+  color: #333;
+  margin: 0 0 20px 0;
+  display: inline-block;
+}
+
+.mi-info-icon {
+  display: inline-block;
+  margin-left: 8px;
+  color: #666;
+  font-size: 16px;
+  cursor: help;
+}
+
+.mi-btn-nuevo {
+  background-color: #e74c3c;
+  color: white;
+  border: none;
+  padding: 8px 16px;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 14px;
+  font-weight: 500;
+  margin-bottom: 20px;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  transition: background-color 0.2s;
+}
+
+.mi-btn-nuevo:hover {
+  background-color: #c0392b;
+}
+
+.mi-icon-plus {
+  font-size: 18px;
+  font-weight: bold;
+}
+
+.mi-table {
+  width: 100%;
+  border-collapse: collapse;
+  margin-top: 10px;
+}
+
+.mi-th {
+  background-color: #f8f9fa;
+  padding: 12px;
+  text-align: left;
+  font-weight: 600;
+  font-size: 14px;
+  color: #555;
+  border-bottom: 2px solid #dee2e6;
+}
+
+.mi-tr {
+  border-bottom: 1px solid #e9ecef;
+}
+
+.mi-tr:hover {
+  background-color: #f8f9fa;
+}
+
+.mi-td {
+  padding: 12px;
+  font-size: 14px;
+  color: #333;
+}
+
+.mi-td-acciones {
+  text-align: right;
+}
+
+.mi-btn-editar {
+  background-color: #17a2b8;
+  color: white;
+  border: none;
+  padding: 6px 14px;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 13px;
+  margin-right: 8px;
+  transition: background-color 0.2s;
+}
+
+.mi-btn-editar:hover {
+  background-color: #138496;
+}
+
+.mi-btn-eliminar {
+  background-color: #e74c3c;
+  color: white;
+  border: none;
+  padding: 6px 14px;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 13px;
+  transition: background-color 0.2s;
+}
+
+.mi-btn-eliminar:hover {
+  background-color: #c0392b;
+}
+
+/* Modal Styles */
+.mi-modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: rgba(0, 0, 0, 0.5);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 1000;
+  animation: mi-fadeIn 0.2s ease-in-out;
+}
+
+@keyframes mi-fadeIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+.mi-modal-content {
+  background-color: white;
+  border-radius: 8px;
+  width: 90%;
+  max-width: 600px;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.15);
+  animation: mi-slideDown 0.3s ease-out;
+}
+
+@keyframes mi-slideDown {
+  from {
+    transform: translateY(-50px);
+    opacity: 0;
+  }
+  to {
+    transform: translateY(0);
+    opacity: 1;
+  }
+}
+
+.mi-modal-header {
+  background-color: #e74c3c;
+  color: white;
+  padding: 16px 24px;
+  border-radius: 8px 8px 0 0;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.mi-modal-title {
+  font-size: 18px;
+  font-weight: 600;
+  margin: 0;
+}
+
+.mi-modal-close {
+  background: none;
+  border: none;
+  color: white;
+  font-size: 28px;
+  cursor: pointer;
+  line-height: 1;
+  padding: 0;
+  width: 30px;
+  height: 30px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 4px;
+  transition: background-color 0.2s;
+}
+
+.mi-modal-close:hover {
+  background-color: rgba(255, 255, 255, 0.2);
+}
+
+.mi-modal-body {
+  padding: 24px;
+}
+
+.mi-label {
+  font-size: 14px;
+  font-weight: 500;
+  color: #333;
+  margin-bottom: 8px;
+  display: block;
+}
+
+.mi-input {
+  width: 100%;
+  padding: 10px 12px;
+  border: 1px solid #ced4da;
+  border-radius: 4px;
+  font-size: 14px;
+  color: #495057;
+  transition: border-color 0.2s, box-shadow 0.2s;
+  box-sizing: border-box;
+}
+
+.mi-input:focus {
+  outline: none;
+  border-color: #80bdff;
+  box-shadow: 0 0 0 0.2rem rgba(0, 123, 255, 0.25);
+}
+
+.mi-modal-footer {
+  padding: 16px 24px;
+  border-top: 1px solid #e9ecef;
+  display: flex;
+  justify-content: flex-end;
+  gap: 12px;
+}
+
+.mi-btn-cancelar {
+  background-color: #6c757d;
+  color: white;
+  border: none;
+  padding: 8px 20px;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 14px;
+  font-weight: 500;
+  transition: background-color 0.2s;
+}
+
+.mi-btn-cancelar:hover {
+  background-color: #5a6268;
+}
+
+.mi-btn-guardar {
+  background-color: #e74c3c;
+  color: white;
+  border: none;
+  padding: 8px 20px;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 14px;
+  font-weight: 500;
+  transition: background-color 0.2s;
+}
+
+.mi-btn-guardar:hover {
+  background-color: #c0392b;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+  .mi-modal-content {
+    width: 95%;
+    max-width: none;
+  }
+
+  .mi-table {
+    font-size: 12px;
+  }
+
+  .mi-th,
+  .mi-td {
+    padding: 8px;
+  }
+
+  .mi-btn-editar,
+  .mi-btn-eliminar {
+    padding: 4px 10px;
+    font-size: 12px;
+  }
+}

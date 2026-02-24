@@ -1,0 +1,498 @@
+/* Marcas.css */
+
+.marcas-container {
+  padding: 20px;
+  background-color: #f5f5f5;
+  min-height: 100vh;
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen', 'Ubuntu', sans-serif;
+}
+
+.marcas-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 20px;
+  background-color: white;
+  padding: 15px 20px;
+  border-radius: 8px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.marcas-title {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.marcas-icon {
+  font-size: 24px;
+  color: #e74c3c;
+}
+
+.marcas-title h1 {
+  margin: 0;
+  font-size: 18px;
+  font-weight: 600;
+  color: #333;
+}
+
+.marcas-btn-nuevo {
+  background-color: #e74c3c;
+  color: white;
+  border: none;
+  padding: 10px 20px;
+  border-radius: 5px;
+  cursor: pointer;
+  font-size: 14px;
+  font-weight: 500;
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  transition: background-color 0.3s ease;
+}
+
+.marcas-btn-nuevo:hover {
+  background-color: #c0392b;
+}
+
+.marcas-section {
+  background-color: white;
+  padding: 20px;
+  border-radius: 8px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.marcas-section-title {
+  margin: 0 0 20px 0;
+  font-size: 16px;
+  font-weight: 600;
+  color: #333;
+  padding-bottom: 15px;
+  border-bottom: 1px solid #eee;
+}
+
+.marcas-filters {
+  display: flex;
+  gap: 10px;
+  margin-bottom: 20px;
+  flex-wrap: wrap;
+}
+
+.marcas-filter-input,
+.marcas-search-input {
+  padding: 8px 12px;
+  border: 1px solid #ddd;
+  border-radius: 5px;
+  font-size: 14px;
+  flex: 1;
+  min-width: 200px;
+}
+
+.marcas-btn-buscar {
+  background-color: #e74c3c;
+  color: white;
+  border: none;
+  padding: 8px 20px;
+  border-radius: 5px;
+  cursor: pointer;
+  font-size: 14px;
+  font-weight: 500;
+  transition: background-color 0.3s ease;
+}
+
+.marcas-btn-buscar:hover {
+  background-color: #c0392b;
+}
+
+.marcas-table-wrapper {
+  overflow-x: auto;
+}
+
+.marcas-table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+.marcas-table thead {
+  background-color: #f8f9fa;
+}
+
+.marcas-table th {
+  padding: 12px;
+  text-align: left;
+  font-weight: 600;
+  color: #555;
+  border-bottom: 2px solid #dee2e6;
+  font-size: 14px;
+}
+
+.marcas-table td {
+  padding: 12px;
+  border-bottom: 1px solid #dee2e6;
+  font-size: 14px;
+  color: #666;
+}
+
+.marcas-table tbody tr:hover {
+  background-color: #f8f9fa;
+}
+
+.marcas-table-imagen {
+  width: 50px;
+  height: 50px;
+  object-fit: contain;
+  border-radius: 4px;
+  border: 1px solid #ddd;
+}
+
+.marcas-table-sin-imagen {
+  width: 50px;
+  height: 50px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background-color: #f8f9fa;
+  border: 1px dashed #ddd;
+  border-radius: 4px;
+  font-size: 24px;
+  color: #ccc;
+}
+
+.marcas-acciones {
+  display: flex;
+  gap: 8px;
+}
+
+.marcas-btn-editar,
+.marcas-btn-eliminar {
+  padding: 6px 12px;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 13px;
+  font-weight: 500;
+  transition: all 0.3s ease;
+}
+
+.marcas-btn-editar {
+  background-color: #17a2b8;
+  color: white;
+}
+
+.marcas-btn-editar:hover {
+  background-color: #138496;
+}
+
+.marcas-btn-eliminar {
+  background-color: #e74c3c;
+  color: white;
+}
+
+.marcas-btn-eliminar:hover {
+  background-color: #c0392b;
+}
+
+.marcas-pagination {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-top: 20px;
+  padding-top: 15px;
+  border-top: 1px solid #eee;
+}
+
+.marcas-pagination span {
+  font-size: 14px;
+  color: #666;
+}
+
+.marcas-pagination-buttons {
+  display: flex;
+  gap: 5px;
+}
+
+.marcas-page-btn {
+  padding: 6px 12px;
+  border: 1px solid #ddd;
+  background-color: white;
+  cursor: pointer;
+  border-radius: 4px;
+  font-size: 14px;
+  transition: all 0.3s ease;
+}
+
+.marcas-page-btn:hover {
+  background-color: #f0f0f0;
+}
+
+.marcas-page-btn.marcas-active {
+  background-color: #3498db;
+  color: white;
+  border-color: #3498db;
+}
+
+/* Modal */
+.marcas-modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: rgba(0, 0, 0, 0.5);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 1000;
+  padding: 20px;
+}
+
+.marcas-modal {
+  background-color: white;
+  border-radius: 8px;
+  width: 100%;
+  max-width: 500px;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.2);
+}
+
+.marcas-modal-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 15px 20px;
+  background-color: #e74c3c;
+  color: white;
+  border-radius: 8px 8px 0 0;
+}
+
+.marcas-modal-header h2 {
+  margin: 0;
+  font-size: 18px;
+  font-weight: 600;
+}
+
+.marcas-modal-close {
+  background: none;
+  border: none;
+  font-size: 28px;
+  color: white;
+  cursor: pointer;
+  line-height: 1;
+  padding: 0;
+  width: 30px;
+  height: 30px;
+  transition: opacity 0.3s ease;
+}
+
+.marcas-modal-close:hover {
+  opacity: 0.8;
+}
+
+.marcas-modal-body {
+  padding: 20px;
+}
+
+.marcas-form-content {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.marcas-form-group {
+  display: flex;
+  flex-direction: column;
+}
+
+.marcas-form-group label {
+  font-size: 14px;
+  font-weight: 600;
+  color: #555;
+  margin-bottom: 8px;
+}
+
+.marcas-input {
+  padding: 10px 12px;
+  border: 1px solid #ddd;
+  border-radius: 5px;
+  font-size: 14px;
+  width: 100%;
+  box-sizing: border-box;
+}
+
+.marcas-input:focus {
+  outline: none;
+  border-color: #3498db;
+}
+
+.marcas-imagen-section {
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+}
+
+.marcas-imagen-preview-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 20px;
+  background-color: #f8f9fa;
+  border: 2px dashed #ddd;
+  border-radius: 8px;
+}
+
+.marcas-imagen-preview {
+  max-width: 200px;
+  max-height: 200px;
+  object-fit: contain;
+  border-radius: 4px;
+}
+
+.marcas-file-input {
+  display: none;
+}
+
+.marcas-btn-seleccionar-imagen {
+  display: inline-block;
+  padding: 10px 20px;
+  background-color: #e74c3c;
+  color: white;
+  border-radius: 5px;
+  cursor: pointer;
+  font-size: 14px;
+  font-weight: 500;
+  text-align: center;
+  transition: background-color 0.3s ease;
+}
+
+.marcas-btn-seleccionar-imagen:hover {
+  background-color: #c0392b;
+}
+
+.marcas-modal-footer {
+  display: flex;
+  justify-content: flex-end;
+  gap: 10px;
+  padding: 20px;
+  border-top: 1px solid #eee;
+}
+
+.marcas-btn-cancelar {
+  padding: 10px 24px;
+  border: 1px solid #ddd;
+  background-color: white;
+  color: #666;
+  border-radius: 5px;
+  cursor: pointer;
+  font-size: 14px;
+  font-weight: 500;
+  transition: all 0.3s ease;
+}
+
+.marcas-btn-cancelar:hover {
+  background-color: #f5f5f5;
+}
+
+.marcas-btn-guardar {
+  padding: 10px 24px;
+  border: none;
+  background-color: #e74c3c;
+  color: white;
+  border-radius: 5px;
+  cursor: pointer;
+  font-size: 14px;
+  font-weight: 500;
+  transition: background-color 0.3s ease;
+}
+
+.marcas-btn-guardar:hover {
+  background-color: #c0392b;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+  .marcas-header {
+    flex-direction: column;
+    gap: 15px;
+  }
+
+  .marcas-filters {
+    flex-direction: column;
+  }
+
+  .marcas-modal {
+    max-width: 95%;
+  }
+
+  .marcas-acciones {
+    flex-direction: column;
+  }
+
+  .marcas-btn-editar,
+  .marcas-btn-eliminar {
+    width: 100%;
+  }
+
+  .marcas-table {
+    font-size: 12px;
+  }
+
+  .marcas-table th,
+  .marcas-table td {
+    padding: 8px 4px;
+  }
+}
+
+/* Animaciones */
+@keyframes marcas-fadeIn {
+  from {
+    opacity: 0;
+    transform: scale(0.95);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+.marcas-modal {
+  animation: marcas-fadeIn 0.3s ease;
+}
+
+/* Overlay con blur */
+.marcas-modal-overlay {
+  backdrop-filter: blur(2px);
+}
+
+/* Estados activos */
+.marcas-btn-nuevo:active,
+.marcas-btn-buscar:active,
+.marcas-btn-guardar:active {
+  transform: scale(0.98);
+}
+
+/* Focus visible */
+.marcas-btn-nuevo:focus-visible,
+.marcas-btn-buscar:focus-visible,
+.marcas-btn-guardar:focus-visible,
+.marcas-input:focus-visible {
+  outline: 2px solid #3498db;
+  outline-offset: 2px;
+}
+
+/* Scrollbar personalizado */
+.marcas-modal::-webkit-scrollbar {
+  width: 8px;
+}
+
+.marcas-modal::-webkit-scrollbar-track {
+  background: #f1f1f1;
+  border-radius: 4px;
+}
+
+.marcas-modal::-webkit-scrollbar-thumb {
+  background: #888;
+  border-radius: 4px;
+}
+
+.marcas-modal::-webkit-scrollbar-thumb:hover {
+  background: #555;
+}

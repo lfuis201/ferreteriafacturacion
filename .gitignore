@@ -1,0 +1,18 @@
+# Dependencias de npm
+node_modules
+package-lock.json
+
+# Archivos de compilación
+dist/
+build/
+
+
+
+# Archivos de sistema
+.DS_Store
+Thumbs.db
+
+# Otros archivos
+*.log
+*.swp
+*.swo

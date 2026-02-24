@@ -1,0 +1,455 @@
+/* Lista Caja Styles - Prefijo: lc- */
+
+.lc-container {
+  --lc-primary: #dc3545;
+  --lc-success: #28a745;
+  --lc-warning: #ffc107;
+  --lc-info: #17a2b8;
+  --lc-danger: #dc3545;
+  --lc-secondary: #6c757d;
+  --lc-light: #f8f9fa;
+  --lc-dark: #343a40;
+  --lc-border: #dee2e6;
+  --lc-hover: #c82333;
+  
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+  padding: 20px;
+  background-color: #f5f5f5;
+  min-height: 100vh;
+}
+
+.lc-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 30px;
+  background-color: white;
+  padding: 20px;
+  border-radius: 8px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.lc-title {
+  font-size: 24px;
+  font-weight: 600;
+  color: var(--lc-dark);
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin: 0;
+}
+
+.lc-icon {
+  font-size: 28px;
+}
+
+.lc-header-buttons {
+  display: flex;
+  gap: 10px;
+}
+
+.lc-btn {
+  padding: 10px 20px;
+  border: none;
+  border-radius: 4px;
+  font-size: 14px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.lc-btn-primary {
+  background-color: var(--lc-primary);
+  color: white;
+}
+
+.lc-btn-primary:hover {
+  background-color: var(--lc-hover);
+}
+
+.lc-btn-danger {
+  background-color: var(--lc-danger);
+  color: white;
+}
+
+.lc-btn-danger:hover {
+  background-color: var(--lc-hover);
+}
+
+.lc-btn-secondary {
+  background-color: var(--lc-secondary);
+  color: white;
+}
+
+.lc-btn-secondary:hover {
+  background-color: #5a6268;
+}
+
+.lc-content {
+  background-color: white;
+  padding: 25px;
+  border-radius: 8px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.lc-subtitle {
+  font-size: 20px;
+  font-weight: 600;
+  color: var(--lc-dark);
+  margin-bottom: 20px;
+}
+
+.lc-filters {
+  display: flex;
+  gap: 15px;
+  margin-bottom: 20px;
+}
+
+.lc-select {
+  padding: 8px 12px;
+  border: 1px solid var(--lc-border);
+  border-radius: 4px;
+  font-size: 14px;
+  background-color: white;
+  cursor: pointer;
+  min-width: 150px;
+}
+
+.lc-search-box {
+  display: flex;
+  gap: 10px;
+  flex: 1;
+}
+
+.lc-search-input {
+  flex: 1;
+  padding: 8px 12px;
+  border: 1px solid var(--lc-border);
+  border-radius: 4px;
+  font-size: 14px;
+}
+
+.lc-btn-search {
+  background-color: var(--lc-danger);
+  color: white;
+  padding: 8px 20px;
+}
+
+.lc-table-wrapper {
+  overflow-x: auto;
+  margin-bottom: 20px;
+}
+
+.lc-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 13px;
+}
+
+.lc-table thead {
+  background-color: var(--lc-light);
+}
+
+.lc-table th {
+  padding: 12px 8px;
+  text-align: left;
+  font-weight: 600;
+  color: var(--lc-dark);
+  border-bottom: 2px solid var(--lc-border);
+  white-space: nowrap;
+}
+
+.lc-table td {
+  padding: 12px 8px;
+  border-bottom: 1px solid var(--lc-border);
+  color: #333;
+}
+
+.lc-table tbody tr:hover {
+  background-color: #f9f9f9;
+}
+
+.lc-badge {
+  padding: 4px 12px;
+  border-radius: 4px;
+  font-size: 12px;
+  font-weight: 500;
+  display: inline-block;
+}
+
+.lc-badge-open {
+  background-color: #d4edda;
+  color: #155724;
+}
+
+.lc-badge-closed {
+  background-color: #f8d7da;
+  color: #721c24;
+}
+
+.lc-action-buttons {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 5px;
+}
+
+.lc-btn-action {
+  padding: 6px 10px;
+  border: none;
+  border-radius: 4px;
+  font-size: 11px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  white-space: nowrap;
+}
+
+.lc-btn-reporte {
+  background-color: var(--lc-danger);
+  color: white;
+}
+
+.lc-btn-reporte:hover {
+  background-color: var(--lc-hover);
+}
+
+.lc-btn-efectivo {
+  background-color: var(--lc-danger);
+  color: white;
+}
+
+.lc-btn-efectivo:hover {
+  background-color: var(--lc-hover);
+}
+
+.lc-btn-productos {
+  background-color: var(--lc-danger);
+  color: white;
+}
+
+.lc-btn-productos:hover {
+  background-color: var(--lc-hover);
+}
+
+.lc-btn-ingreso {
+  background-color: var(--lc-success);
+  color: white;
+}
+
+.lc-btn-ingreso:hover {
+  background-color: #218838;
+}
+
+.lc-btn-cerrar {
+  background-color: var(--lc-warning);
+  color: #333;
+}
+
+.lc-btn-cerrar:hover {
+  background-color: #e0a800;
+}
+
+.lc-btn-editar {
+  background-color: var(--lc-info);
+  color: white;
+}
+
+.lc-btn-editar:hover {
+  background-color: #138496;
+}
+
+.lc-btn-eliminar {
+  background-color: var(--lc-danger);
+  color: white;
+}
+
+.lc-btn-eliminar:hover {
+  background-color: var(--lc-hover);
+}
+
+.lc-btn-electronico {
+  background-color: var(--lc-info);
+  color: white;
+}
+
+.lc-btn-electronico:hover {
+  background-color: #138496;
+}
+
+.lc-pagination {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-top: 20px;
+  padding-top: 20px;
+  border-top: 1px solid var(--lc-border);
+}
+
+.lc-pagination-controls {
+  display: flex;
+  gap: 5px;
+}
+
+.lc-pagination-btn {
+  padding: 6px 12px;
+  border: 1px solid var(--lc-border);
+  background-color: white;
+  border-radius: 4px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.lc-pagination-btn:hover {
+  background-color: var(--lc-light);
+}
+
+.lc-pagination-btn.lc-active {
+  background-color: var(--lc-primary);
+  color: white;
+  border-color: var(--lc-primary);
+}
+
+/* Modal Styles */
+.lc-modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: rgba(0, 0, 0, 0.5);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 1000;
+}
+
+.lc-modal {
+  background-color: white;
+  border-radius: 8px;
+  width: 90%;
+  max-width: 600px;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
+  animation: lc-modal-slide-in 0.3s ease-out;
+}
+
+@keyframes lc-modal-slide-in {
+  from {
+    transform: translateY(-50px);
+    opacity: 0;
+  }
+  to {
+    transform: translateY(0);
+    opacity: 1;
+  }
+}
+
+.lc-modal-header {
+  background-color: var(--lc-danger);
+  color: white;
+  padding: 15px 20px;
+  border-radius: 8px 8px 0 0;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.lc-modal-header h3 {
+  margin: 0;
+  font-size: 18px;
+  font-weight: 600;
+}
+
+.lc-modal-close {
+  background: none;
+  border: none;
+  color: white;
+  font-size: 28px;
+  cursor: pointer;
+  line-height: 1;
+  padding: 0;
+  width: 30px;
+  height: 30px;
+}
+
+.lc-modal-close:hover {
+  opacity: 0.8;
+}
+
+.lc-modal-body {
+  padding: 25px;
+}
+
+.lc-form-group {
+  margin-bottom: 20px;
+}
+
+.lc-form-row {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 15px;
+}
+
+.lc-label {
+  display: block;
+  margin-bottom: 8px;
+  font-weight: 500;
+  color: var(--lc-dark);
+  font-size: 14px;
+}
+
+.lc-input {
+  width: 100%;
+  padding: 10px 12px;
+  border: 1px solid var(--lc-border);
+  border-radius: 4px;
+  font-size: 14px;
+  box-sizing: border-box;
+}
+
+.lc-input:focus {
+  outline: none;
+  border-color: var(--lc-primary);
+  box-shadow: 0 0 0 3px rgba(220, 53, 69, 0.1);
+}
+
+.lc-modal-footer {
+  padding: 15px 25px;
+  border-top: 1px solid var(--lc-border);
+  display: flex;
+  justify-content: flex-end;
+  gap: 10px;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+  .lc-header {
+    flex-direction: column;
+    gap: 15px;
+  }
+
+  .lc-header-buttons {
+    flex-direction: column;
+    width: 100%;
+  }
+
+  .lc-btn {
+    width: 100%;
+  }
+
+  .lc-filters {
+    flex-direction: column;
+  }
+
+  .lc-form-row {
+    grid-template-columns: 1fr;
+  }
+
+  .lc-table {
+    font-size: 11px;
+  }
+
+  .lc-btn-action {
+    font-size: 10px;
+    padding: 4px 8px;
+  }
+}

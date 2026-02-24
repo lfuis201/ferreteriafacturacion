@@ -1,0 +1,450 @@
+/* NotasVentaReporte.css */
+.notas-venta-container {
+  max-width: 1400px;
+  margin: 0 auto;
+  padding: 20px;
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  background-color: #f8f9fa;
+  min-height: 100vh;
+}
+
+/* Header */
+.notas-venta-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 30px;
+  padding-bottom: 15px;
+  border-bottom: 2px solid #e9ecef;
+}
+
+.notas-venta-header h2 {
+  color: #2c3e50;
+  font-size: 28px;
+  font-weight: 600;
+  margin: 0;
+}
+
+.notas-venta-btn-back {
+  padding: 10px 20px;
+  background-color: #6c757d;
+  color: white;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  font-size: 14px;
+  font-weight: 500;
+  transition: all 0.3s ease;
+}
+
+.notas-venta-btn-back:hover {
+  background-color: #5a6268;
+  transform: translateY(-1px);
+}
+
+/* Filtros */
+.notas-venta-filtros {
+  background: white;
+  padding: 25px;
+  border-radius: 12px;
+  box-shadow: 0 2px 10px rgba(0,0,0,0.08);
+  margin-bottom: 25px;
+  border: 1px solid #e9ecef;
+}
+
+.notas-venta-filtros-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 20px;
+  margin-bottom: 20px;
+}
+
+.notas-venta-filtro-grupo {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.notas-venta-filtro-grupo label {
+  font-weight: 600;
+  color: #495057;
+  font-size: 14px;
+}
+
+.notas-venta-filtro-grupo input,
+.notas-venta-filtro-grupo select {
+  padding: 10px 12px;
+  border: 2px solid #e9ecef;
+  border-radius: 6px;
+  font-size: 14px;
+  transition: all 0.3s ease;
+  background-color: white;
+}
+
+.notas-venta-filtro-grupo input:focus,
+.notas-venta-filtro-grupo select:focus {
+  outline: none;
+  border-color: #3498db;
+  box-shadow: 0 0 0 3px rgba(52, 152, 219, 0.1);
+}
+
+.notas-venta-filtro-grupo input:hover,
+.notas-venta-filtro-grupo select:hover {
+  border-color: #bdc3c7;
+}
+
+/* Acciones de filtros */
+.notas-venta-filtros-acciones {
+  display: flex;
+  justify-content: flex-end;
+}
+
+.notas-venta-btn-filtrar {
+  padding: 12px 24px;
+  background-color: #3498db;
+  color: white;
+  border: none;
+  border-radius: 8px;
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.notas-venta-btn-filtrar:hover:not(:disabled) {
+  background-color: #2980b9;
+  transform: translateY(-1px);
+}
+
+.notas-venta-btn-filtrar:disabled {
+  background-color: #bdc3c7;
+  cursor: not-allowed;
+  transform: none;
+}
+
+/* Error */
+.notas-venta-error {
+  background-color: #e74c3c;
+  color: white;
+  padding: 15px 20px;
+  border-radius: 8px;
+  margin-bottom: 20px;
+  font-weight: 500;
+  text-align: center;
+}
+
+/* Resumen */
+.notas-venta-resumen {
+  background: white;
+  padding: 25px;
+  border-radius: 12px;
+  box-shadow: 0 2px 10px rgba(0,0,0,0.08);
+  margin-bottom: 25px;
+  border: 1px solid #e9ecef;
+}
+
+.notas-venta-resumen h3 {
+  color: #2c3e50;
+  font-size: 20px;
+  font-weight: 600;
+  margin-bottom: 20px;
+  padding-bottom: 10px;
+  border-bottom: 2px solid #3498db;
+}
+
+.notas-venta-resumen-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 20px;
+}
+
+.notas-venta-resumen-card {
+  background: linear-gradient(135deg,  #82db05 100%);
+  padding: 25px;
+  border-radius: 10px;
+  text-align: center;
+  color: white;
+  box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+  transition: all 0.3s ease;
+}
+
+.notas-venta-resumen-card:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 6px 20px rgba(0,0,0,0.15);
+}
+
+.notas-venta-resumen-card:nth-child(2) {
+  background: linear-gradient(135deg, #e0aa07 100%);
+}
+
+.notas-venta-resumen-card:nth-child(3) {
+  background: linear-gradient(135deg, #4facfe 0%);
+}
+
+.notas-venta-resumen-numero {
+  font-size: 28px;
+  font-weight: 700;
+  margin-bottom: 8px;
+  line-height: 1;
+}
+
+.notas-venta-resumen-label {
+  font-size: 14px;
+  font-weight: 500;
+  opacity: 0.9;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+/* Tabla */
+.notas-venta-tabla {
+  background: white;
+  padding: 25px;
+  border-radius: 12px;
+  box-shadow: 0 2px 10px rgba(0,0,0,0.08);
+  margin-bottom: 25px;
+  border: 1px solid #e9ecef;
+}
+
+.notas-venta-tabla h3 {
+  color: #2c3e50;
+  font-size: 20px;
+  font-weight: 600;
+  margin-bottom: 20px;
+  padding-bottom: 10px;
+  border-bottom: 2px solid #3498db;
+}
+
+.notas-venta-tabla-container {
+  overflow-x: auto;
+  border-radius: 8px;
+  border: 1px solid #e9ecef;
+}
+
+.notas-venta-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 14px;
+  background: white;
+}
+
+.notas-venta-table thead {
+  background-color: #34495e;
+  color: white;
+}
+
+.notas-venta-table th {
+  padding: 15px 12px;
+  text-align: left;
+  font-weight: 600;
+  font-size: 14px;
+  border: none;
+  white-space: nowrap;
+}
+
+.notas-venta-table tbody tr {
+  border-bottom: 1px solid #e9ecef;
+  transition: background-color 0.2s ease;
+}
+
+.notas-venta-table tbody tr:hover {
+  background-color: #f8f9fa;
+}
+
+.notas-venta-table tbody tr:nth-child(even) {
+  background-color: #f8f9fa;
+}
+
+.notas-venta-table tbody tr:nth-child(even):hover {
+  background-color: #e9ecef;
+}
+
+.notas-venta-table td {
+  padding: 15px 12px;
+  color: #495057;
+  border: none;
+  white-space: nowrap;
+}
+
+/* Estilos específicos para columnas */
+.notas-venta-fecha {
+  color: #6c757d;
+  font-size: 13px;
+  min-width: 100px;
+}
+
+.notas-venta-sucursal {
+  font-weight: 500;
+  color: #2c3e50;
+  min-width: 120px;
+}
+
+.notas-venta-vendedor {
+  color: #495057;
+  min-width: 120px;
+}
+
+.notas-venta-cliente {
+  font-weight: 500;
+  color: #2c3e50;
+  min-width: 150px;
+}
+
+.notas-venta-serie {
+  font-family: 'Courier New', monospace;
+  font-weight: 600;
+  color: #7d3c98;
+  background-color: #f4ecf7;
+  border-radius: 4px;
+  text-align: center;
+  min-width: 100px;
+}
+
+.notas-venta-total {
+  font-weight: 700;
+  color: #27ae60;
+  text-align: right;
+  min-width: 100px;
+}
+
+.notas-venta-estado {
+  text-align: center;
+  min-width: 100px;
+}
+
+.notas-venta-estado-badge {
+  padding: 6px 12px;
+  border-radius: 20px;
+  font-size: 12px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.notas-venta-estado-activo {
+  background: #d4edda;
+  color: #155724;
+}
+
+.notas-venta-estado-anulado {
+  background: #f8d7da;
+  color: #721c24;
+}
+
+.notas-venta-sin-datos {
+  text-align: center;
+  color: #6c757d;
+  font-style: italic;
+  padding: 30px !important;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+  .notas-venta-container {
+    padding: 15px;
+  }
+  
+  .notas-venta-header {
+    flex-direction: column;
+    gap: 15px;
+    align-items: flex-start;
+  }
+  
+  .notas-venta-filtros-grid {
+    grid-template-columns: 1fr;
+  }
+  
+  .notas-venta-filtros-acciones {
+    justify-content: stretch;
+  }
+  
+  .notas-venta-btn-filtrar {
+    width: 100%;
+    text-align: center;
+  }
+  
+  .notas-venta-resumen-grid {
+    grid-template-columns: 1fr;
+  }
+  
+  .notas-venta-tabla {
+    padding: 15px;
+  }
+  
+  .notas-venta-table {
+    min-width: 800px;
+  }
+}
+
+@media (max-width: 480px) {
+  .notas-venta-header h2 {
+    font-size: 24px;
+  }
+  
+  .notas-venta-filtros {
+    padding: 15px;
+  }
+  
+  .notas-venta-resumen-card {
+    padding: 20px;
+  }
+  
+  .notas-venta-resumen-numero {
+    font-size: 24px;
+  }
+  
+  .notas-venta-tabla {
+    padding: 10px;
+  }
+  
+  .notas-venta-table th,
+  .notas-venta-table td {
+    padding: 10px 8px;
+    font-size: 13px;
+  }
+}
+
+/* Estados de carga */
+@keyframes notas-venta-loading {
+  0% { opacity: 0.6; }
+  50% { opacity: 1; }
+  100% { opacity: 0.6; }
+}
+
+.notas-venta-btn-filtrar:disabled {
+  animation: notas-venta-loading 1.5s ease-in-out infinite;
+}
+
+/* Scroll personalizado */
+.notas-venta-tabla-container::-webkit-scrollbar {
+  height: 8px;
+}
+
+.notas-venta-tabla-container::-webkit-scrollbar-track {
+  background: #f1f1f1;
+  border-radius: 4px;
+}
+
+.notas-venta-tabla-container::-webkit-scrollbar-thumb {
+  background: #c1c1c1;
+  border-radius: 4px;
+}
+
+.notas-venta-tabla-container::-webkit-scrollbar-thumb:hover {
+  background: #a8a8a8;
+}
+
+/* Mejoras visuales para selects */
+.notas-venta-filtro-grupo select {
+  cursor: pointer;
+  appearance: none;
+  background-image: url("data:image/svg+xml;charset=US-ASCII,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 4 5'><path fill='%236c757d' d='M2 0L0 2h4zm0 5L0 3h4z'/></svg>");
+  background-repeat: no-repeat;
+  background-position: right 12px center;
+  background-size: 12px;
+  padding-right: 35px;
+}
+
+.notas-venta-filtro-grupo select:focus {
+  background-image: url("data:image/svg+xml;charset=US-ASCII,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 4 5'><path fill='%233498db' d='M2 0L0 2h4zm0 5L0 3h4z'/></svg>");
+}

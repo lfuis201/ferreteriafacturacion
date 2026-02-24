@@ -1,0 +1,270 @@
+/* Estilos para el Modal de Ubicación de Producto */
+.modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: rgba(0, 0, 0, 0.5);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 1000;
+}
+
+.modal-content {
+  background: white;
+  border-radius: 8px;
+  width: 90%;
+  max-width: 800px;
+  max-height: 90vh;
+  overflow-y: auto;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.15);
+}
+
+.modal-header {
+  padding: 20px;
+  border-bottom: 1px solid #e9ecef;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  background-color: #f8f9fa;
+  border-radius: 8px 8px 0 0;
+}
+
+.modal-header h3 {
+  margin: 0;
+  color: #333;
+  font-size: 18px;
+  font-weight: 600;
+}
+
+.close-button {
+  background: none;
+  border: none;
+  font-size: 24px;
+  cursor: pointer;
+  color: #666;
+  padding: 0;
+  width: 30px;
+  height: 30px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 50%;
+  transition: all 0.2s;
+}
+
+.close-button:hover {
+  background-color: #f0f0f0;
+  color: #333;
+}
+
+.modal-body {
+  padding: 20px;
+}
+
+.producto-info {
+  background-color: #f8f9fa;
+  padding: 15px;
+  border-radius: 6px;
+  margin-bottom: 20px;
+  border-left: 4px solid #007bff;
+}
+
+.producto-info h4 {
+  margin: 0 0 10px 0;
+  color: #333;
+  font-size: 16px;
+  font-weight: 600;
+}
+
+.producto-info p {
+  margin: 5px 0;
+  color: #666;
+  font-size: 14px;
+}
+
+.loading-container {
+  text-align: center;
+  padding: 40px 20px;
+}
+
+.spinner {
+  border: 3px solid #f3f3f3;
+  border-top: 3px solid #007bff;
+  border-radius: 50%;
+  width: 30px;
+  height: 30px;
+  animation: spin 1s linear infinite;
+  margin: 0 auto 15px;
+}
+
+@keyframes spin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+
+.error-container {
+  text-align: center;
+  padding: 20px;
+  background-color: #fff5f5;
+  border-radius: 6px;
+  border: 1px solid #f5c6cb;
+}
+
+.error-message {
+  color: #dc3545;
+  margin: 0 0 10px 0;
+  font-size: 14px;
+}
+
+.btn-retry {
+  background-color: #dc3545;
+  color: white;
+  border: none;
+  padding: 8px 16px;
+  border-radius: 4px;
+  font-size: 12px;
+  cursor: pointer;
+  transition: background-color 0.2s;
+}
+
+.btn-retry:hover {
+  background-color: #c82333;
+}
+
+.no-data-container {
+  text-align: center;
+  padding: 40px 20px;
+  color: #666;
+  font-style: italic;
+}
+
+.sucursales-container h5 {
+  margin: 0 0 15px 0;
+  color: #333;
+  font-size: 16px;
+  font-weight: 600;
+}
+
+.alert-warning {
+  background-color: #fff3cd;
+  border: 1px solid #ffeaa7;
+  border-radius: 6px;
+  padding: 12px;
+  margin-bottom: 15px;
+  font-size: 14px;
+  color: #856404;
+}
+
+.sucursales-table {
+  border: 1px solid #ddd;
+  border-radius: 6px;
+  overflow: hidden;
+}
+
+.sucursales-table table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+.sucursales-table th {
+  background-color: #f8f9fa;
+  padding: 12px;
+  font-size: 12px;
+  font-weight: bold;
+  color: #333;
+  border-bottom: 1px solid #ddd;
+  text-align: left;
+}
+
+.sucursales-table td {
+  padding: 12px;
+  font-size: 12px;
+  border-bottom: 1px solid #eee;
+}
+
+.sucursales-table tr:last-child td {
+  border-bottom: none;
+}
+
+.sucursales-table tr.sin-stock {
+  background-color: #fff5f5;
+}
+
+.stock.agotado {
+  color: #dc3545;
+  font-weight: bold;
+}
+
+.stock.bajo {
+  color: #ffc107;
+  font-weight: bold;
+}
+
+.stock.disponible {
+  color: #28a745;
+  font-weight: bold;
+}
+
+.estado {
+  padding: 2px 6px;
+  border-radius: 3px;
+  font-size: 10px;
+  font-weight: bold;
+  color: white;
+}
+
+.estado.agotado {
+  background-color: #dc3545;
+}
+
+.estado.bajo {
+  background-color: #ffc107;
+}
+
+.estado.disponible {
+  background-color: #28a745;
+}
+
+.modal-footer {
+  padding: 15px 20px;
+  border-top: 1px solid #e9ecef;
+  display: flex;
+  justify-content: flex-end;
+  background-color: #f8f9fa;
+  border-radius: 0 0 8px 8px;
+}
+
+.modal-footer button {
+  background-color: #6c757d;
+  color: white;
+  border: none;
+  padding: 8px 16px;
+  border-radius: 4px;
+  font-size: 12px;
+  cursor: pointer;
+  transition: background-color 0.2s;
+}
+
+.modal-footer button:hover {
+  background-color: #5a6268;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+  .modal-content {
+    width: 95%;
+    margin: 10px;
+  }
+  
+  .sucursales-table {
+    font-size: 11px;
+  }
+  
+  .sucursales-table th,
+  .sucursales-table td {
+    padding: 8px 4px;
+  }
+}

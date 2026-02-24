@@ -1,0 +1,392 @@
+/* Vehiculo Lista Styles - Prefijo: vl- */
+
+.vl-container {
+  --vl-primary: #dc3545;
+  --vl-success: #28a745;
+  --vl-warning: #ffc107;
+  --vl-info: #17a2b8;
+  --vl-danger: #dc3545;
+  --vl-secondary: #6c757d;
+  --vl-light: #f8f9fa;
+  --vl-dark: #343a40;
+  --vl-border: #dee2e6;
+  --vl-hover: #c82333;
+  --vl-bg: #f5f5f5;
+  --vl-white: #ffffff;
+  
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+  padding: 20px;
+  background-color: var(--vl-bg);
+  min-height: 100vh;
+}
+
+.vl-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 30px;
+  background-color: var(--vl-white);
+  padding: 20px;
+  border-radius: 8px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.vl-title {
+  font-size: 24px;
+  font-weight: 600;
+  color: var(--vl-dark);
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin: 0;
+  letter-spacing: 0.5px;
+}
+
+.vl-icon {
+  font-size: 28px;
+}
+
+.vl-btn {
+  padding: 10px 20px;
+  border: none;
+  border-radius: 4px;
+  font-size: 14px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.vl-btn-nuevo {
+  background-color: var(--vl-danger);
+  color: var(--vl-white);
+}
+
+.vl-btn-nuevo:hover {
+  background-color: var(--vl-hover);
+  transform: translateY(-1px);
+  box-shadow: 0 4px 8px rgba(220, 53, 69, 0.3);
+}
+
+.vl-content {
+  background-color: var(--vl-white);
+  padding: 25px;
+  border-radius: 8px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.vl-subtitle {
+  font-size: 20px;
+  font-weight: 600;
+  color: var(--vl-dark);
+  margin-bottom: 20px;
+  margin-top: 0;
+}
+
+.vl-filters {
+  display: flex;
+  gap: 15px;
+  margin-bottom: 20px;
+  flex-wrap: wrap;
+}
+
+.vl-select {
+  padding: 8px 12px;
+  border: 1px solid var(--vl-border);
+  border-radius: 4px;
+  font-size: 14px;
+  background-color: var(--vl-white);
+  cursor: pointer;
+  min-width: 200px;
+  transition: border-color 0.3s ease;
+  color: var(--vl-dark);
+}
+
+.vl-select:focus {
+  outline: none;
+  border-color: var(--vl-primary);
+  box-shadow: 0 0 0 3px rgba(220, 53, 69, 0.1);
+}
+
+.vl-search-box {
+  display: flex;
+  gap: 10px;
+  flex: 1;
+}
+
+.vl-search-input {
+  flex: 1;
+  padding: 8px 12px;
+  border: 1px solid var(--vl-border);
+  border-radius: 4px;
+  font-size: 14px;
+  transition: border-color 0.3s ease;
+}
+
+.vl-search-input:focus {
+  outline: none;
+  border-color: var(--vl-primary);
+  box-shadow: 0 0 0 3px rgba(220, 53, 69, 0.1);
+}
+
+.vl-search-input::placeholder {
+  color: #999;
+}
+
+.vl-btn-search {
+  background-color: var(--vl-danger);
+  color: var(--vl-white);
+  padding: 8px 20px;
+  border: none;
+  border-radius: 4px;
+  font-size: 14px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.vl-btn-search:hover {
+  background-color: var(--vl-hover);
+}
+
+.vl-table-wrapper {
+  overflow-x: auto;
+  margin-bottom: 20px;
+  border-radius: 4px;
+  border: 1px solid var(--vl-border);
+}
+
+.vl-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 13px;
+  min-width: 1400px;
+}
+
+.vl-table thead {
+  background-color: var(--vl-light);
+}
+
+.vl-table th {
+  padding: 14px 10px;
+  text-align: left;
+  font-weight: 600;
+  color: var(--vl-dark);
+  border-bottom: 2px solid var(--vl-border);
+  white-space: nowrap;
+  position: relative;
+}
+
+.vl-info-icon {
+  display: inline-block;
+  margin-left: 4px;
+  color: var(--vl-info);
+  cursor: help;
+  font-size: 14px;
+  vertical-align: middle;
+}
+
+.vl-table td {
+  padding: 14px 10px;
+  border-bottom: 1px solid var(--vl-border);
+  color: #333;
+}
+
+.vl-table tbody tr {
+  transition: background-color 0.2s ease;
+}
+
+.vl-table tbody tr:hover {
+  background-color: #f9f9f9;
+}
+
+.vl-table tbody tr:last-child td {
+  border-bottom: none;
+}
+
+.vl-empty-state {
+  text-align: center;
+  padding: 40px 20px !important;
+  color: var(--vl-secondary);
+  font-style: italic;
+  font-size: 15px;
+}
+
+.vl-badge {
+  padding: 4px 12px;
+  border-radius: 4px;
+  font-size: 12px;
+  font-weight: 500;
+  display: inline-block;
+}
+
+.vl-badge-yes {
+  background-color: #d4edda;
+  color: #155724;
+}
+
+.vl-badge-no {
+  background-color: #f8d7da;
+  color: #721c24;
+}
+
+.vl-action-buttons {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+
+.vl-btn-action {
+  padding: 6px 12px;
+  border: none;
+  border-radius: 4px;
+  font-size: 12px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  white-space: nowrap;
+}
+
+.vl-btn-edit {
+  background-color: var(--vl-info);
+  color: var(--vl-white);
+}
+
+.vl-btn-edit:hover {
+  background-color: #138496;
+  transform: translateY(-1px);
+}
+
+.vl-btn-delete {
+  background-color: var(--vl-danger);
+  color: var(--vl-white);
+}
+
+.vl-btn-delete:hover {
+  background-color: var(--vl-hover);
+  transform: translateY(-1px);
+}
+
+.vl-pagination {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-top: 20px;
+  padding-top: 20px;
+  border-top: 1px solid var(--vl-border);
+}
+
+.vl-pagination span {
+  color: var(--vl-secondary);
+  font-size: 14px;
+  font-weight: 500;
+}
+
+.vl-pagination-controls {
+  display: flex;
+  gap: 5px;
+}
+
+.vl-pagination-btn {
+  padding: 6px 12px;
+  border: 1px solid var(--vl-border);
+  background-color: var(--vl-white);
+  border-radius: 4px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  font-size: 14px;
+  min-width: 36px;
+}
+
+.vl-pagination-btn:hover {
+  background-color: var(--vl-light);
+}
+
+.vl-pagination-btn.vl-active {
+  background-color: var(--vl-primary);
+  color: var(--vl-white);
+  border-color: var(--vl-primary);
+}
+
+.vl-pagination-btn:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+/* Responsive Design */
+@media (max-width: 1200px) {
+  .vl-table-wrapper {
+    overflow-x: scroll;
+  }
+}
+
+@media (max-width: 768px) {
+  .vl-container {
+    padding: 15px;
+  }
+
+  .vl-header {
+    flex-direction: column;
+    gap: 15px;
+  }
+
+  .vl-btn-nuevo {
+    width: 100%;
+  }
+
+  .vl-filters {
+    flex-direction: column;
+  }
+
+  .vl-select {
+    width: 100%;
+  }
+
+  .vl-search-box {
+    flex-direction: column;
+  }
+
+  .vl-btn-search {
+    width: 100%;
+  }
+
+  .vl-table {
+    font-size: 11px;
+  }
+
+  .vl-table th,
+  .vl-table td {
+    padding: 10px 6px;
+  }
+
+  .vl-action-buttons {
+    flex-direction: column;
+  }
+
+  .vl-btn-action {
+    width: 100%;
+  }
+
+  .vl-pagination {
+    flex-direction: column;
+    gap: 15px;
+  }
+}
+
+@media (max-width: 480px) {
+  .vl-title {
+    font-size: 20px;
+  }
+
+  .vl-subtitle {
+    font-size: 18px;
+  }
+
+  .vl-table {
+    font-size: 10px;
+  }
+
+  .vl-btn-action {
+    font-size: 11px;
+    padding: 5px 10px;
+  }
+}

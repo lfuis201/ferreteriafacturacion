@@ -1,0 +1,524 @@
+/* Lista Ventas Styles */
+.lista-ventas-container {
+  padding: 1rem;
+}
+
+.header-section {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 2rem;
+  flex-wrap: wrap;
+  gap: 1rem;
+}
+
+.header-section h2 {
+  margin: 0;
+  color: #333;
+  font-size: 1.8rem;
+}
+
+.btn-nueva {
+  background: linear-gradient(135deg, #28a745 0%, #20c997 100%);
+  color: white;
+  border: none;
+  padding: 0.75rem 1.5rem;
+  border-radius: 8px;
+  cursor: pointer;
+  font-weight: 500;
+  transition: all 0.3s ease;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.btn-nueva:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 15px rgba(40, 167, 69, 0.4);
+}
+
+/* Filtros Section */
+.filtros-section {
+  background: white;
+  padding: 1.5rem;
+  border-radius: 12px;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+  margin-bottom: 2rem;
+}
+
+.filtros-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr auto;
+  gap: 1rem;
+  align-items: end;
+}
+
+.filtro-group {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.filtro-group label {
+  font-weight: 500;
+  color: #555;
+  font-size: 0.9rem;
+}
+
+.filtro-group input,
+.filtro-group select {
+  padding: 0.75rem;
+  border: 2px solid #e1e5e9;
+  border-radius: 6px;
+  font-size: 0.95rem;
+  transition: border-color 0.3s ease;
+}
+
+.filtro-group input:focus,
+.filtro-group select:focus {
+  outline: none;
+  border-color: #667eea;
+}
+
+.btn-limpiar {
+  background: #6c757d;
+  color: white;
+  border: none;
+  padding: 0.75rem 1rem;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  white-space: nowrap;
+}
+
+.btn-limpiar:hover {
+  background: #5a6268;
+}
+
+/* Tabla de Ventas */
+.ventas-table-container {
+  background: white;
+  border-radius: 12px;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+  overflow: hidden;
+  margin-bottom: 2rem;
+}
+
+.ventas-table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+.ventas-table th {
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  color: white;
+  padding: 1rem;
+  text-align: left;
+  font-weight: 600;
+  font-size: 0.9rem;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.ventas-table td {
+  padding: 1rem;
+  border-bottom: 1px solid #e9ecef;
+  vertical-align: middle;
+}
+
+.ventas-table tbody tr:hover {
+  background-color: #f8f9fa;
+}
+
+.numero-venta {
+  font-weight: 600;
+  color: #667eea;
+  font-family: 'Courier New', monospace;
+}
+
+.cliente-info {
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+}
+
+.cliente-nombre {
+  font-weight: 500;
+  color: #333;
+}
+
+.cliente-documento {
+  font-size: 0.8rem;
+  color: #666;
+}
+
+.total {
+  font-weight: 700;
+  color: #28a745;
+  font-size: 1.1rem;
+}
+
+.estado {
+  padding: 0.4rem 0.8rem;
+  border-radius: 20px;
+  font-size: 0.8rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.estado-completada {
+  background: #d4edda;
+  color: #155724;
+  border: 1px solid #c3e6cb;
+}
+
+.estado-pendiente {
+  background: #fff3cd;
+  color: #856404;
+  border: 1px solid #ffeaa7;
+}
+
+.estado-anulada {
+  background: #f8d7da;
+  color: #721c24;
+  border: 1px solid #f5c6cb;
+}
+
+/* Estados SUNAT */
+.estado-sunat {
+  padding: 0.3rem 0.6rem;
+  border-radius: 15px;
+  font-size: 0.75rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.3px;
+  display: inline-block;
+  margin-bottom: 0.25rem;
+}
+
+.sunat-aceptado {
+  background: #d1f2eb;
+  color: #0c5460;
+  border: 1px solid #7dcea0;
+}
+
+.sunat-rechazado {
+  background: #fadbd8;
+  color: #922b21;
+  border: 1px solid #f1948a;
+}
+
+.sunat-pendiente {
+  background: #fef9e7;
+  color: #b7950b;
+  border: 1px solid #f7dc6f;
+}
+
+.sunat-error {
+  background: #fdeaea;
+  color: #a93226;
+  border: 1px solid #f5b7b1;
+}
+
+.sunat-sin-enviar {
+  background: #eaecee;
+  color: #566573;
+  border: 1px solid #d5dbdb;
+}
+
+.numero-comprobante {
+  margin-top: 0.25rem;
+}
+
+.numero-comprobante small {
+  color: #0c5460;
+  font-weight: 500;
+  font-family: 'Courier New', monospace;
+}
+
+.acciones {
+  display: flex;
+  gap: 0.5rem;
+}
+
+.btn-ver,
+.btn-pdf,
+.btn-xml,
+.btn-reenviar,
+.btn-anular,
+.btn-whatsapp {
+  background: none;
+  border: none;
+  padding: 0.5rem;
+  border-radius: 6px;
+  cursor: pointer;
+  font-size: 1rem;
+  transition: all 0.3s ease;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.btn-ver {
+  background: #17a2b8;
+  color: white;
+}
+
+.btn-ver:hover {
+  background: #138496;
+  transform: scale(1.1);
+}
+
+.btn-pdf {
+  background: #fd7e14;
+  color: white;
+}
+
+.btn-pdf:hover {
+  background: #e8650e;
+  transform: scale(1.1);
+}
+
+.btn-xml {
+  background: #6f42c1;
+  color: white;
+}
+
+.btn-xml:hover {
+  background: #5a32a3;
+  transform: scale(1.1);
+}
+
+.btn-reenviar {
+  background: #007bff;
+  color: white;
+}
+
+.btn-reenviar:hover {
+  background: #0056b3;
+  transform: scale(1.1);
+}
+
+.btn-anular {
+  background: #dc3545;
+  color: white;
+}
+
+.btn-anular:hover {
+  background: #c82333;
+  transform: scale(1.1);
+}
+
+.btn-whatsapp {
+  background: #25d366;
+  color: white;
+}
+
+.btn-whatsapp:hover {
+  background: #1ebe57;
+  transform: scale(1.1);
+}
+
+/* No ventas */
+.no-ventas {
+  text-align: center;
+  padding: 3rem;
+  color: #666;
+}
+
+.no-ventas p {
+  font-size: 1.1rem;
+  margin: 0;
+}
+
+/* Stats */
+.ventas-stats {
+  background: white;
+  padding: 1.5rem;
+  border-radius: 12px;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 1rem;
+}
+
+.stat-item {
+  text-align: center;
+  padding: 1rem;
+  background: #f8f9fa;
+  border-radius: 8px;
+  border-left: 4px solid #667eea;
+}
+
+.stat-number {
+  display: block;
+  font-size: 1.8rem;
+  font-weight: 700;
+  color: #667eea;
+  margin-bottom: 0.5rem;
+}
+
+.stat-label {
+  font-size: 0.9rem;
+  color: #666;
+  font-weight: 500;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+/* Loading */
+.loading-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 3rem;
+  color: #666;
+}
+
+.spinner {
+  width: 40px;
+  height: 40px;
+  border: 4px solid #f3f3f3;
+  border-top: 4px solid #667eea;
+  border-radius: 50%;
+  animation: spin 1s linear infinite;
+  margin-bottom: 1rem;
+}
+
+@keyframes spin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+
+/* Responsive Design */
+@media (max-width: 1024px) {
+  .filtros-grid {
+    grid-template-columns: 1fr 1fr;
+    gap: 1rem;
+  }
+  
+  .ventas-table {
+    font-size: 0.9rem;
+  }
+  
+  .ventas-table th,
+  .ventas-table td {
+    padding: 0.75rem;
+  }
+}
+
+@media (max-width: 768px) {
+  .filtros-grid {
+    grid-template-columns: 1fr;
+  }
+  
+  .header-section {
+    flex-direction: column;
+    align-items: stretch;
+  }
+  
+  .btn-nueva {
+    justify-content: center;
+  }
+  
+  .ventas-table-container {
+    overflow-x: auto;
+  }
+  
+  .ventas-table {
+    min-width: 700px;
+  }
+  
+  .ventas-stats {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+@media (max-width: 480px) {
+  .lista-ventas-container {
+    padding: 0.5rem;
+  }
+  
+  .filtros-section {
+    padding: 1rem;
+  }
+  
+  .ventas-table th,
+  .ventas-table td {
+    padding: 0.5rem;
+  }
+  
+  .acciones {
+    flex-direction: column;
+    gap: 0.25rem;
+  }
+  
+  .ventas-stats {
+    grid-template-columns: 1fr;
+  }
+}
+
+/* Estilos para comprobantes */
+.comprobante-info {
+  text-align: center;
+}
+
+.comprobante-tipo {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.25rem;
+}
+
+.tipo-badge {
+  padding: 0.25rem 0.75rem;
+  border-radius: 20px;
+  font-size: 0.8rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.tipo-badge.factura {
+  background: linear-gradient(135deg, #007bff 0%, #0056b3 100%);
+  color: white;
+}
+
+.tipo-badge.boleta {
+  background: linear-gradient(135deg, #28a745 0%, #1e7e34 100%);
+  color: white;
+}
+
+.tipo-badge.nota {
+  background: linear-gradient(135deg, #ffc107 0%, #e0a800 100%);
+  color: #212529;
+}
+
+.numero-comprobante-sunat {
+  font-size: 0.7rem;
+  color: #6c757d;
+  font-weight: 500;
+}
+
+/* Mejorar botón WhatsApp */
+.btn-whatsapp {
+  background: linear-gradient(135deg, #25d366 0%, #128c7e 100%);
+  color: white;
+  border: none;
+  padding: 0.5rem 0.75rem;
+  border-radius: 6px;
+  cursor: pointer;
+  font-size: 0.8rem;
+  font-weight: 500;
+  transition: all 0.3s ease;
+  display: flex;
+  align-items: center;
+  gap: 0.25rem;
+}
+
+.btn-whatsapp:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 3px 10px rgba(37, 211, 102, 0.4);
+}

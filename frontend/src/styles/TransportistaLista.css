@@ -1,0 +1,364 @@
+/* Transportista Lista Styles - Prefijo: tl- */
+
+.tl-container {
+  --tl-primary: #dc3545;
+  --tl-success: #28a745;
+  --tl-warning: #ffc107;
+  --tl-info: #17a2b8;
+  --tl-danger: #dc3545;
+  --tl-secondary: #6c757d;
+  --tl-light: #f8f9fa;
+  --tl-dark: #343a40;
+  --tl-border: #dee2e6;
+  --tl-hover: #c82333;
+  --tl-bg: #f5f5f5;
+  
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+  padding: 20px;
+  background-color: var(--tl-bg);
+  min-height: 100vh;
+}
+
+.tl-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 30px;
+  background-color: white;
+  padding: 20px;
+  border-radius: 8px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.tl-title {
+  font-size: 24px;
+  font-weight: 600;
+  color: var(--tl-dark);
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin: 0;
+}
+
+.tl-icon {
+  font-size: 28px;
+}
+
+.tl-btn {
+  padding: 10px 20px;
+  border: none;
+  border-radius: 4px;
+  font-size: 14px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.tl-btn-nuevo {
+  background-color: var(--tl-danger);
+  color: white;
+}
+
+.tl-btn-nuevo:hover {
+  background-color: var(--tl-hover);
+  transform: translateY(-1px);
+  box-shadow: 0 4px 8px rgba(220, 53, 69, 0.3);
+}
+
+.tl-content {
+  background-color: white;
+  padding: 25px;
+  border-radius: 8px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.tl-subtitle {
+  font-size: 20px;
+  font-weight: 600;
+  color: var(--tl-dark);
+  margin-bottom: 20px;
+  margin-top: 0;
+}
+
+.tl-filters {
+  display: flex;
+  gap: 15px;
+  margin-bottom: 20px;
+  flex-wrap: wrap;
+}
+
+.tl-select {
+  padding: 8px 12px;
+  border: 1px solid var(--tl-border);
+  border-radius: 4px;
+  font-size: 14px;
+  background-color: white;
+  cursor: pointer;
+  min-width: 200px;
+  transition: border-color 0.3s ease;
+}
+
+.tl-select:focus {
+  outline: none;
+  border-color: var(--tl-primary);
+  box-shadow: 0 0 0 3px rgba(220, 53, 69, 0.1);
+}
+
+.tl-search-box {
+  display: flex;
+  gap: 10px;
+  flex: 1;
+}
+
+.tl-search-input {
+  flex: 1;
+  padding: 8px 12px;
+  border: 1px solid var(--tl-border);
+  border-radius: 4px;
+  font-size: 14px;
+  transition: border-color 0.3s ease;
+}
+
+.tl-search-input:focus {
+  outline: none;
+  border-color: var(--tl-primary);
+  box-shadow: 0 0 0 3px rgba(220, 53, 69, 0.1);
+}
+
+.tl-btn-search {
+  background-color: var(--tl-danger);
+  color: white;
+  padding: 8px 20px;
+  border: none;
+  border-radius: 4px;
+  font-size: 14px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.tl-btn-search:hover {
+  background-color: var(--tl-hover);
+}
+
+.tl-table-wrapper {
+  overflow-x: auto;
+  margin-bottom: 20px;
+  border-radius: 4px;
+  border: 1px solid var(--tl-border);
+}
+
+.tl-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 14px;
+}
+
+.tl-table thead {
+  background-color: var(--tl-light);
+}
+
+.tl-table th {
+  padding: 14px 12px;
+  text-align: left;
+  font-weight: 600;
+  color: var(--tl-dark);
+  border-bottom: 2px solid var(--tl-border);
+  white-space: nowrap;
+}
+
+.tl-table td {
+  padding: 14px 12px;
+  border-bottom: 1px solid var(--tl-border);
+  color: #333;
+}
+
+.tl-table tbody tr:hover {
+  background-color: #f9f9f9;
+  transition: background-color 0.2s ease;
+}
+
+.tl-table tbody tr:last-child td {
+  border-bottom: none;
+}
+
+.tl-empty-state {
+  text-align: center;
+  padding: 40px 20px !important;
+  color: var(--tl-secondary);
+  font-style: italic;
+  font-size: 15px;
+}
+
+.tl-badge {
+  padding: 4px 12px;
+  border-radius: 4px;
+  font-size: 12px;
+  font-weight: 500;
+  display: inline-block;
+}
+
+.tl-badge-yes {
+  background-color: #d4edda;
+  color: #155724;
+}
+
+.tl-badge-no {
+  background-color: #f8d7da;
+  color: #721c24;
+}
+
+.tl-action-buttons {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+
+.tl-btn-action {
+  padding: 6px 12px;
+  border: none;
+  border-radius: 4px;
+  font-size: 12px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  white-space: nowrap;
+}
+
+.tl-btn-edit {
+  background-color: var(--tl-info);
+  color: white;
+}
+
+.tl-btn-edit:hover {
+  background-color: #138496;
+  transform: translateY(-1px);
+}
+
+.tl-btn-delete {
+  background-color: var(--tl-danger);
+  color: white;
+}
+
+.tl-btn-delete:hover {
+  background-color: var(--tl-hover);
+  transform: translateY(-1px);
+}
+
+.tl-pagination {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-top: 20px;
+  padding-top: 20px;
+  border-top: 1px solid var(--tl-border);
+}
+
+.tl-pagination span {
+  color: var(--tl-secondary);
+  font-size: 14px;
+  font-weight: 500;
+}
+
+.tl-pagination-controls {
+  display: flex;
+  gap: 5px;
+}
+
+.tl-pagination-btn {
+  padding: 6px 12px;
+  border: 1px solid var(--tl-border);
+  background-color: white;
+  border-radius: 4px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  font-size: 14px;
+  min-width: 36px;
+}
+
+.tl-pagination-btn:hover {
+  background-color: var(--tl-light);
+}
+
+.tl-pagination-btn.tl-active {
+  background-color: var(--tl-primary);
+  color: white;
+  border-color: var(--tl-primary);
+}
+
+.tl-pagination-btn:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+  .tl-container {
+    padding: 15px;
+  }
+
+  .tl-header {
+    flex-direction: column;
+    gap: 15px;
+  }
+
+  .tl-btn-nuevo {
+    width: 100%;
+  }
+
+  .tl-filters {
+    flex-direction: column;
+  }
+
+  .tl-select {
+    width: 100%;
+  }
+
+  .tl-search-box {
+    flex-direction: column;
+  }
+
+  .tl-btn-search {
+    width: 100%;
+  }
+
+  .tl-table {
+    font-size: 12px;
+  }
+
+  .tl-table th,
+  .tl-table td {
+    padding: 10px 8px;
+  }
+
+  .tl-action-buttons {
+    flex-direction: column;
+  }
+
+  .tl-btn-action {
+    width: 100%;
+  }
+
+  .tl-pagination {
+    flex-direction: column;
+    gap: 15px;
+  }
+}
+
+@media (max-width: 480px) {
+  .tl-title {
+    font-size: 20px;
+  }
+
+  .tl-subtitle {
+    font-size: 18px;
+  }
+
+  .tl-table-wrapper {
+    overflow-x: scroll;
+  }
+
+  .tl-table {
+    font-size: 11px;
+  }
+}

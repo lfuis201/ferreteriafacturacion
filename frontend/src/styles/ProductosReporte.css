@@ -1,0 +1,445 @@
+/* ProductosReporte.css - Estilos específicos para ProductosReporte */
+.productos-reporte-container {
+  padding: 20px;
+  background-color: #f8f9fa;
+  min-height: 100vh;
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}
+
+/* Header Styles */
+.productos-reporte-header {
+  display: flex;
+  align-items: center;
+  background: white;
+  padding: 15px 20px;
+  border-radius: 8px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  margin-bottom: 20px;
+  border-left: 4px solid #e67e22;
+}
+
+.productos-reporte-back-button {
+  background: none;
+  border: none;
+  cursor: pointer;
+  padding: 8px;
+  border-radius: 4px;
+  margin-right: 15px;
+  color: #555;
+  transition: all 0.3s ease;
+}
+
+.productos-reporte-back-button:hover {
+  background-color: #f1f1f1;
+  color: #333;
+}
+
+.productos-reporte-home-icon {
+  font-size: 20px;
+  margin-right: 10px;
+}
+
+.productos-reporte-breadcrumb {
+  font-size: 14px;
+  color: #666;
+  font-weight: 500;
+}
+
+.productos-reporte-breadcrumb.active {
+  color: #e67e22;
+  font-weight: 600;
+}
+
+.productos-reporte-separator {
+  margin: 0 10px;
+  color: #999;
+}
+
+/* Filtros Section */
+.productos-reporte-filtros-section {
+  background: white;
+  padding: 20px;
+  border-radius: 8px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  margin-bottom: 20px;
+}
+
+.productos-reporte-filtros-section h3 {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin: 0 0 15px 0;
+  color: #333;
+  font-size: 18px;
+  font-weight: 600;
+}
+
+.productos-reporte-filtros-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 15px;
+  margin-bottom: 20px;
+}
+
+.productos-reporte-filtro-grupo {
+  display: flex;
+  flex-direction: column;
+}
+
+.productos-reporte-filtro-grupo label {
+  font-size: 12px;
+  font-weight: 600;
+  color: #555;
+  margin-bottom: 5px;
+  text-transform: uppercase;
+}
+
+.productos-reporte-filtro-grupo select {
+  padding: 8px 12px;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+  font-size: 14px;
+  transition: border-color 0.3s ease;
+}
+
+.productos-reporte-filtro-grupo select:focus {
+  outline: none;
+  border-color: #e67e22;
+  box-shadow: 0 0 0 2px rgba(230, 126, 34, 0.2);
+}
+
+.productos-reporte-filtro-grupo label:has(input[type="checkbox"]) {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  cursor: pointer;
+  font-weight: normal;
+  text-transform: none;
+}
+
+.productos-reporte-filtro-grupo input[type="checkbox"] {
+  width: 16px;
+  height: 16px;
+  accent-color: #e67e22;
+}
+
+.productos-reporte-filtros-acciones {
+  display: flex;
+  justify-content: flex-end;
+} 
+
+
+  .productos-reporte-btn-aplicar{
+      display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 10px 20px;
+  border: none;
+  border-radius: 4px;
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s ease; 
+ 
+  }
+
+  .productos-reporte-btn-aplicar:hover {
+    background-color: #d35400;
+    transform: translateY(-1px);
+  }
+
+
+
+
+
+
+
+.productos-reporte-btn-exportar {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 10px 20px;
+  background-color: #27ae60;
+  color: white;
+  border: none;
+  border-radius: 4px;
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.productos-reporte-btn-exportar:hover {
+  background-color: #219a52;
+  transform: translateY(-1px);
+}
+
+/* Resumen Section */
+.productos-reporte-resumen-section {
+  margin-bottom: 20px;
+}
+
+.productos-reporte-resumen-card {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 15px;
+  background: white;
+  padding: 20px;
+  border-radius: 8px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.productos-reporte-resumen-item {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 15px;
+  background: #f8f9fa;
+  border-radius: 6px;
+  border-left: 4px solid #e67e22;
+}
+
+.productos-reporte-resumen-icon {
+  width: 24px;
+  height: 24px;
+  color: #e67e22;
+}
+
+.productos-reporte-resumen-icon.warning {
+  color: #f39c12;
+}
+
+.productos-reporte-resumen-icon.danger {
+  color: #e74c3c;
+}
+
+.productos-reporte-resumen-valor {
+  display: block;
+  font-size: 20px;
+  font-weight: 700;
+  color: #2c3e50;
+  margin-bottom: 4px;
+}
+
+.productos-reporte-resumen-label {
+  display: block;
+  font-size: 12px;
+  color: #666;
+  font-weight: 600;
+  text-transform: uppercase;
+}
+
+/* Tabla Section */
+.productos-reporte-tabla-section {
+  background: white;
+  padding: 20px;
+  border-radius: 8px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.productos-reporte-tabla-section h3 {
+  margin: 0 0 15px 0;
+  color: #333;
+  font-size: 18px;
+  font-weight: 600;
+}
+
+.productos-reporte-tabla-container {
+  overflow-x: auto;
+  border-radius: 6px;
+  border: 1px solid #e1e1e1;
+}
+
+.productos-reporte-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 13px;
+}
+
+.productos-reporte-table th {
+  background-color: #f8f9fa;
+  padding: 12px 10px;
+  text-align: left;
+  font-weight: 600;
+  color: #333;
+  border-bottom: 2px solid #e1e1e1;
+  text-transform: uppercase;
+  font-size: 11px;
+  letter-spacing: 0.5px;
+  white-space: nowrap;
+}
+
+.productos-reporte-table td {
+  padding: 10px;
+  border-bottom: 1px solid #e1e1e1;
+  color: #555;
+  white-space: nowrap;
+}
+
+.productos-reporte-table tbody tr {
+  transition: background-color 0.3s ease;
+}
+
+.productos-reporte-table tbody tr:hover {
+  background-color: #f8f9fa;
+}
+
+.productos-reporte-table tbody tr:last-child td {
+  border-bottom: none;
+}
+
+/* Estados de Stock */
+.productos-reporte-stock-status {
+  padding: 4px 8px;
+  border-radius: 12px;
+  font-size: 10px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.productos-reporte-stock-normal {
+  background-color: #d4edda;
+  color: #155724;
+}
+
+.productos-reporte-stock-bajo {
+  background-color: #fff3cd;
+  color: #856404;
+}
+
+.productos-reporte-stock-sin-stock {
+  background-color: #f8d7da;
+  color: #721c24;
+}
+
+/* Loading Spinner */
+.productos-reporte-loading-spinner {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 200px;
+  font-size: 16px;
+  color: #666;
+  font-weight: 600;
+}
+
+/* Responsive Design */
+@media (max-width: 1200px) {
+  .productos-reporte-table {
+    font-size: 12px;
+  }
+  
+  .productos-reporte-table th,
+  .productos-reporte-table td {
+    padding: 8px 6px;
+  }
+}
+
+@media (max-width: 768px) {
+  .productos-reporte-container {
+    padding: 10px;
+  }
+  
+  .productos-reporte-header {
+    padding: 12px 15px;
+    flex-wrap: wrap;
+    gap: 10px;
+  }
+  
+  .productos-reporte-filtros-grid {
+    grid-template-columns: 1fr;
+  }
+  
+  .productos-reporte-resumen-card {
+    grid-template-columns: repeat(2, 1fr);
+  }
+  
+  .productos-reporte-resumen-item {
+    padding: 12px;
+  }
+  
+  .productos-reporte-resumen-valor {
+    font-size: 18px;
+  }
+}
+
+@media (max-width: 480px) {
+  .productos-reporte-resumen-card {
+    grid-template-columns: 1fr;
+  }
+  
+  .productos-reporte-filtros-acciones {
+    justify-content: stretch;
+  }
+  
+  .productos-reporte-btn-exportar {
+    flex: 1;
+    justify-content: center;
+  }
+}
+
+/* Scrollbar Styling */
+.productos-reporte-tabla-container::-webkit-scrollbar {
+  height: 8px;
+}
+
+.productos-reporte-tabla-container::-webkit-scrollbar-track {
+  background: #f1f1f1;
+  border-radius: 4px;
+}
+
+.productos-reporte-tabla-container::-webkit-scrollbar-thumb {
+  background: #c1c1c1;
+  border-radius: 4px;
+}
+
+.productos-reporte-tabla-container::-webkit-scrollbar-thumb:hover {
+  background: #a8a8a8;
+}
+
+/* Animation for table rows */
+@keyframes productos-reporte-fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.productos-reporte-table tbody tr {
+  animation: productos-reporte-fadeIn 0.3s ease-out;
+}
+
+.productos-reporte-table tbody tr:nth-child(even) {
+  background-color: #fafafa;
+}
+
+.productos-reporte-table tbody tr:nth-child(even):hover {
+  background-color: #f1f1f1;
+}
+
+/* Tooltip para tablas muy grandes */
+.productos-reporte-table td,
+.productos-reporte-table th {
+  position: relative;
+}
+
+.productos-reporte-table td:hover::after,
+.productos-reporte-table th:hover::after {
+  content: attr(title);
+  position: absolute;
+  bottom: 100%;
+  left: 50%;
+  transform: translateX(-50%);
+  background: #333;
+  color: white;
+  padding: 4px 8px;
+  border-radius: 4px;
+  font-size: 12px;
+  white-space: nowrap;
+  z-index: 1000;
+}

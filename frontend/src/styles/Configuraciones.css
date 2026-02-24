@@ -1,0 +1,120 @@
+
+        .config-dashboard {
+          --config-bg-primary: #f5f5f5;
+          --config-bg-card: #ffffff;
+          --config-text-primary: #333333;
+          --config-text-secondary: #666666;
+          --config-text-accent: #e74c3c;
+          --config-border: #e0e0e0;
+          --config-hover-bg: #fef5f5;
+          --config-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+          
+          min-height: 100vh;
+          background-color: var(--config-bg-primary);
+          padding: 0;
+          font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+        }
+
+        .config-header {
+          background-color: var(--config-bg-card);
+          padding: 16px 24px;
+          border-bottom: 1px solid var(--config-border);
+          margin-bottom: 24px;
+        }
+
+        .config-breadcrumb {
+          display: flex;
+          align-items: center;
+          gap: 8px;
+          font-size: 14px;
+        }
+
+        .config-breadcrumb-home {
+          color: var(--config-text-accent);
+          font-size: 18px;
+        }
+
+        .config-breadcrumb-text {
+          color: var(--config-text-secondary);
+          font-weight: 500;
+        }
+
+        .config-breadcrumb-separator {
+          color: var(--config-text-secondary);
+        }
+
+        .config-breadcrumb-current {
+          color: var(--config-text-secondary);
+          font-weight: 400;
+        }
+
+        .config-grid {
+          display: grid;
+          grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+          gap: 24px;
+          padding: 0 24px 24px;
+          max-width: 1400px;
+        }
+
+        .config-card {
+          background-color: var(--config-bg-card);
+          border-radius: 8px;
+          box-shadow: var(--config-shadow);
+          padding: 20px;
+          border: 1px solid var(--config-border);
+        }
+
+        .config-card-title {
+          font-size: 16px;
+          font-weight: 600;
+          color: var(--config-text-primary);
+          margin: 0 0 16px 0;
+          padding-bottom: 12px;
+          border-bottom: 1px solid var(--config-border);
+        }
+
+        .config-card-items {
+          display: flex;
+          flex-direction: column;
+          gap: 4px;
+        }
+
+        .config-item {
+          display: flex;
+          align-items: center;
+          gap: 10px;
+          padding: 10px 12px;
+          border-radius: 4px;
+          cursor: pointer;
+          transition: background-color 0.2s ease;
+          color: var(--config-text-accent);
+          font-size: 14px;
+        }
+
+        .config-item:hover {
+          background-color: var(--config-hover-bg);
+        }
+
+        .config-item-icon {
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          flex-shrink: 0;
+        }
+
+        .config-item-label {
+          flex: 1;
+          line-height: 1.4;
+        }
+
+        @media (max-width: 768px) {
+          .config-grid {
+            grid-template-columns: 1fr;
+            padding: 0 16px 16px;
+          }
+
+          .config-header {
+            padding: 12px 16px;
+          }
+        }
+      

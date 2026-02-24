@@ -1,0 +1,334 @@
+/* Variables CSS específicas para este componente */
+:root {
+  --detraccion-primary: #1a5276;
+  --detraccion-secondary: #2874a6;
+  --detraccion-success: #229954;
+  --detraccion-danger: #cb4335;
+  --detraccion-warning: #d68910;
+  --detraccion-light: #f8f9f9;
+  --detraccion-dark: #1b2631;
+  --detraccion-border: #a6acaf;
+  --detraccion-hover: #ebedef;
+  --detraccion-accent: #2e86c1;
+}
+
+.detraccionContainer {
+  padding: 20px;
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  background-color: var(--detraccion-light);
+  min-height: 100vh;
+}
+
+.detraccionHeader {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 20px;
+  padding-bottom: 15px;
+  border-bottom: 2px solid var(--detraccion-border);
+}
+
+.detraccionTitle {
+  color: var(--detraccion-primary);
+  font-size: 24px;
+  font-weight: 600;
+  margin: 0;
+}
+
+.detraccionButton {
+  background-color: var(--detraccion-secondary);
+  color: white;
+  border: none;
+  padding: 10px 20px;
+  border-radius: 5px;
+  cursor: pointer;
+  font-size: 14px;
+  font-weight: 500;
+  transition: all 0.3s ease;
+}
+
+.detraccionButton:hover {
+  background-color: #21618c;
+  transform: translateY(-1px);
+}
+
+.detraccionTable {
+  width: 100%;
+  border-collapse: collapse;
+  background-color: white;
+  border-radius: 8px;
+  overflow: hidden;
+  box-shadow: 0 2px 12px rgba(0, 0, 0, 0.1);
+}
+
+.detraccionTable th {
+  background-color: var(--detraccion-primary);
+  color: white;
+  padding: 14px 12px;
+  text-align: left;
+  font-weight: 600;
+  font-size: 14px;
+  border-right: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.detraccionTable th:last-child {
+  border-right: none;
+}
+
+.detraccionTable td {
+  padding: 12px 12px;
+  border-bottom: 1px solid var(--detraccion-border);
+  font-size: 14px;
+  border-right: 1px solid var(--detraccion-hover);
+}
+
+.detraccionTable td:last-child {
+  border-right: none;
+}
+
+.detraccionTable tr:hover {
+  background-color: var(--detraccion-hover);
+}
+
+.detraccionActions {
+  display: flex;
+  gap: 8px;
+}
+
+.detraccionActionBtn {
+  background: none;
+  border: 1px solid var(--detraccion-border);
+  padding: 4px 8px;
+  border-radius: 3px;
+  cursor: pointer;
+  font-size: 12px;
+  transition: all 0.2s ease;
+}
+
+.detraccionActionBtn:hover {
+  background-color: var(--detraccion-accent);
+  color: white;
+  border-color: var(--detraccion-accent);
+}
+
+/* Modal Styles */
+.detraccionModalOverlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: rgba(0, 0, 0, 0.6);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 1000;
+  animation: detraccionFadeIn 0.3s ease-out;
+}
+
+@keyframes detraccionFadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+.detraccionModal {
+  background: white;
+  border-radius: 8px;
+  width: 90%;
+  max-width: 600px;
+  max-height: 90vh;
+  overflow-y: auto;
+  box-shadow: 0 8px 30px rgba(0, 0, 0, 0.3);
+  animation: detraccionModalSlideIn 0.3s ease-out;
+}
+
+@keyframes detraccionModalSlideIn {
+  from {
+    opacity: 0;
+    transform: scale(0.9) translateY(-30px);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1) translateY(0);
+  }
+}
+
+.detraccionModalHeader {
+  background-color: var(--detraccion-primary);
+  color: white;
+  padding: 20px;
+  border-radius: 8px 8px 0 0;
+  position: sticky;
+  top: 0;
+  z-index: 10;
+}
+
+.detraccionModalTitle {
+  margin: 0;
+  font-size: 20px;
+  font-weight: 600;
+}
+
+.detraccionModalBody {
+  padding: 25px;
+}
+
+.detraccionFormGrid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 20px;
+  margin-bottom: 25px;
+}
+
+.detraccionFormGroup {
+  margin-bottom: 20px;
+}
+
+.detraccionFormLabel {
+  display: block;
+  margin-bottom: 8px;
+  font-weight: 600;
+  color: var(--detraccion-dark);
+  font-size: 14px;
+}
+
+.detraccionFormSelect,
+.detraccionFormInput {
+  width: 100%;
+  padding: 10px 12px;
+  border: 1px solid var(--detraccion-border);
+  border-radius: 4px;
+  font-size: 14px;
+  box-sizing: border-box;
+  transition: border-color 0.3s ease;
+}
+
+.detraccionFormSelect:focus,
+.detraccionFormInput:focus {
+  outline: none;
+  border-color: var(--detraccion-secondary);
+  box-shadow: 0 0 0 2px rgba(40, 116, 166, 0.2);
+}
+
+.detraccionRadioGroup {
+  display: flex;
+  gap: 25px;
+  margin: 15px 0;
+}
+
+.detraccionRadioItem {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  cursor: pointer;
+}
+
+.detraccionRadio {
+  width: 16px;
+  height: 16px;
+  cursor: pointer;
+}
+
+.detraccionDivider {
+  height: 1px;
+  background-color: var(--detraccion-border);
+  margin: 25px 0;
+  border: none;
+}
+
+.detraccionSection {
+  margin-bottom: 20px;
+}
+
+.detraccionSectionTitle {
+  font-size: 16px;
+  font-weight: 600;
+  color: var(--detraccion-primary);
+  margin-bottom: 15px;
+  padding-bottom: 5px;
+  border-bottom: 2px solid var(--detraccion-accent);
+}
+
+.detraccionSubsection {
+  margin-left: 15px;
+  margin-bottom: 15px;
+}
+
+.detraccionSubsectionTitle {
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--detraccion-dark);
+  margin-bottom: 10px;
+}
+
+.detraccionList {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.detraccionListItem {
+  padding: 5px 0;
+  font-size: 14px;
+  color: var(--detraccion-dark);
+  position: relative;
+  padding-left: 15px;
+}
+
+.detraccionListItem:before {
+  content: "•";
+  color: var(--detraccion-accent);
+  position: absolute;
+  left: 0;
+  font-weight: bold;
+}
+
+.detraccionListItemStrong {
+  font-weight: 600;
+  color: var(--detraccion-primary);
+}
+
+.detraccionModalFooter {
+  padding: 20px;
+  background-color: var(--detraccion-light);
+  border-radius: 0 0 8px 8px;
+  display: flex;
+  justify-content: flex-end;
+  gap: 12px;
+  position: sticky;
+  bottom: 0;
+}
+
+.detraccionButtonSecondary {
+  background-color: var(--detraccion-border);
+  color: var(--detraccion-dark);
+}
+
+.detraccionButtonSecondary:hover {
+  background-color: #85929e;
+}
+
+.detraccionButtonSuccess {
+  background-color: var(--detraccion-success);
+}
+
+.detraccionButtonSuccess:hover {
+  background-color: #1e8449;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+  .detraccionFormGrid {
+    grid-template-columns: 1fr;
+    gap: 15px;
+  }
+  
+  .detraccionTable {
+    font-size: 12px;
+  }
+  
+  .detraccionTable th,
+  .detraccionTable td {
+    padding: 8px 6px;
+  }
+}

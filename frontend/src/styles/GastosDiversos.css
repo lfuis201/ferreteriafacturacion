@@ -1,0 +1,894 @@
+/* GastosDiversos.css */
+
+.gastos-diversos-container {
+  padding: 20px;
+  background-color: #f5f5f5;
+  min-height: 100vh;
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen', 'Ubuntu', sans-serif;
+}
+
+.gastos-diversos-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 20px;
+  background-color: white;
+  padding: 15px 20px;
+  border-radius: 8px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.gastos-diversos-title {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.gastos-diversos-icon {
+  font-size: 24px;
+  color: #e74c3c;
+}
+
+.gastos-diversos-title h1 {
+  margin: 0;
+  font-size: 18px;
+  font-weight: 600;
+  color: #333;
+}
+
+.gastos-diversos-btn-nuevo {
+  background-color: #e74c3c;
+  color: white;
+  border: none;
+  padding: 10px 20px;
+  border-radius: 5px;
+  cursor: pointer;
+  font-size: 14px;
+  font-weight: 500;
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  transition: background-color 0.3s ease;
+}
+
+.gastos-diversos-btn-nuevo:hover {
+  background-color: #c0392b;
+}
+
+.gastos-diversos-filters {
+  background-color: white;
+  padding: 15px 20px;
+  border-radius: 8px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  display: flex;
+  gap: 10px;
+  margin-bottom: 20px;
+  flex-wrap: wrap;
+}
+
+.gastos-diversos-date-input,
+.gastos-diversos-search-input {
+  padding: 8px 12px;
+  border: 1px solid #ddd;
+  border-radius: 5px;
+  font-size: 14px;
+  flex: 1;
+  min-width: 200px;
+}
+
+.gastos-diversos-btn-buscar {
+  background-color: #e74c3c;
+  color: white;
+  border: none;
+  padding: 8px 20px;
+  border-radius: 5px;
+  cursor: pointer;
+  font-size: 14px;
+  font-weight: 500;
+  transition: background-color 0.3s ease;
+}
+
+.gastos-diversos-btn-buscar:hover {
+  background-color: #c0392b;
+}
+
+.gastos-diversos-table-wrapper {
+  background-color: white;
+  padding: 20px;
+  border-radius: 8px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  overflow-x: auto;
+}
+
+.gastos-diversos-table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+.gastos-diversos-table thead {
+  background-color: #f8f9fa;
+}
+
+.gastos-diversos-table th {
+  padding: 12px;
+  text-align: left;
+  font-weight: 600;
+  color: #555;
+  border-bottom: 2px solid #dee2e6;
+  font-size: 14px;
+}
+
+.gastos-diversos-table td {
+  padding: 12px;
+  border-bottom: 1px solid #dee2e6;
+  font-size: 14px;
+  color: #666;
+}
+
+.gastos-diversos-empty {
+  text-align: center;
+  color: #999;
+  padding: 30px !important;
+}
+
+.gastos-diversos-pagination {
+  display: flex;
+  justify-content: center;
+  gap: 5px;
+  margin-top: 20px;
+}
+
+.gastos-diversos-page-btn {
+  padding: 6px 12px;
+  border: 1px solid #ddd;
+  background-color: white;
+  cursor: pointer;
+  border-radius: 4px;
+  font-size: 14px;
+  transition: all 0.3s ease;
+}
+
+.gastos-diversos-page-btn:hover {
+  background-color: #f0f0f0;
+}
+
+.gastos-diversos-page-btn.gastos-diversos-active {
+  background-color: #3498db;
+  color: white;
+  border-color: #3498db;
+}
+
+/* Modal Principal */
+.gastos-diversos-modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: rgba(0, 0, 0, 0.5);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 1000;
+  padding: 20px;
+  overflow-y: auto;
+}
+
+.gastos-diversos-modal {
+  background-color: white;
+  border-radius: 8px;
+  width: 90%;
+  
+  max-height: 90vh;
+  overflow-y: auto;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.2);
+  margin: auto;
+}
+
+.gastos-diversos-modal-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 20px;
+  border-bottom: 1px solid #eee;
+}
+
+.gastos-diversos-modal-header h2 {
+  margin: 0;
+  font-size: 20px;
+  font-weight: 600;
+  color: #333;
+}
+
+.gastos-diversos-modal-close {
+  background: none;
+  border: none;
+  font-size: 28px;
+  color: #999;
+  cursor: pointer;
+  line-height: 1;
+  padding: 0;
+  width: 30px;
+  height: 30px;
+  transition: color 0.3s ease;
+}
+
+.gastos-diversos-modal-close:hover {
+  color: #333;
+}
+
+.gastos-diversos-modal-body {
+  padding: 20px;
+}
+
+.gastos-diversos-form-section {
+  margin-bottom: 20px;
+}
+
+.gastos-diversos-form-row {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+  gap: 15px;
+  margin-bottom: 15px;
+}
+
+.gastos-diversos-form-group {
+  display: flex;
+  flex-direction: column;
+}
+
+.gastos-diversos-form-group label {
+  font-size: 13px;
+  font-weight: 600;
+  color: #555;
+  margin-bottom: 5px;
+  display: flex;
+  align-items: center;
+  gap: 5px;
+}
+
+.gastos-diversos-link {
+  color: #e74c3c;
+  cursor: pointer;
+  font-weight: normal;
+  font-size: 12px;
+}
+
+.gastos-diversos-link:hover {
+  text-decoration: underline;
+}
+
+.gastos-diversos-required {
+  color: #e74c3c;
+  font-weight: normal;
+  font-size: 12px;
+}
+
+.gastos-diversos-info-icon {
+  color: #3498db;
+  cursor: help;
+  font-size: 14px;
+}
+
+.gastos-diversos-select,
+.gastos-diversos-input {
+  padding: 8px 12px;
+  border: 1px solid #ddd;
+  border-radius: 5px;
+  font-size: 14px;
+  width: 100%;
+  box-sizing: border-box;
+}
+
+.gastos-diversos-select:focus,
+.gastos-diversos-input:focus {
+  outline: none;
+  border-color: #3498db;
+}
+
+/* Tabla de Métodos de Gasto */
+.gastos-diversos-metodos-section {
+  margin: 20px 0;
+  border: 1px solid #eee;
+  border-radius: 5px;
+  overflow: hidden;
+}
+
+.gastos-diversos-metodos-table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+.gastos-diversos-metodos-table thead {
+  background-color: #f8f9fa;
+}
+
+.gastos-diversos-metodos-table th {
+  padding: 10px 8px;
+  text-align: left;
+  font-weight: 600;
+  color: #555;
+  font-size: 13px;
+  border-bottom: 1px solid #dee2e6;
+}
+
+.gastos-diversos-metodos-table td {
+  padding: 8px;
+  border-bottom: 1px solid #eee;
+}
+
+.gastos-diversos-link-agregar {
+  color: #3498db;
+  cursor: pointer;
+  font-weight: normal;
+  font-size: 12px;
+}
+
+.gastos-diversos-link-agregar:hover {
+  text-decoration: underline;
+}
+
+.gastos-diversos-select-table,
+.gastos-diversos-input-table {
+  width: 100%;
+  padding: 6px 8px;
+  border: 1px solid #ddd;
+  border-radius: 3px;
+  font-size: 13px;
+  box-sizing: border-box;
+}
+
+.gastos-diversos-btn-delete-small {
+  background: none;
+  border: none;
+  cursor: pointer;
+  font-size: 16px;
+  padding: 4px;
+  opacity: 0.6;
+  transition: opacity 0.3s ease;
+}
+
+.gastos-diversos-btn-delete-small:hover {
+  opacity: 1;
+}
+
+/* Botón Agregar Detalle */
+.gastos-diversos-btn-agregar-detalle {
+  width: 100%;
+  padding: 10px;
+  background-color: #e74c3c;
+  color: white;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  font-size: 14px;
+  font-weight: 500;
+  margin: 20px 0;
+  transition: background-color 0.3s ease;
+}
+
+.gastos-diversos-btn-agregar-detalle:hover {
+  background-color: #c0392b;
+}
+
+/* Tabla de Detalles */
+.gastos-diversos-detalles-section {
+  margin: 20px 0;
+  border: 1px solid #eee;
+  border-radius: 5px;
+  overflow: hidden;
+}
+
+.gastos-diversos-detalles-table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+.gastos-diversos-detalles-table thead {
+  background-color: #f8f9fa;
+}
+
+.gastos-diversos-detalles-table th {
+  padding: 10px;
+  text-align: left;
+  font-weight: 600;
+  color: #555;
+  font-size: 13px;
+  border-bottom: 1px solid #dee2e6;
+}
+
+.gastos-diversos-detalles-table td {
+  padding: 10px;
+  border-bottom: 1px solid #eee;
+  font-size: 13px;
+}
+
+.gastos-diversos-btn-delete-detalle {
+  background: none;
+  border: none;
+  cursor: pointer;
+  font-size: 16px;
+  color: #e74c3c;
+  opacity: 0.7;
+  transition: opacity 0.3s ease;
+}
+
+.gastos-diversos-btn-delete-detalle:hover {
+  opacity: 1;
+}
+
+.gastos-diversos-total {
+  padding: 15px;
+  text-align: right;
+  background-color: #f8f9fa;
+  font-size: 16px;
+  color: #333;
+}
+
+.gastos-diversos-modal-footer {
+  display: flex;
+  justify-content: flex-end;
+  gap: 10px;
+  padding: 20px;
+  border-top: 1px solid #eee;
+}
+
+.gastos-diversos-btn-cancelar {
+  padding: 10px 24px;
+  border: 1px solid #ddd;
+  background-color: white;
+  color: #666;
+  border-radius: 5px;
+  cursor: pointer;
+  font-size: 14px;
+  font-weight: 500;
+  transition: all 0.3s ease;
+} 
+
+
+
+
+
+
+.gastos-diversos-btn-cancelar:hover {
+  background-color: #f5f5f5;
+}
+
+.gastos-diversos-btn-generar {
+  padding: 10px 24px;
+  border: none;
+  background-color: #e74c3c;
+  color: white;
+  border-radius: 5px;
+  cursor: pointer;
+  font-size: 14px;
+  font-weight: 500;
+  transition: background-color 0.3s ease;
+}
+
+.gastos-diversos-btn-generar:hover {
+  background-color: #c0392b;
+}
+
+/* Modal Agregar Detalle */
+.gastos-diversos-detalle-modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: rgba(0, 0, 0, 0.6);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 1100;
+  padding: 20px;
+}
+
+.gastos-diversos-detalle-modal {
+  background-color: white;
+  border-radius: 8px;
+  width: 100%;
+  max-width: 600px;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
+}
+
+.gastos-diversos-detalle-modal-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 15px 20px;
+  background-color: #e74c3c;
+  color: white;
+  border-radius: 8px 8px 0 0;
+}
+
+.gastos-diversos-detalle-modal-header h3 {
+  margin: 0;
+  font-size: 18px;
+  font-weight: 600;
+}
+
+.gastos-diversos-detalle-modal-header .gastos-diversos-modal-close {
+  color: white;
+}
+
+.gastos-diversos-detalle-modal-body {
+  padding: 20px;
+}
+
+.gastos-diversos-detalle-form-group {
+  margin-bottom: 15px;
+}
+
+.gastos-diversos-detalle-form-group label {
+  display: block;
+  font-size: 13px;
+  font-weight: 600;
+  color: #555;
+  margin-bottom: 8px;
+}
+
+.gastos-diversos-textarea-detalle {
+  width: 100%;
+  padding: 10px;
+  border: 1px solid #ddd;
+  border-radius: 5px;
+  font-size: 14px;
+  font-family: inherit;
+  resize: vertical;
+  box-sizing: border-box;
+}
+
+.gastos-diversos-textarea-detalle:focus {
+  outline: none;
+  border-color: #3498db;
+}
+
+.gastos-diversos-input-detalle {
+  width: 100%;
+  padding: 10px;
+  border: 1px solid #ddd;
+  border-radius: 5px;
+  font-size: 14px;
+  box-sizing: border-box;
+}
+
+.gastos-diversos-input-detalle:focus {
+  outline: none;
+  border-color: #3498db;
+}
+
+.gastos-diversos-detalle-modal-footer {
+  display: flex;
+  justify-content: flex-end;
+  gap: 10px;
+  padding: 15px 20px;
+  border-top: 1px solid #eee;
+}
+
+.gastos-diversos-btn-cancelar-detalle {
+  padding: 10px 24px;
+  border: 1px solid #ddd;
+  background-color: white;
+  color: #666;
+  border-radius: 5px;
+  cursor: pointer;
+  font-size: 14px;
+  font-weight: 500;
+  transition: all 0.3s ease;
+}
+
+.gastos-diversos-btn-cancelar-detalle:hover {
+  background-color: #f5f5f5;
+}
+
+.gastos-diversos-btn-agregar-confirmado {
+  padding: 10px 24px;
+  border: none;
+  background-color: #e74c3c;
+  color: white;
+  border-radius: 5px;
+  cursor: pointer;
+  font-size: 14px;
+  font-weight: 500;
+  transition: background-color 0.3s ease;
+}
+
+.gastos-diversos-btn-agregar-confirmado:hover {
+  background-color: #c0392b;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+  .gastos-diversos-header {
+    flex-direction: column;
+    gap: 15px;
+  }
+
+  .gastos-diversos-filters {
+    flex-direction: column;
+  }
+
+  .gastos-diversos-modal {
+    max-width: 95%;
+  }
+
+  .gastos-diversos-form-row {
+    grid-template-columns: 1fr;
+  }
+
+  .gastos-diversos-table {
+    font-size: 12px;
+  }
+
+  .gastos-diversos-table th,
+  .gastos-diversos-table td {
+    padding: 8px;
+  }
+
+  .gastos-diversos-metodos-table {
+    font-size: 12px;
+  }
+
+  .gastos-diversos-metodos-table th,
+  .gastos-diversos-metodos-table td {
+    padding: 6px 4px;
+  }
+
+  .gastos-diversos-detalle-modal {
+    max-width: 95%;
+  }
+}
+
+/* Estilos adicionales para mejorar la experiencia */
+.gastos-diversos-modal::-webkit-scrollbar {
+  width: 8px;
+}
+
+.gastos-diversos-modal::-webkit-scrollbar-track {
+  background: #f1f1f1;
+}
+
+.gastos-diversos-modal::-webkit-scrollbar-thumb {
+  background: #888;
+  border-radius: 4px;
+}
+
+.gastos-diversos-modal::-webkit-scrollbar-thumb:hover {
+  background: #555;
+}
+
+/* Animaciones */
+@keyframes gastos-diversos-fadeIn {
+  from {
+    opacity: 0;
+    transform: scale(0.9);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+.gastos-diversos-modal,
+.gastos-diversos-detalle-modal {
+  animation: gastos-diversos-fadeIn 0.3s ease;
+}
+
+/* Estilos para inputs deshabilitados */
+.gastos-diversos-input:disabled,
+.gastos-diversos-select:disabled {
+  background-color: #f5f5f5;
+  cursor: not-allowed;
+  color: #999;
+}
+
+/* Estilos para mensajes de validación */
+.gastos-diversos-error-message {
+  color: #e74c3c;
+  font-size: 12px;
+  margin-top: 4px;
+}
+
+.gastos-diversos-success-message {
+  color: #27ae60;
+  font-size: 12px;
+  margin-top: 4px;
+}
+
+/* Estilos para campos requeridos */
+.gastos-diversos-form-group label.gastos-diversos-required-field::after {
+  content: ' *';
+  color: #e74c3c;
+}
+
+/* Estilos para tooltips */
+.gastos-diversos-tooltip {
+  position: relative;
+  display: inline-block;
+}
+
+.gastos-diversos-tooltip .gastos-diversos-tooltiptext {
+  visibility: hidden;
+  width: 200px;
+  background-color: #555;
+  color: #fff;
+  text-align: center;
+  border-radius: 6px;
+  padding: 8px;
+  position: absolute;
+  z-index: 1;
+  bottom: 125%;
+  left: 50%;
+  margin-left: -100px;
+  opacity: 0;
+  transition: opacity 0.3s;
+  font-size: 12px;
+}
+
+.gastos-diversos-tooltip:hover .gastos-diversos-tooltiptext {
+  visibility: visible;
+  opacity: 1;
+}
+
+/* Estilos para estados de carga */
+.gastos-diversos-loading {
+  display: inline-block;
+  width: 20px;
+  height: 20px;
+  border: 3px solid rgba(255, 255, 255, 0.3);
+  border-radius: 50%;
+  border-top-color: white;
+  animation: gastos-diversos-spin 1s ease-in-out infinite;
+}
+
+@keyframes gastos-diversos-spin {
+  to { transform: rotate(360deg); }
+}
+
+/* Estilos para destacar filas al hover */
+.gastos-diversos-table tbody tr:hover {
+  background-color: #f8f9fa;
+}
+
+.gastos-diversos-detalles-table tbody tr:hover {
+  background-color: #f8f9fa;
+}
+
+/* Estilos para separadores visuales */
+.gastos-diversos-divider {
+  height: 1px;
+  background-color: #eee;
+  margin: 20px 0;
+}
+
+/* Estilos para badges o etiquetas */
+.gastos-diversos-badge {
+  display: inline-block;
+  padding: 4px 8px;
+  font-size: 12px;
+  font-weight: 600;
+  border-radius: 4px;
+  background-color: #3498db;
+  color: white;
+}
+
+.gastos-diversos-badge.gastos-diversos-badge-success {
+  background-color: #27ae60;
+}
+
+.gastos-diversos-badge.gastos-diversos-badge-warning {
+  background-color: #f39c12;
+}
+
+.gastos-diversos-badge.gastos-diversos-badge-danger {
+  background-color: #e74c3c;
+}
+
+/* Estilos para cards o tarjetas */
+.gastos-diversos-card {
+  background-color: white;
+  border-radius: 8px;
+  padding: 20px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  margin-bottom: 20px;
+}
+
+.gastos-diversos-card-header {
+  font-size: 16px;
+  font-weight: 600;
+  color: #333;
+  margin-bottom: 15px;
+  padding-bottom: 10px;
+  border-bottom: 2px solid #eee;
+}
+
+.gastos-diversos-card-body {
+  color: #666;
+  font-size: 14px;
+}
+
+/* Estilos para alertas */
+.gastos-diversos-alert {
+  padding: 12px 16px;
+  border-radius: 5px;
+  margin-bottom: 15px;
+  font-size: 14px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.gastos-diversos-alert-info {
+  background-color: #d1ecf1;
+  color: #0c5460;
+  border: 1px solid #bee5eb;
+}
+
+.gastos-diversos-alert-success {
+  background-color: #d4edda;
+  color: #155724;
+  border: 1px solid #c3e6cb;
+}
+
+.gastos-diversos-alert-warning {
+  background-color: #fff3cd;
+  color: #856404;
+  border: 1px solid #ffeeba;
+}
+
+.gastos-diversos-alert-danger {
+  background-color: #f8d7da;
+  color: #721c24;
+  border: 1px solid #f5c6cb;
+}
+
+/* Mejoras visuales para los botones */
+.gastos-diversos-btn-nuevo:active,
+.gastos-diversos-btn-buscar:active,
+.gastos-diversos-btn-agregar-detalle:active,
+.gastos-diversos-btn-generar:active,
+.gastos-diversos-btn-agregar-confirmado:active {
+  transform: scale(0.98);
+}
+
+/* Estilos para campos con iconos */
+.gastos-diversos-input-with-icon {
+  position: relative;
+}
+
+.gastos-diversos-input-with-icon input {
+  padding-left: 35px;
+}
+
+.gastos-diversos-input-icon {
+  position: absolute;
+  left: 10px;
+  top: 50%;
+  transform: translateY(-50%);
+  color: #999;
+  font-size: 16px;
+}
+
+/* Estilos para mejorar accesibilidad */
+.gastos-diversos-sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border-width: 0;
+}
+
+/* Focus visible para mejor accesibilidad */
+.gastos-diversos-btn-nuevo:focus-visible,
+.gastos-diversos-btn-buscar:focus-visible,
+.gastos-diversos-input:focus-visible,
+.gastos-diversos-select:focus-visible {
+  outline: 2px solid #3498db;
+  outline-offset: 2px;
+}

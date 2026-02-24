@@ -1,0 +1,384 @@
+/* StockHistorico.css */
+
+.stock-historico-container {
+  padding: 40px;
+  max-width: 1600px;
+  margin: 0 auto;
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+  background-color: #f5f5f5;
+  min-height: 100vh;
+}
+
+/* Header Section */
+.stock-historico-header {
+  display: flex;
+  align-items: center;
+  gap: 15px;
+  margin-bottom: 40px;
+  padding: 20px 30px;
+  background-color: white;
+  border-radius: 8px;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+  border-left: 4px solid #ffc107;
+}
+
+.stock-historico-alert-icon {
+  font-size: 20px;
+  background-color: #ffc107;
+  color: white;
+  width: 24px;
+  height: 24px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: bold;
+}
+
+.stock-historico-header h2 {
+  margin: 0;
+  color: #333;
+  font-size: 18px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+/* Content Section */
+.stock-historico-content {
+  background-color: white;
+  border-radius: 8px;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+  overflow: hidden;
+}
+
+.stock-historico-content h3 {
+  margin: 0;
+  padding: 20px 30px;
+  background-color: #f8f9fa;
+  border-bottom: 1px solid #e9ecef;
+  color: #333;
+  font-size: 16px;
+  font-weight: 500;
+}
+
+/* Filters Section */
+.stock-historico-filters-section {
+  padding: 30px;
+  border-bottom: 1px solid #e9ecef;
+}
+
+.stock-historico-date-filters {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 30px;
+  margin-bottom: 20px;
+}
+
+.stock-historico-date-group {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.stock-historico-date-group label {
+  font-size: 14px;
+  font-weight: 500;
+  color: #333;
+}
+
+.stock-historico-date-input {
+  padding: 12px 16px;
+  border: 1px solid #e9ecef;
+  border-radius: 6px;
+  font-size: 14px;
+  font-family: inherit;
+  background-color: white;
+}
+
+.stock-historico-date-input:focus {
+  outline: none;
+  border-color: #007bff;
+  box-shadow: 0 0 0 3px rgba(0, 123, 255, 0.1);
+}
+
+.stock-historico-search-container {
+  display: flex;
+  justify-content: flex-start;
+}
+
+.stock-historico-search-btn {
+  background-color: #dc3545;
+  color: white;
+  border: none;
+  padding: 12px 24px;
+  border-radius: 6px;
+  cursor: pointer;
+  font-size: 14px;
+  font-weight: 500;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  transition: all 0.2s;
+}
+
+.stock-historico-search-btn:hover {
+  background-color: #c82333;
+  transform: translateY(-1px);
+}
+
+/* Results Section */
+.stock-historico-results-section {
+  padding: 30px;
+}
+
+/* Action Buttons */
+.stock-historico-action-buttons {
+  display: flex;
+  gap: 10px;
+  margin-bottom: 20px;
+}
+
+.stock-historico-action-btn {
+  padding: 8px 16px;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  font-size: 12px;
+  font-weight: 500;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  transition: all 0.2s;
+}
+
+.stock-historico-search-btn-small {
+  background-color: #dc3545;
+  color: white;
+}
+
+.stock-historico-search-btn-small:hover {
+  background-color: #c82333;
+}
+
+.stock-historico-excel-btn {
+  background-color: #28a745;
+  color: white;
+}
+
+.stock-historico-excel-btn:hover {
+  background-color: #218838;
+}
+
+/* Table Container */
+.stock-historico-table-container {
+  overflow-x: auto;
+  margin-bottom: 20px;
+  border: 1px solid #e9ecef;
+  border-radius: 6px;
+}
+
+/* Stock Histórico Table */
+.stock-historico-table {
+  width: 100%;
+  border-collapse: collapse;
+  background-color: white;
+  min-width: 1200px;
+}
+
+.stock-historico-table th,
+.stock-historico-td {
+  padding: 12px 16px;
+  border-bottom: 1px solid #e9ecef;
+  border-right: 1px solid #e9ecef;
+  font-size: 13px;
+  text-align: center;
+}
+
+.stock-historico-table th {
+  background-color: #f8f9fa;
+  font-weight: 600;
+  color: #333;
+  position: sticky;
+  top: 0;
+  z-index: 10;
+}
+
+.stock-historico-th-producto {
+  background-color: #f8f9fa;
+  font-weight: 600;
+  color: #333;
+  text-align: center;
+  vertical-align: middle;
+}
+
+.stock-historico-th-section {
+  background-color: #e9ecef;
+  font-weight: 600;
+  color: #333;
+  text-align: center;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  font-size: 12px;
+}
+
+.stock-historico-th-subsection {
+  background-color: #f8f9fa;
+  font-weight: 500;
+  color: #666;
+  text-align: center;
+  font-size: 11px;
+  text-transform: uppercase;
+  letter-spacing: 0.3px;
+}
+
+.stock-historico-td {
+  color: #333;
+}
+
+.stock-historico-producto-cell {
+  text-align: left;
+  font-weight: 500;
+  max-width: 200px;
+  word-wrap: break-word;
+}
+
+.stock-historico-number-cell {
+  text-align: right;
+  font-family: 'Courier New', monospace;
+  font-weight: 500;
+}
+
+.stock-historico-table-row:hover {
+  background-color: #f8f9fa;
+}
+
+.stock-historico-table-row:hover .stock-historico-td {
+  background-color: inherit;
+}
+
+.stock-historico-table tbody tr:last-child .stock-historico-td {
+  border-bottom: none;
+}
+
+.stock-historico-table th:last-child,
+.stock-historico-table .stock-historico-td:last-child {
+  border-right: none;
+}
+
+/* Pagination */
+.stock-historico-pagination {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  justify-content: flex-end;
+  padding-top: 20px;
+  border-top: 1px solid #e9ecef;
+}
+
+.stock-historico-page-number {
+  padding: 6px 12px;
+  border: 1px solid #e9ecef;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 13px;
+  color: #333;
+  transition: all 0.2s;
+  background-color: white;
+}
+
+.stock-historico-page-number:hover {
+  background-color: #f8f9fa;
+  border-color: #007bff;
+}
+
+.stock-historico-pagination-info {
+  margin-right: 20px;
+  font-size: 13px;
+  color: #6c757d;
+  font-style: italic;
+}
+
+/* Responsive Design */
+@media (max-width: 1200px) {
+  .stock-historico-date-filters {
+    grid-template-columns: 1fr;
+    gap: 20px;
+  }
+}
+
+@media (max-width: 768px) {
+  .stock-historico-container {
+    padding: 20px;
+  }
+  
+  .stock-historico-header {
+    padding: 15px 20px;
+    margin-bottom: 20px;
+  }
+  
+  .stock-historico-header h2 {
+    font-size: 16px;
+  }
+  
+  .stock-historico-content h3 {
+    padding: 15px 20px;
+    font-size: 14px;
+  }
+  
+  .stock-historico-filters-section {
+    padding: 20px;
+  }
+  
+  .stock-historico-results-section {
+    padding: 20px;
+  }
+  
+  .stock-historico-action-buttons {
+    flex-direction: column;
+    align-items: stretch;
+  }
+  
+  .stock-historico-action-btn {
+    justify-content: center;
+  }
+  
+  .stock-historico-table {
+    font-size: 11px;
+  }
+  
+  .stock-historico-table th,
+  .stock-historico-td {
+    padding: 8px 12px;
+  }
+  
+  .stock-historico-pagination {
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 5px;
+  }
+  
+  .stock-historico-pagination-info {
+    margin-right: 0;
+    margin-bottom: 10px;
+    width: 100%;
+    text-align: center;
+  }
+}
+
+@media (max-width: 480px) {
+  .stock-historico-table th,
+  .stock-historico-td {
+    padding: 6px 8px;
+    font-size: 10px;
+  }
+  
+  .stock-historico-th-section,
+  .stock-historico-th-subsection {
+    font-size: 9px;
+  }
+  
+  .stock-historico-producto-cell {
+    max-width: 150px;
+  }
+}

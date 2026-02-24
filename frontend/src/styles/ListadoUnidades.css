@@ -1,0 +1,328 @@
+/* Variables CSS específicas para este componente */
+:root {
+  --unidad-primary: #154360;
+  --unidad-secondary: #1f618d;
+  --unidad-success: #196f3d;
+  --unidad-danger: #a93226;
+  --unidad-warning: #b7950b;
+  --unidad-light: #f4f6f7;
+  --unidad-dark: #17202a;
+  --unidad-border: #99a3a4;
+  --unidad-hover: #eaecee;
+  --unidad-accent: #2471a3;
+  --unidad-text: #2c3e50;
+}
+
+.unidadContainer {
+  padding: 20px;
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  background-color: var(--unidad-light);
+  min-height: 100vh;
+}
+
+.unidadHeader {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 25px;
+  padding-bottom: 15px;
+  border-bottom: 2px solid var(--unidad-border);
+}
+
+.unidadTitle {
+  color: var(--unidad-primary);
+  font-size: 24px;
+  font-weight: 600;
+  margin: 0;
+}
+
+.unidadButton {
+  background-color: var(--unidad-secondary);
+  color: white;
+  border: none;
+  padding: 10px 20px;
+  border-radius: 5px;
+  cursor: pointer;
+  font-size: 14px;
+  font-weight: 500;
+  transition: all 0.3s ease;
+}
+
+.unidadButton:hover {
+  background-color: #1a5276;
+  transform: translateY(-1px);
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
+}
+
+.unidadSubtitle {
+  color: var(--unidad-dark);
+  font-size: 16px;
+  margin-bottom: 20px;
+  font-weight: 500;
+}
+
+.unidadTable {
+  width: 100%;
+  border-collapse: collapse;
+  background-color: white;
+  border-radius: 8px;
+  overflow: hidden;
+  box-shadow: 0 2px 12px rgba(0, 0, 0, 0.1);
+}
+
+.unidadTable th {
+  background-color: var(--unidad-primary);
+  color: white;
+  padding: 14px 12px;
+  text-align: left;
+  font-weight: 600;
+  font-size: 14px;
+  border-right: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.unidadTable th:last-child {
+  border-right: none;
+}
+
+.unidadTable td {
+  padding: 12px 12px;
+  border-bottom: 1px solid var(--unidad-border);
+  font-size: 14px;
+  color: var(--unidad-text);
+  border-right: 1px solid var(--unidad-hover);
+}
+
+.unidadTable td:last-child {
+  border-right: none;
+}
+
+.unidadTable tr:hover {
+  background-color: var(--unidad-hover);
+}
+
+.unidadActions {
+  display: flex;
+  gap: 8px;
+}
+
+.unidadActionBtn {
+  background: none;
+  border: 1px solid var(--unidad-border);
+  padding: 4px 8px;
+  border-radius: 3px;
+  cursor: pointer;
+  font-size: 12px;
+  transition: all 0.2s ease;
+  color: var(--unidad-text);
+}
+
+.unidadActionBtn:hover {
+  background-color: var(--unidad-accent);
+  color: white;
+  border-color: var(--unidad-accent);
+}
+
+/* Modal Styles */
+.unidadModalOverlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: rgba(0, 0, 0, 0.6);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 1000;
+  animation: unidadFadeIn 0.3s ease-out;
+}
+
+@keyframes unidadFadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+.unidadModal {
+  background: white;
+  border-radius: 8px;
+  width: 90%;
+  max-width: 500px;
+  max-height: 90vh;
+  overflow-y: auto;
+  box-shadow: 0 8px 30px rgba(0, 0, 0, 0.3);
+  animation: unidadModalSlideIn 0.3s ease-out;
+}
+
+@keyframes unidadModalSlideIn {
+  from {
+    opacity: 0;
+    transform: scale(0.9) translateY(-20px);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1) translateY(0);
+  }
+}
+
+.unidadModalHeader {
+  background-color: var(--unidad-primary);
+  color: white;
+  padding: 20px;
+  border-radius: 8px 8px 0 0;
+  position: sticky;
+  top: 0;
+  z-index: 10;
+}
+
+.unidadModalTitle {
+  margin: 0;
+  font-size: 20px;
+  font-weight: 600;
+}
+
+.unidadModalBody {
+  padding: 25px;
+}
+
+.unidadFormGroup {
+  margin-bottom: 20px;
+}
+
+.unidadFormLabel {
+  display: block;
+  margin-bottom: 8px;
+  font-weight: 600;
+  color: var(--unidad-dark);
+  font-size: 14px;
+}
+
+.unidadFormInput {
+  width: 100%;
+  padding: 10px 12px;
+  border: 1px solid var(--unidad-border);
+  border-radius: 4px;
+  font-size: 14px;
+  box-sizing: border-box;
+  transition: border-color 0.3s ease;
+  color: var(--unidad-text);
+}
+
+.unidadFormInput:focus {
+  outline: none;
+  border-color: var(--unidad-secondary);
+  box-shadow: 0 0 0 2px rgba(31, 97, 141, 0.2);
+}
+
+.unidadFormInput::placeholder {
+  color: #7f8c8d;
+  font-style: italic;
+}
+
+.unidadKeywordSection {
+  background-color: #f8f9fa;
+  padding: 15px;
+  border-radius: 4px;
+  margin-bottom: 20px;
+  border-left: 4px solid var(--unidad-accent);
+}
+
+.unidadKeywordText {
+  font-size: 14px;
+  color: var(--unidad-text);
+  margin: 0 0 10px 0;
+  font-style: italic;
+}
+
+.unidadKeywordList {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.unidadKeywordItem {
+  padding: 5px 0;
+  font-size: 14px;
+  color: var(--unidad-dark);
+  position: relative;
+  padding-left: 15px;
+  font-weight: 500;
+}
+
+.unidadKeywordItem:before {
+  content: "•";
+  color: var(--unidad-accent);
+  position: absolute;
+  left: 0;
+  font-weight: bold;
+}
+
+.unidadDivider {
+  height: 1px;
+  background-color: var(--unidad-border);
+  margin: 20px 0;
+  border: none;
+}
+
+.unidadRadioGroup {
+  display: flex;
+  gap: 25px;
+  margin: 15px 0;
+}
+
+.unidadRadioItem {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  cursor: pointer;
+}
+
+.unidadRadio {
+  width: 16px;
+  height: 16px;
+  cursor: pointer;
+}
+
+.unidadModalFooter {
+  padding: 20px;
+  background-color: var(--unidad-light);
+  border-radius: 0 0 8px 8px;
+  display: flex;
+  justify-content: flex-end;
+  gap: 12px;
+  position: sticky;
+  bottom: 0;
+}
+
+.unidadButtonSecondary {
+  background-color: var(--unidad-border);
+  color: var(--unidad-dark);
+}
+
+.unidadButtonSecondary:hover {
+  background-color: #7f8c8d;
+}
+
+.unidadButtonSuccess {
+  background-color: var(--unidad-success);
+}
+
+.unidadButtonSuccess:hover {
+  background-color: #145a32;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+  .unidadTable {
+    font-size: 12px;
+  }
+  
+  .unidadTable th,
+  .unidadTable td {
+    padding: 8px 6px;
+  }
+  
+  .unidadRadioGroup {
+    flex-direction: column;
+    gap: 10px;
+  }
+}

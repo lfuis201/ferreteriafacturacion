@@ -1,0 +1,232 @@
+/* Variables CSS específicas para este componente */
+:root {
+  --listado-primary: #2c3e50;
+  --listado-secondary: #3498db;
+  --listado-success: #27ae60;
+  --listado-danger: #e74c3c;
+  --listado-warning: #f39c12;
+  --listado-light: #ecf0f1;
+  --listado-dark: #34495e;
+  --listado-border: #bdc3c7;
+  --listado-hover: #f8f9fa;
+}
+
+.listadoContainer {
+  padding: 20px;
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  background-color: var(--listado-light);
+  min-height: 100vh;
+}
+
+.listadoHeader {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 20px;
+  padding-bottom: 15px;
+  border-bottom: 2px solid var(--listado-border);
+}
+
+.listadoTitle {
+  color: var(--listado-primary);
+  font-size: 24px;
+  font-weight: 600;
+  margin: 0;
+}
+
+.listadoButton {
+  background-color: var(--listado-secondary);
+  color: white;
+  border: none;
+  padding: 10px 20px;
+  border-radius: 5px;
+  cursor: pointer;
+  font-size: 14px;
+  font-weight: 500;
+  transition: background-color 0.3s ease;
+}
+
+.listadoButton:hover {
+  background-color: #2980b9;
+}
+
+.listadoTable {
+  width: 100%;
+  border-collapse: collapse;
+  background-color: white;
+  border-radius: 8px;
+  overflow: hidden;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+}
+
+.listadoTable th {
+  background-color: var(--listado-primary);
+  color: white;
+  padding: 12px 15px;
+  text-align: left;
+  font-weight: 600;
+  font-size: 14px;
+}
+
+.listadoTable td {
+  padding: 12px 15px;
+  border-bottom: 1px solid var(--listado-border);
+  font-size: 14px;
+}
+
+.listadoTable tr:hover {
+  background-color: var(--listado-hover);
+}
+
+.listadoActions {
+  display: flex;
+  gap: 5px;
+}
+
+.listadoCheckbox {
+  width: 18px;
+  height: 18px;
+  cursor: pointer;
+}
+
+/* Modal Styles */
+.listadoModalOverlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: rgba(0, 0, 0, 0.5);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 1000;
+}
+
+.listadoModal {
+  background: white;
+  border-radius: 8px;
+  padding: 0;
+  width: 90%;
+  max-width: 500px;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.15);
+  animation: listadoModalAppear 0.3s ease-out;
+}
+
+@keyframes listadoModalAppear {
+  from {
+    opacity: 0;
+    transform: scale(0.9) translateY(-20px);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1) translateY(0);
+  }
+}
+
+.listadoModalHeader {
+  background-color: var(--listado-primary);
+  color: white;
+  padding: 20px;
+  border-radius: 8px 8px 0 0;
+}
+
+.listadoModalTitle {
+  margin: 0;
+  font-size: 18px;
+  font-weight: 600;
+}
+
+.listadoModalBody {
+  padding: 20px;
+}
+
+.listadoFormGroup {
+  margin-bottom: 20px;
+}
+
+.listadoFormLabel {
+  display: block;
+  margin-bottom: 8px;
+  font-weight: 600;
+  color: var(--listado-dark);
+}
+
+.listadoFormInput {
+  width: 100%;
+  padding: 10px;
+  border: 1px solid var(--listado-border);
+  border-radius: 4px;
+  font-size: 14px;
+  box-sizing: border-box;
+}
+
+.listadoFormInput:focus {
+  outline: none;
+  border-color: var(--listado-secondary);
+  box-shadow: 0 0 0 2px rgba(52, 152, 219, 0.2);
+}
+
+.listadoCheckboxGroup {
+  display: flex;
+  gap: 15px;
+  margin: 15px 0;
+}
+
+.listadoCheckboxItem {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+}
+
+.listadoRadioGroup {
+  display: flex;
+  gap: 20px;
+  margin: 10px 0;
+}
+
+.listadoRadioItem {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+}
+
+.listadoModalFooter {
+  padding: 15px 20px;
+  background-color: var(--listado-light);
+  border-radius: 0 0 8px 8px;
+  display: flex;
+  justify-content: flex-end;
+  gap: 10px;
+}
+
+.listadoButtonSecondary {
+  background-color: var(--listado-border);
+  color: var(--listado-dark);
+}
+
+.listadoButtonSecondary:hover {
+  background-color: #95a5a6;
+}
+
+.listadoButtonSuccess {
+  background-color: var(--listado-success);
+}
+
+.listadoButtonSuccess:hover {
+  background-color: #219a52;
+}
+
+.listadoSeatInfo {
+  background-color: #e8f4fd;
+  padding: 15px;
+  border-radius: 4px;
+  margin-top: 20px;
+  border-left: 4px solid var(--listado-secondary);
+}
+
+.listadoSeatInfo p {
+  margin: 5px 0;
+  font-size: 14px;
+  color: var(--listado-dark);
+}

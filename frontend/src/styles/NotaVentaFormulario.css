@@ -1,0 +1,460 @@
+
+.nvf-container {
+          font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+          max-width: 1400px;
+          margin: 0 auto;
+          padding: 30px;
+          background-color: #ffffff;
+        }
+
+        .nvf-header {
+          display: flex;
+          gap: 20px;
+          margin-bottom: 30px;
+          padding-bottom: 20px;
+          border-bottom: 2px solid #e5e7eb;
+        }
+
+        .nvf-logo {
+          width: 80px;
+          height: 80px;
+          border: 2px solid #d1d5db;
+          border-radius: 8px;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          background-color: #f9fafb;
+        }
+
+        .nvf-camera-icon {
+          color: #9ca3af;
+        }
+
+        .nvf-info h3 {
+          margin: 0 0 8px 0;
+          font-size: 16px;
+          color: #111827;
+          font-weight: 600;
+        }
+
+        .nvf-empresa {
+          margin: 0 0 4px 0;
+          font-size: 14px;
+          color: #374151;
+          font-weight: 500;
+        }
+
+        .nvf-direccion {
+          margin: 0;
+          font-size: 13px;
+          color: #6b7280;
+        }
+
+        .nvf-form-section {
+          margin-bottom: 30px;
+        }
+
+        .nvf-row {
+          display: flex;
+          gap: 15px;
+          margin-bottom: 15px;
+          flex-wrap: wrap;
+        }
+
+        .nvf-field {
+          display: flex;
+          flex-direction: column;
+        }
+
+        .nvf-field-full {
+          flex: 1 1 100%;
+        }
+
+        .nvf-field-half {
+          flex: 1 1 calc(50% - 8px);
+        }
+
+        .nvf-field-third {
+          flex: 1 1 calc(33.333% - 10px);
+        }
+
+        .nvf-field-quarter {
+          flex: 1 1 calc(25% - 12px);
+        }
+
+        .nvf-label {
+          font-size: 13px;
+          color: #374151;
+          margin-bottom: 6px;
+          font-weight: 500;
+          display: flex;
+          align-items: center;
+          gap: 4px;
+        }
+
+        .nvf-required {
+          color: #ef4444;
+        }
+
+        .nvf-info-icon {
+          color: #6b7280;
+          cursor: help;
+        }
+
+        .nvf-input,
+        .nvf-select,
+        .nvf-textarea {
+          padding: 8px 12px;
+          border: 1px solid #d1d5db;
+          border-radius: 6px;
+          font-size: 14px;
+          color: #111827;
+          background-color: #ffffff;
+          transition: border-color 0.2s, box-shadow 0.2s;
+        }
+
+        .nvf-input:focus,
+        .nvf-select:focus,
+        .nvf-textarea:focus {
+          outline: none;
+          border-color: #3b82f6;
+          box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
+        }
+
+        .nvf-select {
+          cursor: pointer;
+        }
+
+        .nvf-textarea {
+          resize: vertical;
+          font-family: inherit;
+        }
+
+        .nvf-input-group {
+          position: relative;
+        }
+
+        .nvf-input-with-counter {
+          display: flex;
+          align-items: center;
+          gap: 8px;
+        }
+
+        .nvf-counter {
+          font-size: 14px;
+          color: #6b7280;
+          font-weight: 500;
+          min-width: 20px;
+          text-align: center;
+        }
+
+        .nvf-btn-plus {
+          width: 30px;
+          height: 30px;
+          border: 1px solid #d1d5db;
+          border-radius: 4px;
+          background-color: #ffffff;
+          color: #374151;
+          cursor: pointer;
+          font-size: 18px;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          transition: all 0.2s;
+        }
+
+        .nvf-btn-plus:hover {
+          background-color: #f3f4f6;
+          border-color: #9ca3af;
+        }
+
+        .nvf-section-title {
+          background-color: #f9fafb;
+          padding: 12px 16px;
+          border-radius: 6px;
+          margin-bottom: 20px;
+          font-size: 14px;
+          color: #374151;
+          font-weight: 500;
+        }
+
+        .nvf-pagos-section {
+          margin-bottom: 30px;
+          background-color: #ffffff;
+          border: 1px solid #e5e7eb;
+          border-radius: 8px;
+          padding: 20px;
+        }
+
+        .nvf-pagos-table {
+          width: 100%;
+          border-collapse: collapse;
+          margin-bottom: 15px;
+        }
+
+        .nvf-pagos-table thead {
+          background-color: #f9fafb;
+        }
+
+        .nvf-pagos-table th {
+          padding: 10px 8px;
+          text-align: left;
+          font-size: 13px;
+          font-weight: 600;
+          color: #374151;
+          border-bottom: 2px solid #e5e7eb;
+        }
+
+        .nvf-info-icon-inline {
+          vertical-align: middle;
+          color: #6b7280;
+          cursor: help;
+        }
+
+        .nvf-pagos-table td {
+          padding: 8px;
+          border-bottom: 1px solid #e5e7eb;
+        }
+
+        .nvf-table-input,
+        .nvf-table-select {
+          width: 100%;
+          padding: 6px 10px;
+          border: 1px solid #d1d5db;
+          border-radius: 4px;
+          font-size: 13px;
+          color: #111827;
+          background-color: #ffffff;
+        }
+
+        .nvf-table-input:focus,
+        .nvf-table-select:focus {
+          outline: none;
+          border-color: #3b82f6;
+          box-shadow: 0 0 0 2px rgba(59, 130, 246, 0.1);
+        }
+
+        .nvf-table-select {
+          cursor: pointer;
+        }
+
+        .nvf-btn-delete {
+          background-color: #ef4444;
+          color: white;
+          border: none;
+          padding: 6px 10px;
+          border-radius: 4px;
+          cursor: pointer;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          transition: background-color 0.2s;
+        }
+
+        .nvf-btn-delete:hover {
+          background-color: #dc2626;
+        }
+
+        .nvf-actions-row {
+          display: flex;
+          gap: 10px;
+          justify-content: flex-start;
+        }
+
+        .nvf-btn-agregar {
+          padding: 8px 16px;
+          background-color: transparent;
+          color: #ef4444;
+          border: 1px solid #ef4444;
+          border-radius: 6px;
+          cursor: pointer;
+          font-size: 14px;
+          font-weight: 500;
+          transition: all 0.2s;
+        }
+
+        .nvf-btn-agregar:hover {
+          background-color: #fef2f2;
+        }
+
+        .nvf-btn-consulta {
+          padding: 8px 16px;
+          background-color: transparent;
+          color: #ef4444;
+          border: 1px solid #ef4444;
+          border-radius: 6px;
+          cursor: pointer;
+          font-size: 14px;
+          font-weight: 500;
+          transition: all 0.2s;
+        }
+
+        .nvf-btn-consulta:hover {
+          background-color: #fef2f2;
+        }
+
+        .nvf-productos-section {
+          background-color: #ffffff;
+          border: 1px solid #e5e7eb;
+          border-radius: 8px;
+          padding: 20px;
+        }
+
+        .nvf-productos-table {
+          width: 100%;
+          border-collapse: collapse;
+          margin-bottom: 15px;
+        }
+
+        .nvf-productos-table thead {
+          background-color: #f9fafb;
+        }
+
+        .nvf-productos-table th {
+          padding: 10px 8px;
+          text-align: left;
+          font-size: 13px;
+          font-weight: 600;
+          color: #374151;
+          border-bottom: 2px solid #e5e7eb;
+        }
+
+        .nvf-productos-table td {
+          padding: 8px;
+          border-bottom: 1px solid #e5e7eb;
+          font-size: 13px;
+          color: #374151;
+        }
+
+        .nvf-empty-row {
+          text-align: center;
+          padding: 40px 20px !important;
+        }
+
+        .nvf-empty-message {
+          color: #9ca3af;
+          font-size: 14px;
+        }
+
+        .nvf-footer-actions {
+          display: flex;
+          justify-content: flex-end;
+        }
+
+        .nvf-btn-calcular {
+          padding: 10px 24px;
+          background-color: #ef4444;
+          color: white;
+          border: none;
+          border-radius: 6px;
+          cursor: pointer;
+          font-size: 14px;
+          font-weight: 500;
+          transition: background-color 0.2s;
+        }
+
+        .nvf-btn-calcular:hover {
+          background-color: #dc2626;
+        }
+
+        @media (max-width: 1024px) {
+          .nvf-field-quarter,
+          .nvf-field-third,
+          .nvf-field-half {
+            flex: 1 1 100%;
+          }
+
+          .nvf-container {
+            padding: 20px;
+          }
+
+          .nvf-pagos-section,
+          .nvf-productos-section {
+            overflow-x: auto;
+          }
+
+        /* Estilo para el botón Nuevo */
+        .nvf-btn-nuevo {
+          background: none;
+          border: none;
+          color: #dc2626;
+          font-size: 12px;
+          font-weight: 500;
+          cursor: pointer;
+          padding: 2px 6px;
+          border-radius: 3px;
+          transition: all 0.2s;
+        }
+
+        .nvf-btn-nuevo:hover {
+          background-color: #fee2e2;
+          color: #b91c1c;
+        }
+
+
+
+
+        
+
+        /* Estilos para el modal de productos */
+        .modal-overlay {
+          position: fixed;
+          top: 0;
+          left: 0;
+          right: 0;
+          bottom: 0;
+          background-color: rgba(0, 0, 0, 0.5);
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          z-index: 1000;
+        }
+
+        .modal-content-large {
+          background: white;
+          border-radius: 8px;
+          width: 95%;
+          max-width: 1200px;
+          max-height: 90vh;
+          overflow-y: auto;
+          box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+        }
+
+        .modal-header {
+          display: flex;
+          justify-content: space-between;
+          align-items: center;
+          padding: 20px;
+          border-bottom: 1px solid #e5e7eb;
+          background-color: #f9fafb;
+        }
+
+        .modal-header h3 {
+          margin: 0;
+          font-size: 18px;
+          font-weight: 600;
+          color: #111827;
+        }
+
+        .modal-close-btn {
+          background: none;
+          border: none;
+          font-size: 24px;
+          cursor: pointer;
+          color: #6b7280;
+          padding: 0;
+          width: 30px;
+          height: 30px;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          border-radius: 4px;
+          transition: all 0.2s;
+        }
+
+        .modal-close-btn:hover {
+          background-color: #f3f4f6;
+          color: #374151;
+        }
+        }
+    

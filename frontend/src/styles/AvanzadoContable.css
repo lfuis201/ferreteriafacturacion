@@ -1,0 +1,121 @@
+/* AvanzadoContable.css */
+
+.ac-container {
+  padding: 20px;
+  background-color: #f5f5f5;
+  min-height: 100vh;
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+}
+
+.ac-section {
+  background-color: #ffffff;
+  border-radius: 8px;
+  padding: 24px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  max-width: 1400px;
+  margin: 0 auto;
+}
+
+.ac-title {
+  font-size: 18px;
+  font-weight: 600;
+  color: #333;
+  margin: 0 0 30px 0;
+}
+
+.ac-form-container {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.ac-row {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 20px;
+}
+
+.ac-form-group {
+  display: flex;
+  flex-direction: column;
+}
+
+.ac-label {
+  font-size: 14px;
+  font-weight: 600;
+  color: #333;
+  margin-bottom: 8px;
+}
+
+.ac-input {
+  width: 100%;
+  padding: 10px 12px;
+  border: 1px solid #ced4da;
+  border-radius: 4px;
+  font-size: 14px;
+  color: #495057;
+  background-color: white;
+  transition: border-color 0.2s, box-shadow 0.2s;
+  box-sizing: border-box;
+}
+
+.ac-input:focus {
+  outline: none;
+  border-color: #80bdff;
+  box-shadow: 0 0 0 0.2rem rgba(0, 123, 255, 0.25);
+}
+
+.ac-input:hover {
+  border-color: #adb5bd;
+}
+
+.ac-button-container {
+  display: flex;
+  justify-content: flex-end;
+  margin-top: 10px;
+}
+
+.ac-btn-guardar {
+  background-color: #e74c3c;
+  color: white;
+  border: none;
+  padding: 10px 30px;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 14px;
+  font-weight: 500;
+  transition: background-color 0.2s;
+}
+
+.ac-btn-guardar:hover {
+  background-color: #c0392b;
+}
+
+.ac-btn-guardar:active {
+  background-color: #a93226;
+}
+
+/* Responsive */
+@media (max-width: 1024px) {
+  .ac-row {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+@media (max-width: 768px) {
+  .ac-row {
+    grid-template-columns: 1fr;
+  }
+
+  .ac-section {
+    padding: 16px;
+  }
+
+  .ac-button-container {
+    justify-content: stretch;
+  }
+
+  .ac-btn-guardar {
+    width: 100%;
+  }
+}

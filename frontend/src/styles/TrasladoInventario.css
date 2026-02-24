@@ -1,0 +1,373 @@
+/* TrasladoInventario.css */
+.traslados-container {
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  background-color: #f5f5f5;
+  min-height: 100vh;
+}
+
+/* Header */
+.traslados-header {
+  background-color: #ffffff;
+  padding: 12px 20px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  border-bottom: 1px solid #e0e0e0;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.header-left {
+  display: flex;
+  align-items: center;
+}
+
+.logo {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.logo-icon {
+  background-color: #ff4444;
+  color: white;
+  width: 24px;
+  height: 24px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 12px;
+}
+
+.logo-text {
+  font-weight: 600;
+  font-size: 14px;
+  color: #333;
+}
+
+.btn-nuevo {
+  background-color: #ff4444;
+  color: white;
+  border: none;
+  padding: 8px 16px;
+  border-radius: 4px;
+  font-size: 13px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: background-color 0.2s;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.btn-nuevo:hover {
+  background-color: #dd3333;
+}
+
+/* Content */
+.traslados-content {
+  background-color: white;
+  margin: 20px;
+  border-radius: 8px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  overflow: hidden;
+}
+
+.content-header {
+  padding: 16px 20px;
+  border-bottom: 1px solid #e0e0e0;
+}
+
+.content-header h2 {
+  margin: 0;
+  font-size: 18px;
+  font-weight: 600;
+  color: #333;
+}
+
+/* Filters */
+.filters-section {
+  padding: 16px 20px;
+  background-color: #f9f9f9;
+  display: flex;
+  gap: 20px;
+  align-items: center;
+  border-bottom: 1px solid #e0e0e0;
+}
+
+.filter-group {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.filter-group label {
+  font-size: 14px;
+  color: #666;
+  font-weight: 500;
+}
+
+.filter-select {
+  padding: 6px 12px;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+  font-size: 13px;
+  background-color: white;
+  color: #333;
+  min-width: 150px;
+}
+
+.search-group {
+  margin-left: auto;
+}
+
+.search-container {
+  position: relative;
+  display: flex;
+  align-items: center;
+}
+
+.search-icon {
+  position: absolute;
+  left: 10px;
+  color: #999;
+  z-index: 1;
+}
+
+.search-input {
+  padding: 6px 12px 6px 35px;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+  font-size: 13px;
+  width: 200px;
+  background-color: white;
+}
+
+.search-input::placeholder {
+  color: #999;
+}
+
+/* Table */
+.table-container {
+  overflow-x: auto;
+}
+
+.traslados-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 13px;
+}
+
+.traslados-table th {
+  background-color: #f8f9fa;
+  padding: 12px 16px;
+  text-align: left;
+  font-weight: 600;
+  color: #555;
+  border-bottom: 2px solid #e9ecef;
+  white-space: nowrap;
+}
+
+.traslados-table td {
+  padding: 12px 16px;
+  border-bottom: 1px solid #e9ecef;
+  color: #333;
+  vertical-align: middle;
+}
+
+.traslados-table tbody tr:hover {
+  background-color: #f8f9fa;
+}
+
+.traslados-table th:first-child,
+.traslados-table td:first-child {
+  width: 50px;
+  text-align: center;
+}
+
+.detalle-productos {
+  color: #666;
+  cursor: pointer;
+}
+
+.btn-pdf {
+  background-color: #17a2b8;
+  color: white;
+  border: none;
+  padding: 4px 12px;
+  border-radius: 3px;
+  font-size: 11px;
+  cursor: pointer;
+  transition: background-color 0.2s;
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.btn-pdf:hover {
+  background-color: #138496;
+}
+
+/* Footer */
+.table-footer {
+  padding: 12px 20px;
+  background-color: #f8f9fa;
+  border-top: 1px solid #e9ecef;
+  display: flex;
+  gap: 20px;
+  font-size: 13px;
+  color: #666;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+  .traslados-header {
+    padding: 10px 15px;
+  }
+  
+  .traslados-content {
+    margin: 10px;
+  }
+  
+  .filters-section {
+    flex-direction: column;
+    align-items: stretch;
+    gap: 10px;
+  }
+  
+  .search-group {
+    margin-left: 0;
+  }
+  
+  .search-container {
+    position: relative;
+  }
+  
+  .search-input {
+    width: 100%;
+    padding-left: 35px;
+  }
+  
+  .traslados-table {
+    font-size: 12px;
+  }
+  
+  .traslados-table th,
+  .traslados-table td {
+    padding: 8px 12px;
+  }
+}
+
+/* Modal Detalle Productos Styles */
+.modal-overlay-detalle {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: rgba(0, 0, 0, 0.5);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 1001;
+  padding: 20px;
+}
+
+.modal-container-detalle {
+  background: white;
+  border-radius: 8px;
+  width: 100%;
+  max-width: 600px;
+  max-height: 80vh;
+  overflow: hidden;
+  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.2);
+  display: flex;
+  flex-direction: column;
+}
+
+.modal-header-detalle {
+  padding: 16px 20px;
+  border-bottom: 1px solid #e0e0e0;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  background-color: #f8f9fa;
+}
+
+.modal-header-detalle h2 {
+  margin: 0;
+  font-size: 18px;
+  font-weight: 600;
+  color: #333;
+}
+
+.close-btn-detalle {
+  background: none;
+  border: none;
+  cursor: pointer;
+  padding: 4px;
+  border-radius: 4px;
+  color: #666;
+  transition: background-color 0.2s;
+}
+
+.close-btn-detalle:hover {
+  background-color: #e9ecef;
+}
+
+.modal-body-detalle {
+  padding: 20px;
+  overflow-y: auto;
+  flex: 1;
+}
+
+.detalle-table-container {
+  overflow-x: auto;
+}
+
+.detalle-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 14px;
+}
+
+.detalle-table th {
+  background-color: #f8f9fa;
+  padding: 12px 16px;
+  text-align: left;
+  font-weight: 600;
+  color: #555;
+  border-bottom: 2px solid #e9ecef;
+  white-space: nowrap;
+}
+
+.detalle-table td {
+  padding: 12px 16px;
+  border-bottom: 1px solid #e9ecef;
+  color: #333;
+  vertical-align: middle;
+}
+
+.detalle-table th:first-child,
+.detalle-table td:first-child {
+  width: 60px;
+  text-align: center;
+}
+
+.detalle-table tbody tr:hover {
+  background-color: #f8f9fa;
+}
+
+.product-icon {
+  width: 24px;
+  height: 24px;
+  background-color: #f8f9fa;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 16px;
+  color: #666;
+  margin: 0 auto;
+}

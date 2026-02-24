@@ -1,0 +1,725 @@
+.fc-container {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 20px;
+  background: #ffffff;
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  font-size: 14px;
+  line-height: 1.4;
+}
+
+.fc-title {
+  font-size: 20px;
+  font-weight: 400;
+  color: #333;
+  margin-bottom: 20px;
+}
+
+.fc-form {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.fc-row {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 15px;
+  align-items: end;
+}
+
+.fc-field {
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+}
+
+.fc-field.fc-full-width {
+  grid-column: 1 / -1;
+}
+
+.fc-label {
+  font-size: 13px;
+  color: #555;
+  font-weight: 500;
+}
+
+.fc-required {
+  color: #e74c3c;
+}
+
+.fc-new {
+  color: #e74c3c;
+  font-size: 12px;
+  cursor: pointer;
+}
+
+.fc-info {
+  color: #3498db;
+  cursor: help;
+}
+
+.fc-input, .fc-select, .fc-textarea, .fc-date-input {
+  padding: 8px 12px;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+  font-size: 14px;
+  background: #fff;
+  transition: border-color 0.2s;
+}
+
+.fc-input:focus, .fc-select:focus, .fc-textarea:focus, .fc-date-input:focus {
+  outline: none;
+  border-color: #3498db;
+}
+
+.fc-textarea {
+  min-height: 60px;
+  resize: vertical;
+}
+
+.fc-date-input {
+  color: #666;
+}
+
+.fc-checkboxes {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  padding: 15px 0;
+}
+
+.fc-checkbox-item {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.fc-checkbox {
+  width: 16px;
+  height: 16px;
+  accent-color: #3498db;
+}
+
+.fc-checkbox-label {
+  font-size: 14px;
+  color: #333;
+  cursor: pointer;
+}
+
+.fc-checkbox:checked + .fc-checkbox-label {
+  color: #3498db;
+}
+
+.fc-section {
+  border: 2px solid #ff6b35;
+  border-radius: 8px;
+  padding: 20px;
+  background: #fff;
+}
+
+.fc-periodo-section {
+  position: relative;
+}
+
+.fc-section-title {
+  font-size: 16px;
+  font-weight: 500;
+  color: #333;
+  margin-bottom: 15px;
+}
+
+.fc-periodo-container {
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+}
+
+.fc-periodo-input {
+  padding: 8px 12px;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+  width: 150px;
+  font-size: 14px;
+}
+
+.fc-calendario {
+  background: #fff;
+  border: 1px solid #ddd;
+  border-radius: 6px;
+  padding: 15px;
+  max-width: 300px;
+}
+
+.fc-calendario-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 15px;
+  font-weight: 500;
+}
+
+.fc-nav-btn {
+  background: none;
+  border: none;
+  font-size: 18px;
+  cursor: pointer;
+  color: #666;
+  padding: 0 5px;
+}
+
+.fc-nav-btn:hover {
+  color: #333;
+}
+
+.fc-meses-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 8px;
+}
+
+.fc-mes-btn {
+  padding: 8px 12px;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+  background: #fff;
+  cursor: pointer;
+  font-size: 13px;
+  transition: all 0.2s;
+}
+
+.fc-mes-btn:hover {
+  background: #f8f9fa;
+  border-color: #3498db;
+}
+
+.fc-mes-activo {
+  background: #3498db !important;
+  color: white !important;
+  border-color: #3498db !important;
+}
+
+.fc-clientes-container {
+  display: flex;
+  align-items: center;
+  gap: 15px;
+}
+
+.fc-clientes-text {
+  font-weight: 500;
+  color: #333;
+  min-width: 60px;
+}
+
+.fc-clientes-input-container {
+  position: relative;
+  flex: 1;
+}
+
+.fc-clientes-input {
+  width: 50%;
+  padding: 8px 12px;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+  font-size: 14px;
+  padding-right: 35px;
+}
+
+.fc-clientes-input:focus {
+  outline: none;
+  border-color: #3498db;
+}
+
+.fc-limpiar-cliente-btn {
+  position: absolute;
+  right: 8px;
+  top: 50%;
+  transform: translateY(-50%);
+  background: none;
+  border: none;
+  font-size: 18px;
+  color: #999;
+  cursor: pointer;
+  width: 20px;
+  height: 20px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 50%;
+  transition: all 0.2s;
+}
+
+.fc-limpiar-cliente-btn:hover {
+  background: #f0f0f0;
+  color: #666;
+}
+
+.fc-clientes-dropdown {
+  position: absolute;
+  top: 100%;
+  left: 0;
+  right: 0;
+  background: white;
+  border: 1px solid #ddd;
+  border-top: none;
+  border-radius: 0 0 4px 4px;
+  max-height: 300px;
+  overflow-y: auto;
+  z-index: 1000;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+}
+
+.fc-cliente-item {
+  padding: 12px;
+  border-bottom: 1px solid #f0f0f0;
+  cursor: pointer;
+  transition: background-color 0.2s;
+}
+
+.fc-cliente-item:hover {
+  background-color: #f8f9fa;
+}
+
+.fc-cliente-item:last-child {
+  border-bottom: none;
+}
+
+.fc-cliente-nombre {
+  font-weight: 500;
+  color: #333;
+  margin-bottom: 4px;
+}
+
+.fc-cliente-documento {
+  font-size: 12px;
+  color: #666;
+  margin-bottom: 2px;
+}
+
+.fc-cliente-telefono {
+  font-size: 12px;
+  color: #888;
+}
+
+.fc-mas-resultados {
+  font-style: italic;
+  color: #666;
+  text-align: center;
+  background-color: #f8f9fa;
+}
+
+.fc-mas-resultados:hover {
+  background-color: #f8f9fa;
+  cursor: default;
+}
+
+.fc-no-resultados {
+  color: #999;
+  text-align: center;
+  font-style: italic;
+}
+
+.fc-no-resultados:hover {
+  background-color: white;
+  cursor: default;
+}
+
+.fc-cliente-seleccionado {
+  margin-top: 10px;
+  padding: 12px;
+  background: #f8f9fa;
+  border: 1px solid #e9ecef;
+  border-radius: 4px;
+}
+
+.fc-cliente-info {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.fc-cliente-info strong {
+  color: #333;
+  font-size: 14px;
+}
+
+.fc-cliente-info span {
+  font-size: 12px;
+  color: #666;
+}
+
+.fc-pagos-section {
+  background: #fff;
+}
+
+.fc-condicion-pago {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  margin-bottom: 20px;
+  max-width: 200px;
+}
+
+.fc-pagos-table {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.fc-pagos-header {
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr 1fr 100px 100px;
+  gap: 10px;
+  padding: 10px 0;
+  font-weight: 500;
+  font-size: 13px;
+  color: #555;
+  border-bottom: 1px solid #eee;
+}
+
+.fc-pagos-row {
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr 1fr 100px 100px;
+  gap: 10px;
+  align-items: center;
+  padding: 8px 0;
+}
+
+.fc-small {
+  font-size: 13px;
+  padding: 6px 8px;
+}
+
+.fc-agregar-btn {
+  background: none;
+  border: none;
+  color: #3498db;
+  cursor: pointer;
+  font-size: 12px;
+  text-decoration: underline;
+}
+
+.fc-delete-btn {
+  background: #e74c3c;
+  border: none;
+  color: white;
+  padding: 6px 8px;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 12px;
+}
+
+.fc-delete-btn:hover {
+  background: #c0392b;
+}
+
+.fc-actions {
+  display: flex;
+  gap: 15px;
+  align-items: center;
+  flex-wrap: wrap;
+  padding: 20px 0;
+}
+
+.fc-btn {
+  padding: 10px 16px;
+  border-radius: 5px;
+  font-size: 14px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.2s;
+  border: 1px solid transparent;
+}
+
+.fc-btn-primary {
+  background: #e74c3c;
+  color: white;
+  border: none;
+}
+
+.fc-btn-primary:hover {
+  background: #c0392b;
+}
+
+.fc-btn-secondary {
+  background: #f8f9fa;
+  color: #28a745;
+  border: 1px solid #28a745;
+}
+
+.fc-btn-secondary:hover {
+  background: #28a745;
+  color: white;
+}
+
+.fc-btn-outline {
+  background: white;
+  color: #666;
+  border: 1px solid #ddd;
+}
+
+.fc-btn-outline:hover {
+  background: #f8f9fa;
+  border-color: #aaa;
+}
+
+.fc-btn-cancel {
+  background: none;
+  color: #666;
+  border: none;
+  margin-left: auto;
+}
+
+.fc-btn-cancel:hover {
+  color: #333;
+}
+
+.fc-btn-link {
+  background: none;
+  color: #28a745;
+  border: none;
+  text-decoration: underline;
+}
+
+.fc-file-actions {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.fc-file-text {
+  color: #666;
+  font-size: 13px;
+}
+
+.fc-download-links {
+  display: flex;
+  gap: 30px;
+  padding-top: 10px;
+}
+
+.fc-download-link {
+  color: #e74c3c;
+  text-decoration: underline;
+  font-size: 13px;
+}
+
+.fc-download-link:hover {
+  color: #c0392b;
+} 
+
+
+
+
+/* Estilos para el Modal de Nuevo Proveedor */
+.fc-modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.5);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000;
+}
+
+.fc-modal {
+  background: white;
+  border-radius: 8px;
+  width: 90%;
+  max-width: 600px;
+  max-height: 90vh;
+  overflow-y: auto;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+}
+
+.fc-modal-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 20px;
+  border-bottom: 1px solid #ddd;
+  background: #f8f9fa;
+  border-radius: 8px 8px 0 0;
+}
+
+.fc-modal-header h3 {
+  margin: 0;
+  font-size: 18px;
+  font-weight: 500;
+  color: #333;
+}
+
+.fc-modal-close {
+  background: none;
+  border: none;
+  font-size: 24px;
+  cursor: pointer;
+  color: #666;
+  padding: 0;
+  width: 30px;
+  height: 30px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.fc-modal-close:hover {
+  color: #333;
+  background: #e9ecef;
+  border-radius: 50%;
+}
+
+.fc-modal-body {
+  padding: 20px;
+}
+
+.fc-modal-row {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 15px;
+  margin-bottom: 15px;
+}
+
+.fc-modal-field {
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+}
+
+.fc-modal-field.fc-full-width {
+  grid-column: 1 / -1;
+}
+
+.fc-modal-checkbox {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 10px 0;
+}
+
+.fc-modal-footer {
+  display: flex;
+  justify-content: flex-end;
+  gap: 10px;
+  padding: 20px;
+  border-top: 1px solid #ddd;
+  background: #f8f9fa;
+  border-radius: 0 0 8px 8px;
+}
+
+/* Responsive para el modal */
+@media (max-width: 768px) {
+  .fc-modal {
+    width: 95%;
+    margin: 20px;
+  }
+  
+  .fc-modal-row {
+    grid-template-columns: 1fr;
+  }
+  
+  .fc-modal-footer {
+    flex-direction: column;
+  }
+  
+  .fc-modal-footer .fc-btn {
+    width: 100%;
+  }
+}
+
+/* Estilos adicionales para los campos del modal */
+.fc-modal .fc-input,
+.fc-modal .fc-select {
+  padding: 8px 12px;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+  font-size: 14px;
+  background: #fff;
+  transition: border-color 0.2s;
+}
+
+.fc-modal .fc-input:focus,
+.fc-modal .fc-select:focus {
+  outline: none;
+  border-color: #3498db;
+}
+
+.fc-modal .fc-label {
+  font-size: 13px;
+  color: #555;
+  font-weight: 500;
+}
+
+.fc-modal .fc-checkbox {
+  width: 16px;
+  height: 16px;
+  accent-color: #3498db;
+}
+
+.fc-modal .fc-checkbox-label {
+  font-size: 14px;
+  color: #333;
+  cursor: pointer;
+}
+
+/* Estilos para el grupo de input con botón de consulta */
+.fc-input-group {
+  display: flex;
+  gap: 8px;
+  align-items: center;
+}
+
+.fc-input-group .fc-input {
+  flex: 1;
+}
+
+.fc-btn-consulta {
+  padding: 8px 16px;
+  background: #3498db;
+  color: white;
+  border: none;
+  border-radius: 4px;
+  font-size: 13px;
+  cursor: pointer;
+  transition: background-color 0.2s;
+  white-space: nowrap;
+}
+
+.fc-btn-consulta:hover:not(:disabled) {
+  background: #2980b9;
+}
+
+.fc-btn-consulta:disabled {
+  background: #bdc3c7;
+  cursor: not-allowed;
+}
+
+.fc-error-message {
+  color: #e74c3c;
+  font-size: 12px;
+  margin-top: 4px;
+}
+
+@media (max-width: 768px) {
+  .fc-row {
+    grid-template-columns: 1fr;
+  }
+  
+  .fc-pagos-header,
+  .fc-pagos-row {
+    grid-template-columns: 1fr;
+    gap: 5px;
+  }
+  
+  .fc-actions {
+    flex-direction: column;
+    align-items: stretch;
+  }
+  
+  .fc-file-actions {
+    flex-direction: column;
+  }
+}

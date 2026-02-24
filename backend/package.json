@@ -1,0 +1,52 @@
+{
+  "name": "backend",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "dependencies": {
+    "@whiskeysockets/baileys": "^6.7.18",
+    "axios": "^1.11.0",
+    "bcrypt": "^6.0.0",
+    "body-parser": "^2.2.0",
+    "bwip-js": "^4.7.0",
+    "canvas": "^3.2.0",
+
+    "cors": "^2.8.5",
+    "dotenv": "^17.2.1",
+    "exceljs": "^4.4.0",
+    "express": "^5.1.0",
+    "express-rate-limit": "^8.0.1",
+    "form-data": "^4.0.4",
+    "fs": "0.0.1-security",
+    "jsbarcode": "^3.12.1",
+    "jsonwebtoken": "^9.0.2",
+    "moment": "^2.30.1",
+    "multer": "^2.0.2",
+
+    "mysql2": "^3.14.3",
+    "path": "^0.12.7",
+    "pdfkit": "^0.17.1",
+    "puppeteer": "^24.17.0",
+    "qrcode": "^1.5.4",
+    "qrcode-terminal": "^0.12.0",
+    "sequelize": "^6.37.7",
+    "swagger-jsdoc": "^6.2.8",
+    "swagger-ui-express": "^5.0.1",
+    "xlsx": "^0.18.5",
+    "xml2js": "^0.6.2",
+    "xmlbuilder2": "^3.1.1"
+  },
+  "devDependencies": {
+    "nodemon": "^3.1.10"
+  },
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "dev": "nodemon src/app.js",
+    "start": "node src/app.js",
+    "init-folders": "node scripts/init-folders.js",
+    "postinstall": "npm run init-folders"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC"
+}

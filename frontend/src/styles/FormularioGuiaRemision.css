@@ -1,0 +1,471 @@
+/* FormularioGuiaRemision.css */
+
+.formulario-container {
+  max-width: 3400px;
+  margin: 0 auto;
+  padding: 24px;
+  background-color: #ffffff;
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', sans-serif;
+}
+
+.formulario-titulo {
+  font-size: 28px;
+  font-weight: 600;
+  color: #1f2937;
+  margin-bottom: 32px;
+  border-bottom: 3px solid #3b82f6;
+  padding-bottom: 12px;
+}
+
+.formulario-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+  gap: 24px;
+  margin-bottom: 40px;
+}
+
+/* Estilos para campos especiales */
+.observaciones-grupo {
+  grid-column: span 2;
+}
+
+.guias-grupo {
+  grid-column: span 2;
+}
+
+.campo-grupo {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.campo-label {
+  font-size: 14px;
+  font-weight: 500;
+  color: #374151;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.requerido {
+  color: #dc2626;
+  font-weight: 600;
+}
+
+.enlace-agregar {
+  color: #3b82f6;
+  font-weight: 500;
+  cursor: pointer;
+  font-size: 13px;
+  margin-left: 8px;
+  text-decoration: none;
+  transition: color 0.2s ease;
+}
+
+.enlace-agregar:hover {
+  color: #1d4ed8;
+  text-decoration: underline;
+}
+
+.info-icon {
+  color: #6b7280;
+  cursor: help;
+}
+
+.campo-input {
+  padding: 12px 16px;
+  border: 2px solid #e5e7eb;
+  border-radius: 8px;
+  font-size: 14px;
+  transition: all 0.2s ease;
+  background-color: #ffffff;
+}
+
+.campo-input:focus {
+  outline: none;
+  border-color: #3b82f6;
+  box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
+}
+
+.campo-select {
+  appearance: none;
+  background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 20 20'%3e%3cpath stroke='%236b7280' stroke-linecap='round' stroke-linejoin='round' stroke-width='1.5' d='m6 8 4 4 4-4'/%3e%3c/svg%3e");
+  background-position: right 12px center;
+  background-repeat: no-repeat;
+  background-size: 16px;
+  padding-right: 40px;
+}
+
+.campo-textarea {
+  resize: vertical;
+  min-height: 100px;
+}
+
+.input-con-botones {
+  position: relative;
+  display: flex;
+  align-items: center;
+}
+
+.input-con-botones .campo-input {
+  flex: 1;
+  padding-right: 50px;
+}
+
+.boton-incrementar {
+  position: absolute;
+  right: 8px;
+  background: #3b82f6;
+  color: white;
+  border: none;
+  border-radius: 6px;
+  width: 32px;
+  height: 32px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: background-color 0.2s ease;
+}
+
+.boton-incrementar:hover {
+  background: #2563eb;
+}
+
+.fecha-input-container {
+  position: relative;
+}
+
+.fecha-input-container input[type="date"] {
+  width: 100%;
+}
+
+/* Estilos para guías relacionadas */
+.guias-relacionadas-container {
+  background-color: #f9fafb;
+  border-radius: 8px;
+  border: 2px solid #e5e7eb;
+  padding: 16px;
+  margin-top: 12px;
+}
+
+.guias-relacionadas-header {
+  display: grid;
+  grid-template-columns: 150px 150px 180px 80px;
+  gap: 12px;
+  padding: 12px 0;
+  border-bottom: 2px solid #d1d5db;
+  margin-bottom: 16px;
+  align-items: center;
+}
+
+.guia-columna {
+  font-weight: 600;
+  color: #374151;
+  font-size: 14px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+}
+
+.guia-relacionada-row {
+  display: grid;
+  grid-template-columns: 150px 150px 180px 80px;
+  gap: 12px;
+  margin-bottom: 12px;
+  align-items: center;
+}
+
+.campo-input-small {
+  padding: 8px 12px;
+  border: 1px solid #d1d5db;
+  border-radius: 6px;
+  font-size: 13px;
+  transition: all 0.2s ease;
+  background-color: #ffffff;
+  width: 100%;
+  text-align: center;
+}
+
+.campo-input-small:focus {
+  outline: none;
+  border-color: #3b82f6;
+  box-shadow: 0 0 0 2px rgba(59, 130, 246, 0.1);
+}
+
+.boton-eliminar {
+  background: #dc2626;
+  color: white;
+  border: none;
+  border-radius: 6px;
+  width: 32px;
+  height: 32px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: background-color 0.2s ease;
+  margin: 0 auto;
+}
+
+.boton-eliminar:hover {
+  background: #b91c1c;
+}
+
+/* Estilos para la tabla de productos */
+.productos-seccion {
+  background-color: #f9fafb;
+  border-radius: 12px;
+  padding: 24px;
+  border: 2px solid #e5e7eb;
+}
+
+.productos-header {
+  display: grid;
+  grid-template-columns: 60px 120px 1fr 120px 120px 100px;
+  gap: 16px;
+  padding: 16px 0;
+  border-bottom: 2px solid #d1d5db;
+  margin-bottom: 16px;
+}
+
+.productos-columna {
+  font-weight: 600;
+  color: #374151;
+  font-size: 14px;
+}
+
+.productos-body {
+  min-height: 80px;
+  margin-bottom: 20px;
+}
+
+.producto-fila {
+  display: grid;
+  grid-template-columns: 60px 120px 1fr 120px 120px 100px;
+  gap: 16px;
+  padding: 12px 0;
+  border-bottom: 1px solid #e5e7eb;
+  align-items: center;
+}
+
+.producto-fila:last-child {
+  border-bottom: none;
+}
+
+.producto-fila .productos-columna {
+  font-weight: 400;
+  color: #1f2937;
+}
+
+.boton-eliminar-producto {
+  background: #dc2626;
+  color: white;
+  border: none;
+  border-radius: 6px;
+  width: 32px;
+  height: 32px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: background-color 0.2s ease;
+}
+
+.boton-eliminar-producto:hover {
+  background: #b91c1c;
+}
+
+.producto-nuevo {
+  color: #6b7280;
+  font-style: italic;
+}
+
+.boton-agregar-producto {
+  background: #3b82f6;
+  color: white;
+  border: none;
+  border-radius: 8px;
+  padding: 12px 24px;
+  font-size: 14px;
+  font-weight: 500;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  transition: all 0.2s ease;
+  margin-top: 16px;
+  margin-bottom: 8px;
+}
+
+.boton-agregar-producto:hover {
+  background: #2563eb;
+  transform: translateY(-1px);
+  box-shadow: 0 4px 12px rgba(59, 130, 246, 0.4);
+}
+
+/* Estilos para botones de acción */
+.botones-grupo {
+  display: flex;
+  justify-content: flex-end;
+  gap: 16px;
+  margin-top: 32px;
+  padding-top: 24px;
+  border-top: 2px solid #e5e7eb;
+}
+
+.boton-cancelar {
+  background: #6b7280;
+  color: white;
+  border: none;
+  border-radius: 8px;
+  padding: 12px 24px;
+  font-size: 14px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.boton-cancelar:hover {
+  background: #4b5563;
+}
+
+.boton-guardar {
+  background: #10b981;
+  color: white;
+  border: none;
+  border-radius: 8px;
+  padding: 12px 24px;
+  font-size: 14px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.boton-guardar:hover:not(:disabled) {
+  background: #059669;
+}
+
+.boton-guardar:disabled {
+  background: #9ca3af;
+  cursor: not-allowed;
+}
+
+/* Responsividad */
+@media (max-width: 768px) {
+  .formulario-container {
+    padding: 16px;
+  }
+  
+  .formulario-grid {
+    grid-template-columns: 1fr;
+    gap: 16px;
+  }
+  
+  .observaciones-grupo,
+  .guias-grupo {
+    grid-column: span 1;
+  }
+  
+  .guias-relacionadas-header,
+  .guia-relacionada-row {
+    grid-template-columns: 1fr;
+    gap: 8px;
+  }
+  
+  .guia-columna {
+    padding: 4px 0;
+    border-bottom: 1px solid #e5e7eb;
+  }
+  
+  .productos-header {
+    grid-template-columns: 40px 100px 1fr 80px 80px;
+    gap: 8px;
+  }
+  
+  .formulario-titulo {
+    font-size: 24px;
+  }
+  
+  .botones-grupo {
+    flex-direction: column;
+    gap: 12px;
+  }
+}
+
+@media (max-width: 480px) {
+  .productos-header {
+    grid-template-columns: 1fr;
+    gap: 8px;
+  }
+  
+  .productos-columna {
+    padding: 4px 0;
+    border-bottom: 1px solid #e5e7eb;
+  }
+  
+  .campo-input {
+    padding: 10px 12px;
+    font-size: 16px; /* Previene zoom en iOS */
+  }
+}
+
+/* Estados hover para mejorar la interactividad */
+.campo-input:hover:not(:focus) {
+  border-color: #d1d5db;
+}
+
+.campo-select:hover:not(:focus) {
+  border-color: #d1d5db;
+}
+
+/* Estilos para campos deshabilitados o de solo lectura */
+.campo-input[readonly] {
+  background-color: #f9fafb;
+  color: #6b7280;
+}
+
+/* Animaciones sutiles */
+.campo-grupo {
+  transition: transform 0.2s ease;
+}
+
+.campo-grupo:hover {
+  transform: translateY(-2px);
+}
+
+/* Mejoras para accesibilidad */
+.campo-input:focus-visible,
+.boton-incrementar:focus-visible,
+.boton-agregar-producto:focus-visible,
+.boton-eliminar:focus-visible,
+.boton-cancelar:focus-visible,
+.boton-guardar:focus-visible {
+  outline: 2px solid #3b82f6;
+  outline-offset: 2px;
+}
+
+/* Estilos para placeholders */
+.campo-input::placeholder,
+.campo-input-small::placeholder {
+  color: #9ca3af;
+  font-style: italic;
+}
+
+/* Estilos específicos para el textarea */
+.campo-textarea {
+  font-family: inherit;
+  line-height: 1.5;
+}
+
+/* Separador visual entre secciones */
+.formulario-grid::after {
+  content: '';
+  grid-column: 1 / -1;
+  height: 2px;
+  background: linear-gradient(to right, #e5e7eb, #d1d5db, #e5e7eb);
+  margin: 20px 0;
+  border-radius: 2px;
+}

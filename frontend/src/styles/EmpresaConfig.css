@@ -1,0 +1,435 @@
+/* ==================== VARIABLES CSS ==================== */
+:root {
+  /* Colores principales */
+  --empresa-bg-primary: #f8f9fa;
+  --empresa-bg-white: #ffffff;
+  --empresa-text-dark: #2c3e50;
+  --empresa-text-gray: #6c757d;
+  --empresa-text-light: #95a5a6;
+  --empresa-accent-blue: #3498db;
+  --empresa-accent-blue-hover: #2980b9;
+  --empresa-accent-red: #e74c3c;
+  --empresa-accent-green: #27ae60;
+  
+  /* Bordes y divisores */
+  --empresa-border-color: #dee2e6;
+  --empresa-border-light: #f1f2f6;
+  
+  /* Sombras */
+  --empresa-shadow-sm: 0 1px 3px rgba(0, 0, 0, 0.1);
+  --empresa-shadow-md: 0 2px 8px rgba(0, 0, 0, 0.1);
+  --empresa-shadow-lg: 0 4px 16px rgba(0, 0, 0, 0.1);
+  
+  /* Espaciados */
+  --empresa-spacing-xs: 8px;
+  --empresa-spacing-sm: 12px;
+  --empresa-spacing-md: 16px;
+  --empresa-spacing-lg: 24px;
+  --empresa-spacing-xl: 32px;
+  --empresa-spacing-xxl: 48px;
+  
+  /* Tipografía */
+  --empresa-font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  --empresa-font-size-xs: 12px;
+  --empresa-font-size-sm: 13px;
+  --empresa-font-size-base: 14px;
+  --empresa-font-size-md: 15px;
+  --empresa-font-size-lg: 16px;
+  --empresa-font-size-xl: 18px;
+  --empresa-font-size-xxl: 20px;
+  
+  /* Radios de borde */
+  --empresa-radius-sm: 4px;
+  --empresa-radius-md: 6px;
+  --empresa-radius-lg: 8px;
+  --empresa-radius-xl: 12px;
+  
+  /* Transiciones */
+  --empresa-transition: all 0.3s ease;
+}
+
+/* ==================== CONTENEDOR PRINCIPAL ==================== */
+.empresa-config {
+  min-height: 100vh;
+  background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+  font-family: var(--empresa-font-family);
+}
+
+/* ==================== HEADER Y BREADCRUMB ==================== */
+.empresa-config__header {
+  background: linear-gradient(135deg, var(--empresa-accent-blue) 0%, var(--empresa-accent-blue-hover) 100%);
+  padding: var(--empresa-spacing-md) var(--empresa-spacing-lg);
+  box-shadow: var(--empresa-shadow-md);
+}
+
+.empresa-config__breadcrumb {
+  display: flex;
+  align-items: center;
+  gap: var(--empresa-spacing-xs);
+  font-size: var(--empresa-font-size-sm);
+  color: white;
+}
+
+.empresa-config__breadcrumb-icon {
+  font-size: var(--empresa-font-size-lg);
+}
+
+.empresa-config__breadcrumb-text {
+  font-weight: 600;
+  opacity: 0.9;
+}
+
+.empresa-config__breadcrumb-separator {
+  opacity: 0.7;
+}
+
+.empresa-config__breadcrumb-current {
+  font-weight: 700;
+  opacity: 1;
+}
+
+/* ==================== CONTENIDO PRINCIPAL ==================== */
+.empresa-config__content {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: var(--empresa-spacing-lg);
+}
+
+.empresa-config__title-section {
+  background: var(--empresa-bg-white);
+  padding: var(--empresa-spacing-lg);
+  border-radius: var(--empresa-radius-lg) var(--empresa-radius-lg) 0 0;
+  border: 1px solid var(--empresa-border-color);
+  border-bottom: none;
+  box-shadow: var(--empresa-shadow-sm);
+}
+
+.empresa-config__title {
+  margin: 0;
+  font-size: var(--empresa-font-size-xxl);
+  font-weight: 700;
+  color: var(--empresa-text-dark);
+  text-align: center;
+}
+
+/* ==================== FORMULARIO ==================== */
+.empresa-config__form {
+  background: var(--empresa-bg-white);
+  border: 1px solid var(--empresa-border-color);
+  border-radius: 0 0 var(--empresa-radius-lg) var(--empresa-radius-lg);
+  padding: var(--empresa-spacing-xxl);
+  box-shadow: var(--empresa-shadow-lg);
+}
+
+.empresa-config__section {
+  margin-bottom: var(--empresa-spacing-xxl);
+  padding-bottom: var(--empresa-spacing-xl);
+  border-bottom: 2px solid var(--empresa-border-light);
+}
+
+.empresa-config__section:last-of-type {
+  border-bottom: none;
+  margin-bottom: 0;
+  padding-bottom: 0;
+}
+
+.empresa-config__subtitle {
+  font-size: var(--empresa-font-size-lg);
+  font-weight: 600;
+  color: var(--empresa-accent-blue);
+  margin: 0 0 var(--empresa-spacing-lg) 0;
+  padding-bottom: var(--empresa-spacing-sm);
+  border-bottom: 2px solid var(--empresa-accent-blue);
+  display: inline-block;
+}
+
+/* ==================== CAMPOS DEL FORMULARIO ==================== */
+.empresa-config__row {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: var(--empresa-spacing-lg);
+  margin-bottom: var(--empresa-spacing-lg);
+}
+
+.empresa-config__field {
+  display: flex;
+  flex-direction: column;
+  gap: var(--empresa-spacing-xs);
+}
+
+.empresa-config__field--full {
+  grid-column: 1 / -1;
+}
+
+.empresa-config__label {
+  font-size: var(--empresa-font-size-sm);
+  font-weight: 600;
+  color: var(--empresa-text-dark);
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.empresa-config__required {
+  color: var(--empresa-accent-red);
+  font-weight: 700;
+}
+
+.empresa-config__info {
+  color: var(--empresa-text-light);
+  cursor: help;
+  font-size: var(--empresa-font-size-base);
+}
+
+.empresa-config__help-text {
+  font-size: var(--empresa-font-size-xs);
+  color: var(--empresa-text-light);
+  font-style: italic;
+  margin-top: 4px;
+}
+
+/* ==================== INPUTS Y SELECTS ==================== */
+.empresa-config__input,
+.empresa-config__select {
+  width: 100%;
+  padding: var(--empresa-spacing-sm) var(--empresa-spacing-md);
+  font-size: var(--empresa-font-size-base);
+  border: 2px solid var(--empresa-border-color);
+  border-radius: var(--empresa-radius-md);
+  background-color: var(--empresa-bg-white);
+  color: var(--empresa-text-dark);
+  transition: var(--empresa-transition);
+  font-family: var(--empresa-font-family);
+}
+
+.empresa-config__input:focus,
+.empresa-config__select:focus {
+  outline: none;
+  border-color: var(--empresa-accent-blue);
+  box-shadow: 0 0 0 3px rgba(52, 152, 219, 0.1);
+  transform: translateY(-1px);
+}
+
+.empresa-config__input::placeholder {
+  color: var(--empresa-text-light);
+  opacity: 0.7;
+}
+
+.empresa-config__select {
+  cursor: pointer;
+  appearance: none;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' viewBox='0 0 24 24' fill='none' stroke='%236c757d' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='6 9 12 15 18 9'%3E%3C/polyline%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-position: right 12px center;
+  background-size: 16px;
+  padding-right: 40px;
+}
+
+/* ==================== CHECKBOX ==================== */
+.empresa-config__checkbox-group {
+  display: flex;
+  align-items: center;
+  gap: var(--empresa-spacing-sm);
+  margin: var(--empresa-spacing-md) 0;
+  padding: var(--empresa-spacing-sm);
+  background: var(--empresa-border-light);
+  border-radius: var(--empresa-radius-md);
+  border-left: 4px solid var(--empresa-accent-blue);
+}
+
+.empresa-config__checkbox {
+  width: 20px;
+  height: 20px;
+  cursor: pointer;
+  accent-color: var(--empresa-accent-blue);
+}
+
+.empresa-config__checkbox-label {
+  font-size: var(--empresa-font-size-sm);
+  color: var(--empresa-text-dark);
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-weight: 500;
+}
+
+/* ==================== BOTONES ==================== */
+.empresa-config__file-group {
+  display: flex;
+  align-items: center;
+  gap: var(--empresa-spacing-sm);
+  padding: var(--empresa-spacing-sm);
+  background: var(--empresa-border-light);
+  border-radius: var(--empresa-radius-md);
+  border: 1px dashed var(--empresa-border-color);
+}
+
+.empresa-config__btn-select {
+  padding: var(--empresa-spacing-sm) var(--empresa-spacing-md);
+  font-size: var(--empresa-font-size-sm);
+  font-weight: 600;
+  color: var(--empresa-bg-white);
+  background: linear-gradient(135deg, var(--empresa-accent-blue) 0%, var(--empresa-accent-blue-hover) 100%);
+  border: none;
+  border-radius: var(--empresa-radius-sm);
+  cursor: pointer;
+  transition: var(--empresa-transition);
+  font-family: var(--empresa-font-family);
+  box-shadow: var(--empresa-shadow-sm);
+}
+
+.empresa-config__btn-select:hover {
+  transform: translateY(-2px);
+  box-shadow: var(--empresa-shadow-md);
+}
+
+.empresa-config__file-text {
+  font-size: var(--empresa-font-size-sm);
+  color: var(--empresa-text-gray);
+  flex: 1;
+  font-weight: 500;
+}
+
+/* ==================== BOTONES DE ACCIÓN ==================== */
+.empresa-config__actions {
+  display: flex;
+  justify-content: center;
+  gap: var(--empresa-spacing-lg);
+  margin-top: var(--empresa-spacing-xxl);
+  padding-top: var(--empresa-spacing-xl);
+  border-top: 2px solid var(--empresa-border-light);
+}
+
+.empresa-config__btn-submit {
+  padding: var(--empresa-spacing-md) var(--empresa-spacing-xl);
+  font-size: var(--empresa-font-size-base);
+  font-weight: 700;
+  color: var(--empresa-bg-white);
+  background: linear-gradient(135deg, var(--empresa-accent-green) 0%, #219653 100%);
+  border: none;
+  border-radius: var(--empresa-radius-lg);
+  cursor: pointer;
+  transition: var(--empresa-transition);
+  font-family: var(--empresa-font-family);
+  min-width: 160px;
+  box-shadow: var(--empresa-shadow-md);
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.empresa-config__btn-submit:hover {
+  transform: translateY(-2px);
+  box-shadow: var(--empresa-shadow-lg);
+}
+
+.empresa-config__btn-cancel {
+  padding: var(--empresa-spacing-md) var(--empresa-spacing-xl);
+  font-size: var(--empresa-font-size-base);
+  font-weight: 600;
+  color: var(--empresa-text-gray);
+  background: var(--empresa-border-light);
+  border: 2px solid var(--empresa-border-color);
+  border-radius: var(--empresa-radius-lg);
+  cursor: pointer;
+  transition: var(--empresa-transition);
+  font-family: var(--empresa-font-family);
+  min-width: 160px;
+}
+
+.empresa-config__btn-cancel:hover {
+  background: var(--empresa-border-color);
+  transform: translateY(-1px);
+}
+
+/* ==================== RESPONSIVE ==================== */
+@media (max-width: 1024px) {
+  .empresa-config__content {
+    padding: var(--empresa-spacing-md);
+  }
+  
+  .empresa-config__form {
+    padding: var(--empresa-spacing-xl);
+  }
+}
+
+@media (max-width: 768px) {
+  .empresa-config__row {
+    grid-template-columns: 1fr;
+    gap: var(--empresa-spacing-md);
+  }
+
+  .empresa-config__header {
+    padding: var(--empresa-spacing-sm) var(--empresa-spacing-md);
+  }
+
+  .empresa-config__form {
+    padding: var(--empresa-spacing-lg);
+  }
+
+  .empresa-config__title-section {
+    padding: var(--empresa-spacing-md);
+  }
+
+  .empresa-config__file-group {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  .empresa-config__actions {
+    flex-direction: column;
+    gap: var(--empresa-spacing-md);
+  }
+
+  .empresa-config__btn-submit,
+  .empresa-config__btn-cancel {
+    width: 100%;
+  }
+}
+
+@media (max-width: 480px) {
+  .empresa-config__breadcrumb {
+    font-size: var(--empresa-font-size-xs);
+    flex-wrap: wrap;
+  }
+
+  .empresa-config__title {
+    font-size: var(--empresa-font-size-lg);
+  }
+
+  .empresa-config__subtitle {
+    font-size: var(--empresa-font-size-md);
+  }
+  
+  .empresa-config__content {
+    padding: var(--empresa-spacing-sm);
+  }
+  
+  .empresa-config__form {
+    padding: var(--empresa-spacing-md);
+  }
+}
+
+/* ==================== ANIMACIONES ==================== */
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.empresa-config__section {
+  animation: fadeIn 0.5s ease-out;
+}
+
+.empresa-config__section:nth-child(odd) {
+  animation-delay: 0.1s;
+}
+
+.empresa-config__section:nth-child(even) {
+  animation-delay: 0.2s;
+}

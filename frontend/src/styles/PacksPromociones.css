@@ -1,0 +1,965 @@
+/* PacksPromociones.css */
+
+.packs-promociones-container {
+  padding: 20px;
+  background-color: #f5f5f5;
+  min-height: 100vh;
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen', 'Ubuntu', sans-serif;
+}
+
+.packs-promociones-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 20px;
+  background-color: white;
+  padding: 15px 20px;
+  border-radius: 8px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.packs-promociones-title {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.packs-promociones-icon {
+  font-size: 24px;
+  color: #e74c3c;
+}
+
+.packs-promociones-title h1 {
+  margin: 0;
+  font-size: 18px;
+  font-weight: 600;
+  color: #333;
+}
+
+.packs-promociones-actions {
+  display: flex;
+  gap: 10px;
+}
+
+.packs-promociones-btn-importar,
+.packs-promociones-btn-nuevo,
+.packs-promociones-btn-reemplazar {
+  padding: 10px 20px;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  font-size: 14px;
+  font-weight: 500;
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  transition: all 0.3s ease;
+}
+
+.packs-promociones-btn-importar {
+  background-color: #e74c3c;
+  color: white;
+}
+
+.packs-promociones-btn-nuevo {
+  background-color: #e74c3c;
+  color: white;
+}
+
+.packs-promociones-btn-reemplazar {
+  background-color: #e74c3c;
+  color: white;
+}
+
+.packs-promociones-btn-importar:hover,
+.packs-promociones-btn-nuevo:hover,
+.packs-promociones-btn-reemplazar:hover {
+  background-color: #c0392b;
+}
+
+.packs-promociones-section {
+  background-color: white;
+  padding: 20px;
+  border-radius: 8px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.packs-promociones-section-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 20px;
+  padding-bottom: 15px;
+  border-bottom: 1px solid #eee;
+}
+
+.packs-promociones-section-header h2 {
+  margin: 0;
+  font-size: 16px;
+  font-weight: 600;
+  color: #333;
+}
+
+.packs-promociones-btn-mostrar {
+  background-color: #e74c3c;
+  color: white;
+  border: none;
+  padding: 8px 16px;
+  border-radius: 5px;
+  cursor: pointer;
+  font-size: 13px;
+  font-weight: 500;
+  transition: background-color 0.3s ease;
+}
+
+.packs-promociones-btn-mostrar:hover {
+  background-color: #c0392b;
+}
+
+.packs-promociones-filters {
+  display: flex;
+  gap: 10px;
+  margin-bottom: 20px;
+  flex-wrap: wrap;
+}
+
+.packs-promociones-filter-input,
+.packs-promociones-search-input {
+  padding: 8px 12px;
+  border: 1px solid #ddd;
+  border-radius: 5px;
+  font-size: 14px;
+  flex: 1;
+  min-width: 200px;
+}
+
+.packs-promociones-btn-buscar {
+  background-color: #e74c3c;
+  color: white;
+  border: none;
+  padding: 8px 20px;
+  border-radius: 5px;
+  cursor: pointer;
+  font-size: 14px;
+  font-weight: 500;
+  transition: background-color 0.3s ease;
+}
+
+.packs-promociones-btn-buscar:hover {
+  background-color: #c0392b;
+}
+
+.packs-promociones-table-wrapper {
+  overflow-x: auto;
+}
+
+.packs-promociones-table {
+  width: 100%;
+  border-collapse: collapse;
+  min-width: 1000px;
+}
+
+.packs-promociones-table thead {
+  background-color: #f8f9fa;
+}
+
+.packs-promociones-table th {
+  padding: 12px 8px;
+  text-align: left;
+  font-weight: 600;
+  color: #555;
+  border-bottom: 2px solid #dee2e6;
+  font-size: 13px;
+  white-space: nowrap;
+}
+
+.packs-promociones-table td {
+  padding: 12px 8px;
+  border-bottom: 1px solid #dee2e6;
+  font-size: 13px;
+  color: #666;
+}
+
+.packs-promociones-empty {
+  text-align: center;
+  color: #999;
+  padding: 30px !important;
+}
+
+.packs-promociones-pagination {
+  display: flex;
+  justify-content: center;
+  gap: 5px;
+  margin-top: 20px;
+}
+
+.packs-promociones-page-btn {
+  padding: 6px 12px;
+  border: 1px solid #ddd;
+  background-color: white;
+  cursor: pointer;
+  border-radius: 4px;
+  font-size: 14px;
+  transition: all 0.3s ease;
+}
+
+.packs-promociones-page-btn:hover {
+  background-color: #f0f0f0;
+}
+
+.packs-promociones-page-btn.packs-promociones-active {
+  background-color: #3498db;
+  color: white;
+  border-color: #3498db;
+}
+
+/* Modal */
+.packs-promociones-modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: rgba(0, 0, 0, 0.5);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 1000;
+  padding: 20px;
+  overflow-y: auto;
+}
+
+.packs-promociones-modal {
+  background-color: white;
+  border-radius: 8px;
+  width: 100%;
+  max-width: 1100px;
+  max-height: 90vh;
+  overflow-y: auto;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.2);
+  margin: auto;
+}
+
+.packs-promociones-modal-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 15px 20px;
+  background-color: #e74c3c;
+  color: white;
+  border-radius: 8px 8px 0 0;
+}
+
+.packs-promociones-modal-header h2 {
+  margin: 0;
+  font-size: 18px;
+  font-weight: 600;
+}
+
+.packs-promociones-modal-close {
+  background: none;
+  border: none;
+  font-size: 28px;
+  color: white;
+  cursor: pointer;
+  line-height: 1;
+  padding: 0;
+  width: 30px;
+  height: 30px;
+  transition: opacity 0.3s ease;
+}
+
+.packs-promociones-modal-close:hover {
+  opacity: 0.8;
+}
+
+.packs-promociones-modal-body {
+  padding: 20px;
+}
+
+.packs-promociones-form-section {
+  margin-bottom: 20px;
+}
+
+.packs-promociones-form-row-2 {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 15px;
+  margin-bottom: 15px;
+}
+
+.packs-promociones-form-row-3 {
+  display: grid;
+  grid-template-columns: 2fr 1fr 1fr;
+  gap: 15px;
+  margin-bottom: 15px;
+}
+
+.packs-promociones-form-row-4 {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 15px;
+  margin-bottom: 15px;
+}
+
+.packs-promociones-form-group {
+  display: flex;
+  flex-direction: column;
+}
+
+.packs-promociones-form-group label {
+  font-size: 13px;
+  font-weight: 600;
+  color: #555;
+  margin-bottom: 5px;
+  display: flex;
+  align-items: center;
+  gap: 5px;
+}
+
+.packs-promociones-required {
+  color: #e74c3c;
+}
+
+.packs-promociones-link {
+  color: #3498db;
+  cursor: pointer;
+  font-weight: normal;
+  font-size: 12px;
+}
+
+.packs-promociones-link:hover {
+  text-decoration: underline;
+}
+
+.packs-promociones-info-icon {
+  color: #3498db;
+  cursor: help;
+  font-size: 14px;
+}
+
+.packs-promociones-input,
+.packs-promociones-select,
+.packs-promociones-textarea {
+  padding: 8px 12px;
+  border: 1px solid #ddd;
+  border-radius: 5px;
+  font-size: 14px;
+  width: 100%;
+  box-sizing: border-box;
+  font-family: inherit;
+}
+
+.packs-promociones-textarea {
+  resize: vertical;
+}
+
+.packs-promociones-input:focus,
+.packs-promociones-select:focus,
+.packs-promociones-textarea:focus {
+  outline: none;
+  border-color: #3498db;
+}
+
+.packs-promociones-btn-agregar-productos {
+  width: 100%;
+  padding: 10px;
+  background-color: #e74c3c;
+  color: white;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  font-size: 14px;
+  font-weight: 500;
+  margin: 20px 0;
+  transition: background-color 0.3s ease;
+}
+
+.packs-promociones-btn-agregar-productos:hover {
+  background-color: #c0392b;
+}
+
+/* Tabla de Productos */
+.packs-promociones-productos-section {
+  margin: 20px 0;
+  border: 1px solid #eee;
+  border-radius: 5px;
+  overflow: hidden;
+}
+
+.packs-promociones-productos-table {
+  width: 100%;
+  border-collapse: collapse;
+} 
+
+ 
+
+
+
+.packs-promociones-productos-table thead {
+  background-color: #f8f9fa;
+}
+
+.packs-promociones-productos-table th {
+  padding: 10px;
+  text-align: left;
+  font-weight: 600;
+  color: #555;
+  font-size: 13px;
+  border-bottom: 1px solid #dee2e6;
+}
+
+.packs-promociones-productos-table td {
+  padding: 8px;
+  border-bottom: 1px solid #eee;
+}
+
+.packs-promociones-select-table,
+.packs-promociones-input-table {
+  width: 100%;
+  padding: 6px 8px;
+  border: 1px solid #ddd;
+  border-radius: 3px;
+  font-size: 13px;
+  box-sizing: border-box;
+}
+
+.packs-promociones-btn-delete {
+  background: none;
+  border: none;
+  cursor: pointer;
+  font-size: 16px;
+  color: #e74c3c;
+  opacity: 0.7;
+  transition: opacity 0.3s ease;
+}
+
+.packs-promociones-btn-delete:hover {
+  opacity: 1;
+}
+
+/* Campos Adicionales */
+.packs-promociones-campos-adicionales {
+  margin-top: 30px;
+  padding-top: 20px;
+  border-top: 2px solid #eee;
+}
+
+.packs-promociones-campos-adicionales h3 {
+  margin: 0 0 20px 0;
+  font-size: 16px;
+  font-weight: 600;
+  color: #333;
+}
+
+.packs-promociones-form-row-imagen {
+  display: grid;
+  grid-template-columns: 200px 1fr;
+  gap: 20px;
+  margin-bottom: 15px;
+}
+
+.packs-promociones-form-group-flex {
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+}
+
+/* Upload de Imagen */
+.packs-promociones-imagen-upload {
+  width: 150px;
+  height: 150px;
+}
+
+.packs-promociones-file-input {
+  display: none;
+}
+
+.packs-promociones-imagen-label {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  height: 100%;
+  border: 2px dashed #ddd;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  overflow: hidden;
+  background-color: #fafafa;
+}
+
+.packs-promociones-imagen-label:hover {
+  border-color: #3498db;
+  background-color: #f0f8ff;
+}
+
+.packs-promociones-imagen-placeholder {
+  font-size: 48px;
+  color: #ccc;
+  font-weight: 300;
+}
+
+.packs-promociones-imagen-preview {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.packs-promociones-modal-footer {
+  display: flex;
+  justify-content: flex-end;
+  gap: 10px;
+  padding: 20px;
+  border-top: 1px solid #eee;
+}
+
+.packs-promociones-btn-cancelar {
+  padding: 10px 24px;
+  border: 1px solid #ddd;
+  background-color: white;
+  color: #666;
+  border-radius: 5px;
+  cursor: pointer;
+  font-size: 14px;
+  font-weight: 500;
+  transition: all 0.3s ease;
+}
+
+.packs-promociones-btn-cancelar:hover {
+  background-color: #f5f5f5;
+}
+
+.packs-promociones-btn-guardar {
+  padding: 10px 24px;
+  border: none;
+  background-color: #e74c3c;
+  color: white;
+  border-radius: 5px;
+  cursor: pointer;
+  font-size: 14px;
+  font-weight: 500;
+  transition: background-color 0.3s ease;
+}
+
+.packs-promociones-btn-guardar:hover {
+  background-color: #c0392b;
+}
+
+/* Responsive */
+@media (max-width: 1200px) {
+  .packs-promociones-form-row-4 {
+    grid-template-columns: repeat(2, 1fr);
+  }
+
+  .packs-promociones-form-row-imagen {
+    grid-template-columns: 1fr;
+  }
+
+  .packs-promociones-imagen-upload {
+    margin: 0 auto;
+  }
+}
+
+@media (max-width: 768px) {
+  .packs-promociones-header {
+    flex-direction: column;
+    gap: 15px;
+  }
+
+  .packs-promociones-actions {
+    width: 100%;
+    justify-content: space-between;
+  }
+
+  .packs-promociones-btn-importar,
+  .packs-promociones-btn-nuevo,
+  .packs-promociones-btn-reemplazar {
+    flex: 1;
+    padding: 8px 12px;
+    font-size: 12px;
+  }
+
+  .packs-promociones-section-header {
+    flex-direction: column;
+    gap: 10px;
+    align-items: flex-start;
+  }
+
+  .packs-promociones-btn-mostrar {
+    width: 100%;
+  }
+
+  .packs-promociones-filters {
+    flex-direction: column;
+  }
+
+  .packs-promociones-modal {
+    max-width: 95%;
+  }
+
+  .packs-promociones-form-row-2,
+  .packs-promociones-form-row-3,
+  .packs-promociones-form-row-4 {
+    grid-template-columns: 1fr;
+  }
+
+  .packs-promociones-table {
+    font-size: 12px;
+  }
+
+  .packs-promociones-table th,
+  .packs-promociones-table td {
+    padding: 8px 4px;
+  }
+}
+
+/* Animaciones */
+@keyframes packs-promociones-fadeIn {
+  from {
+    opacity: 0;
+    transform: scale(0.95);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+.packs-promociones-modal {
+  animation: packs-promociones-fadeIn 0.3s ease;
+}
+
+/* Scrollbar personalizado para el modal */
+.packs-promociones-modal::-webkit-scrollbar {
+  width: 8px;
+}
+
+.packs-promociones-modal::-webkit-scrollbar-track {
+  background: #f1f1f1;
+  border-radius: 4px;
+}
+
+.packs-promociones-modal::-webkit-scrollbar-thumb {
+  background: #888;
+  border-radius: 4px;
+}
+
+.packs-promociones-modal::-webkit-scrollbar-thumb:hover {
+  background: #555;
+}
+
+/* Estados de hover para las filas de la tabla */
+.packs-promociones-table tbody tr:hover {
+  background-color: #f8f9fa;
+}
+
+.packs-promociones-productos-table tbody tr:hover {
+  background-color: #f8f9fa;
+}
+
+/* Estilos para campos deshabilitados */
+.packs-promociones-input:disabled,
+.packs-promociones-select:disabled,
+.packs-promociones-textarea:disabled {
+  background-color: #f5f5f5;
+  cursor: not-allowed;
+  color: #999;
+}
+
+/* Estilos para mensajes de error */
+.packs-promociones-error {
+  color: #e74c3c;
+  font-size: 12px;
+  margin-top: 4px;
+}
+
+/* Estilos para mensajes de éxito */
+.packs-promociones-success {
+  color: #27ae60;
+  font-size: 12px;
+  margin-top: 4px;
+}
+
+/* Estilos para loading state */
+.packs-promociones-loading {
+  display: inline-block;
+  width: 20px;
+  height: 20px;
+  border: 3px solid rgba(255, 255, 255, 0.3);
+  border-radius: 50%;
+  border-top-color: white;
+  animation: packs-promociones-spin 1s ease-in-out infinite;
+}
+
+@keyframes packs-promociones-spin {
+  to { transform: rotate(360deg); }
+}
+
+/* Estilos para badges */
+.packs-promociones-badge {
+  display: inline-block;
+  padding: 4px 8px;
+  font-size: 11px;
+  font-weight: 600;
+  border-radius: 4px;
+  text-transform: uppercase;
+}
+
+.packs-promociones-badge-success {
+  background-color: #d4edda;
+  color: #155724;
+}
+
+.packs-promociones-badge-warning {
+  background-color: #fff3cd;
+  color: #856404;
+}
+
+.packs-promociones-badge-danger {
+  background-color: #f8d7da;
+  color: #721c24;
+}
+
+.packs-promociones-badge-info {
+  background-color: #d1ecf1;
+  color: #0c5460;
+}
+
+/* Estilos para tooltips */
+.packs-promociones-tooltip {
+  position: relative;
+  display: inline-block;
+}
+
+.packs-promociones-tooltip .packs-promociones-tooltiptext {
+  visibility: hidden;
+  width: 200px;
+  background-color: #555;
+  color: #fff;
+  text-align: center;
+  border-radius: 6px;
+  padding: 8px;
+  position: absolute;
+  z-index: 1001;
+  bottom: 125%;
+  left: 50%;
+  margin-left: -100px;
+  opacity: 0;
+  transition: opacity 0.3s;
+  font-size: 12px;
+}
+
+.packs-promociones-tooltip:hover .packs-promociones-tooltiptext {
+  visibility: visible;
+  opacity: 1;
+}
+
+/* Estilos para separadores */
+.packs-promociones-divider {
+  height: 1px;
+  background-color: #eee;
+  margin: 20px 0;
+}
+
+/* Estilos para cards */
+.packs-promociones-card {
+  background-color: white;
+  border-radius: 8px;
+  padding: 20px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  margin-bottom: 20px;
+}
+
+.packs-promociones-card-header {
+  font-size: 16px;
+  font-weight: 600;
+  color: #333;
+  margin-bottom: 15px;
+  padding-bottom: 10px;
+  border-bottom: 2px solid #eee;
+}
+
+/* Mejoras en accesibilidad */
+.packs-promociones-sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border-width: 0;
+}
+
+/* Focus visible */
+.packs-promociones-btn-nuevo:focus-visible,
+.packs-promociones-btn-buscar:focus-visible,
+.packs-promociones-btn-guardar:focus-visible,
+.packs-promociones-input:focus-visible,
+.packs-promociones-select:focus-visible,
+.packs-promociones-textarea:focus-visible {
+  outline: 2px solid #3498db;
+  outline-offset: 2px;
+}
+
+/* Estados activos para botones */
+.packs-promociones-btn-nuevo:active,
+.packs-promociones-btn-buscar:active,
+.packs-promociones-btn-guardar:active,
+.packs-promociones-btn-agregar-productos:active {
+  transform: scale(0.98);
+}
+
+/* Estilos para el overlay cuando está activo */
+.packs-promociones-modal-overlay {
+  backdrop-filter: blur(2px);
+}
+
+/* Estilos para drag and drop de imagen */
+.packs-promociones-imagen-label.packs-promociones-dragover {
+  border-color: #3498db;
+  background-color: #e3f2fd;
+}
+
+/* Estilos para inputs con iconos */
+.packs-promociones-input-with-icon {
+  position: relative;
+}
+
+.packs-promociones-input-with-icon input {
+  padding-left: 35px;
+}
+
+.packs-promociones-input-icon {
+  position: absolute;
+  left: 10px;
+  top: 50%;
+  transform: translateY(-50%);
+  color: #999;
+  font-size: 16px;
+}
+
+/* Estilos para checkboxes personalizados */
+.packs-promociones-checkbox {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  cursor: pointer;
+}
+
+.packs-promociones-checkbox input[type="checkbox"] {
+  width: 18px;
+  height: 18px;
+  cursor: pointer;
+}
+
+/* Estilos para radio buttons personalizados */
+.packs-promociones-radio {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  cursor: pointer;
+}
+
+.packs-promociones-radio input[type="radio"] {
+  width: 18px;
+  height: 18px;
+  cursor: pointer;
+}
+
+/* Estilos para alertas */
+.packs-promociones-alert {
+  padding: 12px 16px;
+  border-radius: 5px;
+  margin-bottom: 15px;
+  font-size: 14px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.packs-promociones-alert-info {
+  background-color: #d1ecf1;
+  color: #0c5460;
+  border: 1px solid #bee5eb;
+}
+
+.packs-promociones-alert-success {
+  background-color: #d4edda;
+  color: #155724;
+  border: 1px solid #c3e6cb;
+}
+
+.packs-promociones-alert-warning {
+  background-color: #fff3cd;
+  color: #856404;
+  border: 1px solid #ffeeba;
+}
+
+.packs-promociones-alert-danger {
+  background-color: #f8d7da;
+  color: #721c24;
+  border: 1px solid #f5c6cb;
+}
+
+/* Estilos para progress bar */
+.packs-promociones-progress {
+  width: 100%;
+  height: 8px;
+  background-color: #e9ecef;
+  border-radius: 4px;
+  overflow: hidden;
+}
+
+.packs-promociones-progress-bar {
+  height: 100%;
+  background-color: #3498db;
+  transition: width 0.3s ease;
+}
+
+/* Estilos para skeleton loader */
+.packs-promociones-skeleton {
+  background: linear-gradient(90deg, #f0f0f0 25%, #e0e0e0 50%, #f0f0f0 75%);
+  background-size: 200% 100%;
+  animation: packs-promociones-loading 1.5s ease-in-out infinite;
+  border-radius: 4px;
+}
+
+@keyframes packs-promociones-loading {
+  0% {
+    background-position: 200% 0;
+  }
+  100% {
+    background-position: -200% 0;
+  }
+}
+
+/* Estilos para tags */
+.packs-promociones-tag {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  padding: 4px 10px;
+  background-color: #e9ecef;
+  color: #495057;
+  border-radius: 12px;
+  font-size: 12px;
+  font-weight: 500;
+}
+
+.packs-promociones-tag-close {
+  background: none;
+  border: none;
+  cursor: pointer;
+  font-size: 14px;
+  color: #6c757d;
+  padding: 0;
+  display: flex;
+  align-items: center;
+}
+
+.packs-promociones-tag-close:hover {
+  color: #495057;
+}

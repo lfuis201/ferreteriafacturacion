@@ -1,0 +1,434 @@
+/* SolicitarCotizacion.css */
+
+.solicitar-cotizacion-container {
+  padding: 20px;
+  background-color: #f5f5f5;
+  min-height: 100vh;
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen', 'Ubuntu', sans-serif;
+}
+
+.solicitar-cotizacion-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 20px;
+  background-color: white;
+  padding: 15px 20px;
+  border-radius: 8px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.solicitar-cotizacion-title {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.solicitar-cotizacion-icon {
+  font-size: 24px;
+  color: #e74c3c;
+}
+
+.solicitar-cotizacion-title h1 {
+  margin: 0;
+  font-size: 18px;
+  font-weight: 600;
+  color: #333;
+}
+
+.solicitar-cotizacion-btn-nuevo {
+  background-color: #e74c3c;
+  color: white;
+  border: none;
+  padding: 10px 20px;
+  border-radius: 5px;
+  cursor: pointer;
+  font-size: 14px;
+  font-weight: 500;
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  transition: background-color 0.3s ease;
+}
+
+.solicitar-cotizacion-btn-nuevo:hover {
+  background-color: #c0392b;
+}
+
+.solicitar-cotizacion-filters {
+  background-color: white;
+  padding: 15px 20px;
+  border-radius: 8px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  display: flex;
+  gap: 10px;
+  margin-bottom: 20px;
+  flex-wrap: wrap;
+}
+
+.solicitar-cotizacion-date-input,
+.solicitar-cotizacion-search-input {
+  padding: 8px 12px;
+  border: 1px solid #ddd;
+  border-radius: 5px;
+  font-size: 14px;
+  flex: 1;
+  min-width: 200px;
+}
+
+.solicitar-cotizacion-btn-buscar {
+  background-color: #e74c3c;
+  color: white;
+  border: none;
+  padding: 8px 20px;
+  border-radius: 5px;
+  cursor: pointer;
+  font-size: 14px;
+  font-weight: 500;
+  transition: background-color 0.3s ease;
+}
+
+.solicitar-cotizacion-btn-buscar:hover {
+  background-color: #c0392b;
+}
+
+.solicitar-cotizacion-table-wrapper {
+  background-color: white;
+  padding: 20px;
+  border-radius: 8px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.solicitar-cotizacion-table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+.solicitar-cotizacion-table thead {
+  background-color: #f8f9fa;
+}
+
+.solicitar-cotizacion-table th {
+  padding: 12px;
+  text-align: left;
+  font-weight: 600;
+  color: #555;
+  border-bottom: 2px solid #dee2e6;
+  font-size: 14px;
+}
+
+.solicitar-cotizacion-table td {
+  padding: 12px;
+  border-bottom: 1px solid #dee2e6;
+  font-size: 14px;
+  color: #666;
+}
+
+.solicitar-cotizacion-empty {
+  text-align: center;
+  color: #999;
+  padding: 30px !important;
+}
+
+.solicitar-cotizacion-pagination {
+  display: flex;
+  justify-content: center;
+  gap: 5px;
+  margin-top: 20px;
+}
+
+.solicitar-cotizacion-page-btn {
+  padding: 6px 12px;
+  border: 1px solid #ddd;
+  background-color: white;
+  cursor: pointer;
+  border-radius: 4px;
+  font-size: 14px;
+  transition: all 0.3s ease;
+}
+
+.solicitar-cotizacion-page-btn:hover {
+  background-color: #f0f0f0;
+}
+
+.solicitar-cotizacion-page-btn.solicitar-cotizacion-active {
+  background-color: #3498db;
+  color: white;
+  border-color: #3498db;
+}
+
+/* Modal Styles */
+.solicitar-cotizacion-modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: rgba(0, 0, 0, 0.5);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 1000;
+  padding: 20px;
+}
+
+.solicitar-cotizacion-modal {
+  background-color: white;
+  border-radius: 8px;
+  width: 80%;
+ 
+  max-height: 90vh;
+  overflow-y: auto;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.2);
+}
+
+.solicitar-cotizacion-modal-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  padding: 20px;
+  border-bottom: 1px solid #eee;
+}
+
+.solicitar-cotizacion-modal-logo {
+  display: flex;
+  gap: 15px;
+  align-items: flex-start;
+}
+
+.solicitar-cotizacion-logo-circle {
+  width: 60px;
+  height: 60px;
+  background: linear-gradient(135deg, #84fab0 0%, #8fd3f4 100%);
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 24px;
+}
+
+.solicitar-cotizacion-modal-info h2 {
+  margin: 0 0 5px 0;
+  font-size: 18px;
+  font-weight: 700;
+  color: #333;
+}
+
+.solicitar-cotizacion-modal-info p {
+  margin: 3px 0;
+  font-size: 13px;
+  color: #666;
+}
+
+.solicitar-cotizacion-address {
+  color: #888 !important;
+}
+
+.solicitar-cotizacion-email {
+  color: #888 !important;
+}
+
+.solicitar-cotizacion-modal-close {
+  background: none;
+  border: none;
+  font-size: 28px;
+  color: #999;
+  cursor: pointer;
+  line-height: 1;
+  padding: 0;
+  width: 30px;
+  height: 30px;
+  transition: color 0.3s ease;
+}
+
+.solicitar-cotizacion-modal-close:hover {
+  color: #333;
+}
+
+.solicitar-cotizacion-modal-body {
+  padding: 20px;
+}
+
+.solicitar-cotizacion-form-row {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+  gap: 15px;
+  margin-bottom: 20px;
+}
+
+.solicitar-cotizacion-form-group {
+  display: flex;
+  flex-direction: column;
+}
+
+.solicitar-cotizacion-form-group label {
+  font-size: 13px;
+  font-weight: 600;
+  color: #555;
+  margin-bottom: 5px;
+}
+
+.solicitar-cotizacion-link {
+  color: #3498db;
+  cursor: pointer;
+  font-weight: normal;
+}
+
+.solicitar-cotizacion-link:hover {
+  text-decoration: underline;
+}
+
+.solicitar-cotizacion-select,
+.solicitar-cotizacion-input {
+  padding: 8px 12px;
+  border: 1px solid #ddd;
+  border-radius: 5px;
+  font-size: 14px;
+  width: 100%;
+  box-sizing: border-box;
+}
+
+.solicitar-cotizacion-select:focus,
+.solicitar-cotizacion-input:focus {
+  outline: none;
+  border-color: #3498db;
+}
+
+.solicitar-cotizacion-table-section {
+  margin: 20px 0;
+  border: 1px solid #eee;
+  border-radius: 5px;
+  overflow: hidden;
+}
+
+.solicitar-cotizacion-productos-table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+.solicitar-cotizacion-productos-table thead {
+  background-color: #f8f9fa;
+}
+
+.solicitar-cotizacion-productos-table th {
+  padding: 10px;
+  text-align: left;
+  font-weight: 600;
+  color: #555;
+  font-size: 13px;
+  border-bottom: 1px solid #dee2e6;
+}
+
+.solicitar-cotizacion-productos-table td {
+  padding: 8px;
+  border-bottom: 1px solid #eee;
+}
+
+.solicitar-cotizacion-input-table {
+  width: 100%;
+  padding: 6px 8px;
+  border: 1px solid #ddd;
+  border-radius: 3px;
+  font-size: 13px;
+  box-sizing: border-box;
+}
+
+.solicitar-cotizacion-btn-delete {
+  background: none;
+  border: none;
+  cursor: pointer;
+  font-size: 16px;
+  padding: 4px;
+  opacity: 0.6;
+  transition: opacity 0.3s ease;
+}
+
+.solicitar-cotizacion-btn-delete:hover {
+  opacity: 1;
+}
+
+.solicitar-cotizacion-btn-agregar {
+  width: 100%;
+  padding: 10px;
+  background-color: #e74c3c;
+  color: white;
+  border: none;
+  border-radius: 0 0 5px 5px;
+  cursor: pointer;
+  font-size: 14px;
+  font-weight: 500;
+  transition: background-color 0.3s ease;
+}
+
+.solicitar-cotizacion-btn-agregar:hover {
+  background-color: #c0392b;
+}
+
+.solicitar-cotizacion-modal-footer {
+  display: flex;
+  justify-content: flex-end;
+  gap: 10px;
+  padding: 20px;
+  border-top: 1px solid #eee;
+}
+
+.solicitar-cotizacion-btn-cancelar {
+  padding: 10px 24px;
+  border: 1px solid #ddd;
+  background-color: white;
+  color: #666;
+  border-radius: 5px;
+  cursor: pointer;
+  font-size: 14px;
+  font-weight: 500;
+  transition: all 0.3s ease;
+}
+
+.solicitar-cotizacion-btn-cancelar:hover {
+  background-color: #f5f5f5;
+}
+
+.solicitar-cotizacion-btn-guardar {
+  padding: 10px 24px;
+  border: none;
+  background-color: #27ae60;
+  color: white;
+  border-radius: 5px;
+  cursor: pointer;
+  font-size: 14px;
+  font-weight: 500;
+  transition: background-color 0.3s ease;
+}
+
+.solicitar-cotizacion-btn-guardar:hover {
+  background-color: #229954;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+  .solicitar-cotizacion-header {
+    flex-direction: column;
+    gap: 15px;
+  }
+
+  .solicitar-cotizacion-filters {
+    flex-direction: column;
+  }
+
+  .solicitar-cotizacion-modal {
+    max-width: 95%;
+  }
+
+  .solicitar-cotizacion-form-row {
+    grid-template-columns: 1fr;
+  }
+
+  .solicitar-cotizacion-table {
+    font-size: 12px;
+  }
+
+  .solicitar-cotizacion-table th,
+  .solicitar-cotizacion-table td {
+    padding: 8px;
+  }
+}

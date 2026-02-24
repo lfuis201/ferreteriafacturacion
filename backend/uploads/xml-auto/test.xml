@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Invoice xmlns="urn:oasis:names:specification:ubl:schema:xsd:Invoice-2" xmlns:cac="urn:oasis:names:specification:ubl:schema:xsd:CommonAggregateComponents-2" xmlns:cbc="urn:oasis:names:specification:ubl:schema:xsd:CommonBasicComponents-2">
+  <cbc:ID>F001-00000001</cbc:ID>
+  <cbc:IssueDate>2025-01-26</cbc:IssueDate>
+  <cbc:InvoiceTypeCode>01</cbc:InvoiceTypeCode>
+  <cbc:DocumentCurrencyCode>PEN</cbc:DocumentCurrencyCode>
+  
+  <cac:AccountingSupplierParty>
+    <cac:Party>
+      <cac:PartyIdentification>
+        <cbc:ID schemeID="6">20123456789</cbc:ID>
+      </cac:PartyIdentification>
+      <cac:PartyName>
+        <cbc:Name>PROVEEDOR TEST SAC</cbc:Name>
+      </cac:PartyName>
+    </cac:Party>
+  </cac:AccountingSupplierParty>
+  
+  <cac:InvoiceLine>
+    <cbc:ID>1</cbc:ID>
+    <cbc:InvoicedQuantity unitCode="NIU">10</cbc:InvoicedQuantity>
+    <cbc:LineExtensionAmount currencyID="PEN">100.00</cbc:LineExtensionAmount>
+    <cac:Item>
+      <cbc:Description>PRODUCTO TEST</cbc:Description>
+    </cac:Item>
+    <cac:Price>
+      <cbc:PriceAmount currencyID="PEN">10.00</cbc:PriceAmount>
+    </cac:Price>
+  </cac:InvoiceLine>
+  
+  <cac:LegalMonetaryTotal>
+    <cbc:LineExtensionAmount currencyID="PEN">100.00</cbc:LineExtensionAmount>
+    <cbc:TaxExclusiveAmount currencyID="PEN">100.00</cbc:TaxExclusiveAmount>
+    <cbc:TaxInclusiveAmount currencyID="PEN">118.00</cbc:TaxInclusiveAmount>
+    <cbc:PayableAmount currencyID="PEN">118.00</cbc:PayableAmount>
+  </cac:LegalMonetaryTotal>
+</Invoice>
