@@ -8,6 +8,7 @@ import RegistroSuperAdmin from "./components/loginRegsitro/RegistroSuperAdmin";
 
 // Importar dashboards desde los componentes
 import DashboardSuperAdmin from "./components/dashboards/DashboardSuperAdmin";
+import DashboardLayout from "./components/dashboards/DashboardLayout";
 
 // importar categorias desde los componentes
 import FormularioCategoria from "./components/categorias/FormularioCategoria";
@@ -142,7 +143,9 @@ function App() {
         path="/categorias/gestion" 
         element={
           <RutaProtegidaPorRol rolesPermitidos={['SuperAdmin', 'Admin']}>
-            <GestionCategorias />
+            <DashboardLayout>
+              <GestionCategorias />
+            </DashboardLayout>
           </RutaProtegidaPorRol>
         } 
       />
@@ -218,12 +221,14 @@ function App() {
         } 
       />
 
-      {/* Rutas para usuarios */}
+      {/* Rutas para usuarios (con mismo layout Sidebar que el dashboard) */}
       <Route 
         path="/usuarios/gestion" 
         element={
           <RutaProtegidaPorRol rolesPermitidos={['SuperAdmin', 'Admin']}>
-            <GestionUsuarios />
+            <DashboardLayout>
+              <GestionUsuarios />
+            </DashboardLayout>
           </RutaProtegidaPorRol>
         } 
       />
@@ -231,7 +236,9 @@ function App() {
         path="/usuarios/formulario" 
         element={
           <RutaProtegidaPorRol rolesPermitidos={['SuperAdmin', 'Admin']}>
-            <FormularioUsuario />
+            <DashboardLayout>
+              <FormularioUsuario />
+            </DashboardLayout>
           </RutaProtegidaPorRol>
         } 
       />
@@ -239,7 +246,9 @@ function App() {
         path="/usuarios/formulario/:id" 
         element={
           <RutaProtegidaPorRol rolesPermitidos={['SuperAdmin', 'Admin']}>
-            <FormularioUsuario />
+            <DashboardLayout>
+              <FormularioUsuario />
+            </DashboardLayout>
           </RutaProtegidaPorRol>
         } 
       />
@@ -257,7 +266,9 @@ function App() {
         path="/sucursales/gestion" 
         element={
           <RutaProtegidaPorRol rolesPermitidos={['SuperAdmin']}>
-            <GestionSucursales />
+            <DashboardLayout>
+              <GestionSucursales />
+            </DashboardLayout>
           </RutaProtegidaPorRol>
         } 
       />
@@ -265,7 +276,9 @@ function App() {
         path="/sucursales/formulario" 
         element={
           <RutaProtegidaPorRol rolesPermitidos={['SuperAdmin']}>
-            <FormularioSucursal />
+            <DashboardLayout>
+              <FormularioSucursal />
+            </DashboardLayout>
           </RutaProtegidaPorRol>
         } 
       />
@@ -273,7 +286,9 @@ function App() {
         path="/sucursales/formulario/:id" 
         element={
           <RutaProtegidaPorRol rolesPermitidos={['SuperAdmin']}>
-            <FormularioSucursal />
+            <DashboardLayout>
+              <FormularioSucursal />
+            </DashboardLayout>
           </RutaProtegidaPorRol>
         } 
       />
@@ -281,7 +296,9 @@ function App() {
         path="/sucursales/editar/:id" 
         element={
           <RutaProtegidaPorRol rolesPermitidos={['SuperAdmin']}>
-            <FormularioSucursal />
+            <DashboardLayout>
+              <FormularioSucursal />
+            </DashboardLayout>
           </RutaProtegidaPorRol>
         } 
       />

@@ -1,6 +1,19 @@
 import React, { useEffect, useState } from 'react';
-import '../../styles/ListaCaja.css';
 import Swal from 'sweetalert2';
+import {
+  Store,
+  BarChart3,
+  Trash2,
+  Search,
+  CheckCircle,
+  Lock,
+  Pencil,
+  X,
+  ChevronLeft,
+  ChevronRight,
+  Wallet,
+  FileText,
+} from 'lucide-react';
 import {
   abrirCaja,
   cerrarCaja,
@@ -9,6 +22,9 @@ import {
   eliminarHistorialCaja,
 } from '../../services/cajaService';
 import { obtenerSucursales } from '../../services/sucursalService';
+
+const inputBase =
+  'w-full rounded-lg border border-slate-300 bg-white px-3 py-2.5 text-slate-900 shadow-sm transition focus:border-blue-500 focus:outline-none focus:ring-2 focus:ring-blue-500';
 
 const ListaCaja = () => {
   const [showModal, setShowModal] = useState(false);
@@ -440,230 +456,264 @@ const ListaCaja = () => {
   };
 
   return (
-    <div className="lc-container">
-      <div className="lc-header">
-        <h1 className="lc-title">
-          <span className="lc-icon">🏪</span>
-          CAJAS
+    <div className="mx-auto max-w-7xl space-y-6 py-6">
+      {/* Header */}
+      <div className="flex flex-col gap-4 rounded-xl border border-slate-200 bg-white p-4 shadow-sm sm:flex-row sm:items-center sm:justify-between sm:p-6">
+        <h1 className="flex items-center gap-3 text-xl font-bold text-slate-900 sm:text-2xl">
+          <span className="flex h-11 w-11 items-center justify-center rounded-xl bg-amber-100 text-amber-600">
+            <Store size={24} />
+          </span>
+          Cajas
         </h1>
-        <div className="lc-header-buttons">
-          <button className="lc-btn lc-btn-primary" onClick={handleReporteGeneral}>
-            📊 Reporte general
+        <div className="flex flex-wrap gap-2">
+          <button
+            type="button"
+            onClick={handleReporteGeneral}
+            className="inline-flex items-center gap-2 rounded-lg bg-blue-600 px-4 py-2.5 text-sm font-semibold text-white shadow-sm transition hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2"
+          >
+            <BarChart3 size={18} />
+            Reporte general
           </button>
-          <button className="lc-btn lc-btn-danger" onClick={handleOpenModal}>
-            📂 Aperturar caja chica POS
+          <button
+            type="button"
+            onClick={handleOpenModal}
+            className="inline-flex items-center gap-2 rounded-lg bg-emerald-600 px-4 py-2.5 text-sm font-semibold text-white shadow-sm transition hover:bg-emerald-700 focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:ring-offset-2"
+          >
+            <Wallet size={18} />
+            Aperturar caja chica POS
           </button>
-          <button className="lc-btn lc-btn-secondary" onClick={handleEliminarHistorial}>
-            🗑️ Eliminar historial sucursal
+          <button
+            type="button"
+            onClick={handleEliminarHistorial}
+            className="inline-flex items-center gap-2 rounded-lg border border-slate-300 bg-white px-4 py-2.5 text-sm font-semibold text-slate-700 shadow-sm transition hover:bg-slate-50 focus:outline-none focus:ring-2 focus:ring-slate-400 focus:ring-offset-2"
+          >
+            <Trash2 size={18} />
+            Eliminar historial sucursal
           </button>
         </div>
       </div>
 
-      <div className="lc-content">
-        <h2 className="lc-subtitle">Listado de cajas</h2>
+      {/* Filtros y tabla */}
+      <div className="space-y-4">
+        <h2 className="flex items-center gap-2 text-base font-semibold text-slate-800">
+          <FileText size={20} className="text-slate-600" />
+          Listado de cajas
+        </h2>
 
-        <div className="lc-filters">
-          {sucursales.length > 0 ? (
-            <select
-              className="lc-select"
-              value={selectedSucursalId}
-              onChange={(e) => setSelectedSucursalId(e.target.value)}
-            >
-              <option value="">Seleccione sucursal</option>
-              {sucursales.map((s) => (
-                <option key={s.id} value={s.id}>{s.nombre}</option>
-              ))}
-            </select>
-          ) : (
-            <input
-              className="lc-select"
-              value={selectedSucursalId || getSucursalId() || ''}
-              readOnly
-            />
-          )}
-          <div className="lc-search-box">
-            <input
-              type="text"
-              className="lc-search-input"
-              placeholder="Buscar por nombre, apellido, observaciones o estado..."
-              value={searchTerm}
-              onChange={(e) => {
-                setSearchTerm(e.target.value);
-                setCurrentPage(1); // Resetear a primera página al buscar
-              }}
-            />
-            <button className="lc-btn lc-btn-search">
-              🔍 Buscar
-            </button>
+        <div className="flex flex-col gap-4 rounded-xl border border-slate-200 bg-white p-4 shadow-sm sm:flex-row sm:items-end sm:gap-4">
+          <div className="flex-1 sm:max-w-xs">
+            <label className="mb-1 block text-sm font-medium text-slate-700">Sucursal</label>
+            {sucursales.length > 0 ? (
+              <select
+                value={selectedSucursalId}
+                onChange={(e) => setSelectedSucursalId(e.target.value)}
+                className={inputBase}
+              >
+                <option value="">Seleccione sucursal</option>
+                {sucursales.map((s) => (
+                  <option key={s.id} value={s.id}>{s.nombre}</option>
+                ))}
+              </select>
+            ) : (
+              <input
+                value={selectedSucursalId || getSucursalId() || ''}
+                readOnly
+                className={`${inputBase} bg-slate-50`}
+              />
+            )}
+          </div>
+          <div className="flex-1">
+            <label className="mb-1 block text-sm font-medium text-slate-700">Buscar</label>
+            <div className="flex gap-2">
+              <input
+                type="text"
+                placeholder="Nombre, apellido, observaciones o estado..."
+                value={searchTerm}
+                onChange={(e) => {
+                  setSearchTerm(e.target.value);
+                  setCurrentPage(1);
+                }}
+                className={inputBase}
+              />
+              <span className="inline-flex items-center rounded-lg border border-slate-300 bg-slate-50 px-3 text-slate-500">
+                <Search size={18} />
+              </span>
+            </div>
           </div>
         </div>
 
-        <div className="lc-table-wrapper">
-          <table className="lc-table">
-            <thead>
-              <tr>
-                <th>#</th>
-                <th>Observaciones</th>
-                <th>Vendedor</th>
-                <th>Apertura</th>
-                <th>Cierre</th>
-                <th>Saldo inicial</th>
-                <th>Saldo final</th>
-                <th>Saldo real</th>
-                <th>Estado</th>
-                <th>Acciones</th>
-              </tr>
-            </thead>
-            <tbody>
-              {currentCajas.map((caja) => (
-                <tr key={caja.id}>
-                  <td>{caja.id}</td>
-                  <td>{caja.observaciones || '-'}</td>
-                  <td>{`${(caja.usuario?.nombre || '')} ${(caja.usuario?.apellido || '')}`.trim() || '-'}</td>
-                  <td>{caja.fechaApertura ? new Date(caja.fechaApertura).toLocaleString() : '-'}</td>
-                  <td>{caja.fechaCierre ? new Date(caja.fechaCierre).toLocaleString() : '-'}</td>
-                  <td>{Number(caja.saldoInicial ?? 0).toFixed(2)}</td>
-                  <td>{Number(caja.saldoFinal ?? 0).toFixed(2)}</td>
-                  <td>{Number((caja.saldoFinal ?? caja.saldoInicial) ?? 0).toFixed(2)}</td>
-                  <td>
-                    <span className={`lc-badge ${caja.estado === 'ABIERTA' ? 'lc-badge-open' : 'lc-badge-closed'}`}>
-                      {caja.estado}
-                    </span>
-                  </td>
-                  <td>
-                    <div className="lc-action-buttons">
-                      {caja.estado === 'ABIERTA' ? (
-                        <>
-                          <button className="lc-btn-action lc-btn-cerrar" onClick={() => handleCerrarCaja(caja)}>Cerrar Caja</button>
-                          <button className="lc-btn-action lc-btn-editar" onClick={() => handleEditarCaja(caja)}>Editar</button>
-                          <button className="lc-btn-action lc-btn-eliminar" onClick={handleEliminarHistorial}>Eliminar</button>
-                        </>
-                      ) : null}
-                    </div>
-                  </td>
-                </tr>
-              ))}
-              {currentCajas.length === 0 && (
+        <div className="overflow-hidden rounded-xl border border-slate-200 bg-white shadow-sm">
+          <div className="overflow-x-auto">
+            <table className="min-w-full divide-y divide-slate-200">
+              <thead className="bg-slate-50">
                 <tr>
-                  <td colSpan="10" className="lc-no-data">
-                    {cargando ? 'Cargando...' : 'No se encontraron cajas'}
-                  </td>
+                  <th className="px-4 py-3 text-left text-xs font-semibold uppercase tracking-wider text-slate-600">#</th>
+                  <th className="px-4 py-3 text-left text-xs font-semibold uppercase tracking-wider text-slate-600">Observaciones</th>
+                  <th className="px-4 py-3 text-left text-xs font-semibold uppercase tracking-wider text-slate-600">Vendedor</th>
+                  <th className="px-4 py-3 text-left text-xs font-semibold uppercase tracking-wider text-slate-600">Apertura</th>
+                  <th className="px-4 py-3 text-left text-xs font-semibold uppercase tracking-wider text-slate-600">Cierre</th>
+                  <th className="px-4 py-3 text-right text-xs font-semibold uppercase tracking-wider text-slate-600">Saldo inicial</th>
+                  <th className="px-4 py-3 text-right text-xs font-semibold uppercase tracking-wider text-slate-600">Saldo final</th>
+                  <th className="px-4 py-3 text-right text-xs font-semibold uppercase tracking-wider text-slate-600">Saldo real</th>
+                  <th className="px-4 py-3 text-left text-xs font-semibold uppercase tracking-wider text-slate-600">Estado</th>
+                  <th className="px-4 py-3 text-left text-xs font-semibold uppercase tracking-wider text-slate-600">Acciones</th>
                 </tr>
-              )}
-            </tbody>
-          </table>
+              </thead>
+              <tbody className="divide-y divide-slate-200 bg-white">
+                {currentCajas.map((caja) => (
+                  <tr key={caja.id} className="transition hover:bg-slate-50/80">
+                    <td className="whitespace-nowrap px-4 py-3 text-sm font-medium text-slate-900">{caja.id}</td>
+                    <td className="max-w-[180px] truncate px-4 py-3 text-sm text-slate-600" title={caja.observaciones || ''}>{caja.observaciones || '-'}</td>
+                    <td className="whitespace-nowrap px-4 py-3 text-sm text-slate-600">{`${(caja.usuario?.nombre || '')} ${(caja.usuario?.apellido || '')}`.trim() || '-'}</td>
+                    <td className="whitespace-nowrap px-4 py-3 text-sm text-slate-600">{caja.fechaApertura ? new Date(caja.fechaApertura).toLocaleString() : '-'}</td>
+                    <td className="whitespace-nowrap px-4 py-3 text-sm text-slate-600">{caja.fechaCierre ? new Date(caja.fechaCierre).toLocaleString() : '-'}</td>
+                    <td className="whitespace-nowrap px-4 py-3 text-right text-sm font-medium text-slate-900">{Number(caja.saldoInicial ?? 0).toFixed(2)}</td>
+                    <td className="whitespace-nowrap px-4 py-3 text-right text-sm font-medium text-slate-900">{Number(caja.saldoFinal ?? 0).toFixed(2)}</td>
+                    <td className="whitespace-nowrap px-4 py-3 text-right text-sm font-medium text-emerald-600">{Number((caja.saldoFinal ?? caja.saldoInicial) ?? 0).toFixed(2)}</td>
+                    <td className="whitespace-nowrap px-4 py-3">
+                      <span className={`inline-flex items-center gap-1.5 rounded-full px-2.5 py-1 text-xs font-medium ${caja.estado === 'ABIERTA' ? 'bg-emerald-50 text-emerald-700' : 'bg-slate-100 text-slate-600'}`}>
+                        {caja.estado === 'ABIERTA' ? <CheckCircle size={14} /> : <Lock size={14} />}
+                        {caja.estado}
+                      </span>
+                    </td>
+                    <td className="whitespace-nowrap px-4 py-3">
+                      {caja.estado === 'ABIERTA' ? (
+                        <div className="flex items-center gap-1">
+                          <button
+                            type="button"
+                            onClick={() => handleCerrarCaja(caja)}
+                            className="inline-flex items-center gap-1 rounded-lg bg-slate-700 px-2.5 py-1.5 text-xs font-medium text-white transition hover:bg-slate-800 focus:outline-none focus:ring-2 focus:ring-slate-500"
+                          >
+                            <Lock size={14} />
+                            Cerrar
+                          </button>
+                          <button
+                            type="button"
+                            onClick={() => handleEditarCaja(caja)}
+                            className="inline-flex items-center gap-1 rounded-lg border border-slate-300 bg-white px-2.5 py-1.5 text-xs font-medium text-slate-700 transition hover:bg-slate-50 focus:outline-none focus:ring-2 focus:ring-slate-400"
+                          >
+                            <Pencil size={14} />
+                            Editar
+                          </button>
+                          <button
+                            type="button"
+                            onClick={handleEliminarHistorial}
+                            className="inline-flex items-center gap-1 rounded-lg border border-red-200 bg-red-50 px-2.5 py-1.5 text-xs font-medium text-red-700 transition hover:bg-red-100 focus:outline-none focus:ring-2 focus:ring-red-400"
+                          >
+                            <Trash2 size={14} />
+                            Eliminar
+                          </button>
+                        </div>
+                      ) : null}
+                    </td>
+                  </tr>
+                ))}
+                {currentCajas.length === 0 && (
+                  <tr>
+                    <td colSpan={10} className="px-4 py-12 text-center text-sm text-slate-500">
+                      {cargando ? 'Cargando...' : 'No se encontraron cajas'}
+                    </td>
+                  </tr>
+                )}
+              </tbody>
+            </table>
+          </div>
         </div>
 
-        <div className="lc-pagination">
-          <span>
-            Mostrando {currentCajas.length} de {filteredCajas.length} cajas 
+        <div className="flex flex-col gap-3 rounded-xl border border-slate-200 bg-white px-4 py-3 shadow-sm sm:flex-row sm:items-center sm:justify-between">
+          <span className="text-sm text-slate-600">
+            Mostrando {currentCajas.length} de {filteredCajas.length} cajas
             {searchTerm && ` (filtradas de ${cajas.length} totales)`}
           </span>
-          <div className="lc-pagination-controls">
-            <button 
-              className="lc-pagination-btn" 
+          <div className="flex items-center gap-2">
+            <button
+              type="button"
               onClick={goToPreviousPage}
               disabled={currentPage === 1}
+              className="rounded-lg border border-slate-300 bg-white p-2 text-slate-600 transition hover:bg-slate-50 disabled:opacity-50 disabled:hover:bg-white"
             >
-              &lt;
+              <ChevronLeft size={20} />
             </button>
-            
-            {getPageNumbers().map(number => (
+            {getPageNumbers().map((number) => (
               <button
                 key={number}
-                className={`lc-pagination-btn ${currentPage === number ? 'lc-active' : ''}`}
+                type="button"
                 onClick={() => paginate(number)}
+                className={`min-w-[2.25rem] rounded-lg px-2 py-1.5 text-sm font-medium transition ${
+                  currentPage === number
+                    ? 'bg-blue-600 text-white'
+                    : 'border border-slate-300 bg-white text-slate-700 hover:bg-slate-50'
+                }`}
               >
                 {number}
               </button>
             ))}
-            
-            <button 
-              className="lc-pagination-btn" 
+            <button
+              type="button"
               onClick={goToNextPage}
               disabled={currentPage === totalPages || totalPages === 0}
+              className="rounded-lg border border-slate-300 bg-white p-2 text-slate-600 transition hover:bg-slate-50 disabled:opacity-50 disabled:hover:bg-white"
             >
-              &gt;
+              <ChevronRight size={20} />
             </button>
           </div>
-          <span>Página {currentPage} de {totalPages || 1}</span>
+          <span className="text-sm text-slate-600">Página {currentPage} de {totalPages || 1}</span>
         </div>
       </div>
 
+      {/* Modal Aperturar */}
       {showModal && (
-        <div className="lc-modal-overlay" onClick={handleCloseModal}>
-          <div className="lc-modal" onClick={(e) => e.stopPropagation()}>
-            <div className="lc-modal-header">
-              <h3>Aperturar Caja chica POS</h3>
-              <button className="lc-modal-close" onClick={handleCloseModal}>×</button>
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 p-4" onClick={handleCloseModal}>
+          <div className="w-full max-w-md rounded-xl border border-slate-200 bg-white shadow-xl" onClick={(e) => e.stopPropagation()}>
+            <div className="flex items-center justify-between border-b border-slate-200 px-5 py-4">
+              <h3 className="flex items-center gap-2 text-lg font-semibold text-slate-900">
+                <Wallet size={22} className="text-emerald-600" />
+                Aperturar Caja chica POS
+              </h3>
+              <button type="button" onClick={handleCloseModal} className="rounded-lg p-2 text-slate-500 hover:bg-slate-100 hover:text-slate-700">
+                <X size={20} />
+              </button>
             </div>
-            <div className="lc-modal-body">
-              <div className="lc-form-group">
-                <label className="lc-label">Vendedor</label>
-                <select 
-                  className="lc-input"
-                  name="vendedor"
-                  value={formData.vendedor}
-                  onChange={handleInputChange}
-                >
+            <div className="space-y-4 p-5">
+              <div>
+                <label className="mb-1 block text-sm font-medium text-slate-700">Vendedor</label>
+                <select name="vendedor" value={formData.vendedor} onChange={handleInputChange} className={inputBase}>
                   <option value={loggedUserLabel || 'Administrador'}>{loggedUserLabel || 'Administrador'}</option>
                   <option value="Administrador">Administrador</option>
                   <option value="almacen">Almacén</option>
                   <option value="taller">Taller</option>
                 </select>
               </div>
-              <div className="lc-form-row">
-                <div className="lc-form-group">
-                  <label className="lc-label">Saldo inicial</label>
-                  <input
-                    type="number"
-                    step="0.01"
-                    className="lc-input"
-                    name="saldoInicial"
-                    value={formData.saldoInicial}
-                    onChange={handleInputChange}
-                  />
+              <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
+                <div>
+                  <label className="mb-1 block text-sm font-medium text-slate-700">Saldo inicial</label>
+                  <input type="number" step="0.01" name="saldoInicial" value={formData.saldoInicial} onChange={handleInputChange} className={inputBase} />
                 </div>
-                <div className="lc-form-group">
-                  <label className="lc-label">Número de Referencia</label>
-                  <input
-                    type="text"
-                    className="lc-input"
-                    name="numeroReferencia"
-                    value={formData.numeroReferencia}
-                    onChange={handleInputChange}
-                  />
+                <div>
+                  <label className="mb-1 block text-sm font-medium text-slate-700">Número de Referencia</label>
+                  <input type="text" name="numeroReferencia" value={formData.numeroReferencia} onChange={handleInputChange} className={inputBase} />
                 </div>
               </div>
-              <div className="lc-form-group">
-                <label className="lc-label">Sucursal</label>
+              <div>
+                <label className="mb-1 block text-sm font-medium text-slate-700">Sucursal</label>
                 {sucursales.length > 0 ? (
-                  <select
-                    className="lc-input"
-                    name="sucursalId"
-                    value={formData.sucursalId}
-                    onChange={handleInputChange}
-                  >
+                  <select name="sucursalId" value={formData.sucursalId} onChange={handleInputChange} className={inputBase}>
                     <option value="">Seleccione una sucursal</option>
                     {sucursales.map((s) => (
                       <option key={s.id} value={s.id}>{s.nombre}</option>
                     ))}
                   </select>
                 ) : (
-                  <input
-                    type="text"
-                    className="lc-input"
-                    value={getSucursalId() || ''}
-                    readOnly
-                  />
+                  <input type="text" value={getSucursalId() || ''} readOnly className={`${inputBase} bg-slate-50`} />
                 )}
               </div>
             </div>
-            <div className="lc-modal-footer">
-              <button className="lc-btn lc-btn-secondary" onClick={handleCloseModal}>
+            <div className="flex justify-end gap-2 border-t border-slate-200 bg-slate-50/80 px-5 py-4">
+              <button type="button" onClick={handleCloseModal} className="rounded-lg border border-slate-300 bg-white px-4 py-2 text-sm font-semibold text-slate-700 hover:bg-slate-50">
                 Cancelar
               </button>
-              <button className="lc-btn lc-btn-danger" onClick={handleGuardar}>
+              <button type="button" onClick={handleGuardar} className="inline-flex items-center gap-2 rounded-lg bg-emerald-600 px-4 py-2 text-sm font-semibold text-white hover:bg-emerald-700">
+                <Wallet size={16} />
                 Guardar
               </button>
             </div>
@@ -671,30 +721,31 @@ const ListaCaja = () => {
         </div>
       )}
 
+      {/* Modal Editar */}
       {showEditModal && (
-        <div className="lc-modal-overlay" onClick={() => setShowEditModal(false)}>
-          <div className="lc-modal" onClick={(e) => e.stopPropagation()}>
-            <div className="lc-modal-header">
-              <h3>Editar Caja</h3>
-              <button className="lc-modal-close" onClick={() => setShowEditModal(false)}>×</button>
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 p-4" onClick={() => setShowEditModal(false)}>
+          <div className="w-full max-w-md rounded-xl border border-slate-200 bg-white shadow-xl" onClick={(e) => e.stopPropagation()}>
+            <div className="flex items-center justify-between border-b border-slate-200 px-5 py-4">
+              <h3 className="flex items-center gap-2 text-lg font-semibold text-slate-900">
+                <Pencil size={22} className="text-blue-600" />
+                Editar Caja
+              </h3>
+              <button type="button" onClick={() => setShowEditModal(false)} className="rounded-lg p-2 text-slate-500 hover:bg-slate-100 hover:text-slate-700">
+                <X size={20} />
+              </button>
             </div>
-            <div className="lc-modal-body">
-              <div className="lc-form-group">
-                <label className="lc-label">Observaciones</label>
-                <textarea
-                  className="lc-input"
-                  rows={3}
-                  name="observaciones"
-                  value={editData.observaciones}
-                  onChange={handleEditInputChange}
-                />
+            <div className="p-5">
+              <div>
+                <label className="mb-1 block text-sm font-medium text-slate-700">Observaciones</label>
+                <textarea rows={3} name="observaciones" value={editData.observaciones} onChange={handleEditInputChange} className={`${inputBase} resize-none`} />
               </div>
             </div>
-            <div className="lc-modal-footer">
-              <button className="lc-btn lc-btn-secondary" onClick={() => setShowEditModal(false)}>
+            <div className="flex justify-end gap-2 border-t border-slate-200 bg-slate-50/80 px-5 py-4">
+              <button type="button" onClick={() => setShowEditModal(false)} className="rounded-lg border border-slate-300 bg-white px-4 py-2 text-sm font-semibold text-slate-700 hover:bg-slate-50">
                 Cancelar
               </button>
-              <button className="lc-btn lc-btn-danger" onClick={handleGuardarEdicion}>
+              <button type="button" onClick={handleGuardarEdicion} className="inline-flex items-center gap-2 rounded-lg bg-blue-600 px-4 py-2 text-sm font-semibold text-white hover:bg-blue-700">
+                <Pencil size={16} />
                 Guardar cambios
               </button>
             </div>

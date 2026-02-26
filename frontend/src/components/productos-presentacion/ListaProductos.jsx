@@ -1,327 +1,20 @@
 import React, { useState, useEffect } from 'react';
 import { obtenerProductos, eliminarProducto, buscarProductos } from '../../services/productoService';
 import { obtenerCategorias } from '../../services/categoriaService';
-import { Plus, Search, Trash2, Package, Edit3, Filter, X, Settings, Eye, EyeOff, FileSpreadsheet, Tag, ArrowRightLeft } from 'lucide-react';
+import { Plus, Search, Trash2, Package, Edit3, Filter, X, Settings, Eye, EyeOff } from 'lucide-react';
 import FormularioProducto from './FormularioProducto';
 import Swal from 'sweetalert2';
 import GaleriaImagenes from './GaleriaImagenes';
 import ModalVerPresentaciones from './ModalVerPresentaciones';
-import '../../styles/ListaProductos.css';
 
-// Estilos CSS adicionales para badges y configuración de columnas
-const additionalStyles = `
-  .config-columnas-panel {
-    background: #f8f9fa;
-    border: 1px solid #dee2e6;
-    border-radius: 8px;
-    padding: 20px;
-    margin-bottom: 20px;
-  }
+const inputBase = 'w-full rounded-lg border border-slate-300 px-3 py-2 text-sm text-slate-900 shadow-sm transition placeholder:text-slate-400 focus:border-menta-turquesa focus:outline-none focus:ring-2 focus:ring-menta-turquesa';
 
-  .config-header {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    margin-bottom: 15px;
-  }
-
-  .config-header h3 {
-    margin: 0;
-    font-size: 16px;
-    color: #495057;
-  }
-
-  .config-actions {
-    display: flex;
-    gap: 10px;
-    align-items: center;
-  }
-
-  .btn-toggle-all {
-    background: #007bff;
-    color: white;
-    border: none;
-    border-radius: 4px;
-    padding: 6px 12px;
-    cursor: pointer;
-    font-size: 12px;
-    display: flex;
-    align-items: center;
-    gap: 4px;
-    transition: background-color 0.2s ease;
-  }
-
-  .btn-toggle-all:hover {
-    background: #0056b3;
-  }
-
-  .btn-cerrar-config {
-    background: #6c757d;
-    color: white;
-    border: none;
-    border-radius: 4px;
-    padding: 6px 12px;
-    cursor: pointer;
-    font-size: 12px;
-    display: flex;
-    align-items: center;
-    gap: 4px;
-    transition: background-color 0.2s ease;
-  }
-
-  .btn-cerrar-config:hover {
-    background: #545b62;
-  }
-
-  .columnas-grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
-    gap: 10px;
-  }
-
-  .columna-item {
-    padding: 8px;
-    border-radius: 4px;
-    transition: background-color 0.2s ease;
-  }
-
-  .columna-item:hover {
-    background: #e9ecef;
-  }
-
-  .columna-checkbox {
-    display: flex;
-    align-items: center;
-    gap: 8px;
-    cursor: pointer;
-  }
-
-  .columna-checkbox input[type="checkbox"] {
-    margin: 0;
-  }
-
-  .columna-label {
-    font-size: 14px;
-    color: #495057;
-    user-select: none;
-  }
-
-  .columna-label.obligatoria {
-    color: #6c757d;
-    font-weight: 500;
-  }
-
-  .obligatoria-badge {
-    color: #dc3545;
-    font-weight: bold;
-    margin-left: 4px;
-  }
-
-  .badge {
-    display: inline-block;
-    padding: 4px 8px;
-    font-size: 12px;
-    font-weight: 500;
-    border-radius: 4px;
-    text-align: center;
-    white-space: nowrap;
-  }
-
-  .badge-success {
-    background-color: #d4edda;
-    color: #155724;
-    border: 1px solid #c3e6cb;
-  }
-
-  .badge-danger {
-    background-color: #f8d7da;
-    color: #721c24;
-    border: 1px solid #f5c6cb;
-  }
-
-  .badge-warning {
-    background-color: #fff3cd;
-    color: #856404;
-    border: 1px solid #ffeaa7;
-  }
-
-  .badge-secondary {
-    background-color: #e2e3e5;
-    color: #383d41;
-    border: 1px solid #d6d8db;
-  }
-
-  /* Estilos para expandir la tabla y mejorar el espaciado */
-  .productos-table {
-    width: 100%;
-    overflow-x: auto;
-    min-height: 400px;
-    background: white;
-    border-radius: 8px;
-    box-shadow: 0 2px 8px rgba(0,0,0,0.1);
-  }
-
-  .table {
-    width: 100%;
-    min-width: 1600px;
-    border-collapse: separate;
-    border-spacing: 0;
-  }
-
-  .table-header {
-    display: grid;
-    gap: 1px;
-    background:rgb(4, 100, 243);
-    color: white;
-    font-weight: 600;
-    font-size: 11px;
-    text-transform: uppercase;
-    letter-spacing: 0.5px;
-    padding: 0;
-    min-height: 55px;
-    position: sticky;
-    top: 0;
-    z-index: 10;
-  }
-
-  .table-header > div {
-    padding: 15px 12px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    text-align: center;
-    border-right: 1px solid rgba(255,255,255,0.2);
-    word-wrap: break-word;
-    hyphens: auto;
-    line-height: 1.2;
-    background:rgb(4, 100, 243);
-  }
-
-  .table-header > div:last-child {
-    border-right: none;
-  }
-
-  .table-row {
-    display: grid;
-    gap: 1px;
-    border-bottom: 1px solid #e9ecef;
-    transition: all 0.2s ease;
-    min-height: 70px;
-    background: white;
-  }
-
-  .table-row:hover {
-    background-color: #f8f9fa;
-    transform: translateY(-1px);
-    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
-  }
-
-  .table-cell {
-    padding: 15px 12px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    text-align: center;
-    border-right: 1px solid #e9ecef;
-    font-size: 13px;
-    word-wrap: break-word;
-    hyphens: auto;
-    line-height: 1.4;
-    background: white;
-    transition: background-color 0.2s ease;
-    min-width: 120px;
-  }
-
-  .table-cell:last-child {
-    border-right: none;
-  }
-
-  .table-row:hover .table-cell {
-    background-color: #f8f9fa;
-  }
-
-  .nombre-cell {
-    justify-content: flex-start !important;
-    text-align: left !important;
-    font-weight: 500;
-    color: #2c3e50;
-    min-width: 200px;
-  }
-
-  .nombre-link {
-    cursor: pointer;
-    color: #007bff;
-    text-decoration: none;
-    transition: color 0.2s ease;
-  }
-
-  .nombre-link:hover {
-    color: #0056b3;
-    text-decoration: underline;
-  }
-
-  .descripcion-cell {
-    justify-content: flex-start !important;
-    text-align: left !important;
-    max-width: 300px;
-    min-width: 250px;
-    overflow: hidden;
-    text-overflow: ellipsis;
-    color: #6c757d;
-  }
-
-  .precio-cell {
-    font-weight: 600;
-    color: #28a745;
-    font-family: 'Courier New', monospace;
-    min-width: 140px;
-  }
-
-  .acciones-cell {
-    position: sticky;
-    right: 0;
-    background: white;
-    min-width: 100px;
-    z-index: 5;
-    border-left: 2px solid #dee2e6;
-  }
-
-  .table-row:hover .acciones-cell {
-    background-color: #f8f9fa;
-  }
-
-  .table-header .acciones-header {
-    position: sticky;
-    right: 0;
-    background: rgb(4, 100, 243);
-    z-index: 15;
-    border-left: 2px solid rgba(255,255,255,0.3);
-  }
-
-  /* Responsive adjustments */
-  @media (max-width: 1200px) {
-    .table-header > div,
-    .table-cell {
-      padding: 8px 6px;
-      font-size: 11px;
-    }
-  }
-`;
-
-// Inyectar estilos adicionales
-if (typeof document !== 'undefined') {
-  const styleElement = document.createElement('style');
-  styleElement.textContent = additionalStyles;
-  document.head.appendChild(styleElement);
-}
-
-function ListaProductos({ onNuevoProducto, onEditarProducto, onImportarExcel, onExportarExcel, onExportarPresentaciones, onExportarEtiquetas, onMigrarProductos, onImportarPresentaciones, recargarProductos }) {
+function ListaProductos({ onNuevoProducto, onEditarProducto, onImportarExcel, onExportarExcel, onExportarPresentaciones, onExportarEtiquetas, onImportarPresentaciones, recargarProductos }) {
   const [mostrarFormularioProducto, setMostrarFormularioProducto] = useState(false);
 
   const handleNuevoProducto = () => {
-    // Si el padre provee un handler, se ejecuta también
     if (typeof onNuevoProducto === 'function') {
-      try { onNuevoProducto(); } catch {}
+      try { onNuevoProducto(); } catch (_) { void _; }
     }
     setMostrarFormularioProducto(true);
   };
@@ -384,6 +77,7 @@ function ListaProductos({ onNuevoProducto, onEditarProducto, onImportarExcel, on
 
   useEffect(() => {
     cargarDatos();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   // Efecto para recargar productos cuando se complete una importación
@@ -391,6 +85,7 @@ function ListaProductos({ onNuevoProducto, onEditarProducto, onImportarExcel, on
     if (recargarProductos > 0) {
       cargarProductos();
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [recargarProductos]);
 
   useEffect(() => {
@@ -408,13 +103,14 @@ function ListaProductos({ onNuevoProducto, onEditarProducto, onImportarExcel, on
 
   useEffect(() => {
     cargarProductos();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [filtros, paginacion.pagina]);
 
   useEffect(() => {
-    // Resetear página cuando cambien los filtros
     if (paginacion.pagina !== 1) {
       setPaginacion(prev => ({ ...prev, pagina: 1 }));
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [filtros.nombre, filtros.categoriaId, filtros.codigo, filtros.estado]);
 
   const cargarDatos = async () => {
@@ -669,79 +365,68 @@ function ListaProductos({ onNuevoProducto, onEditarProducto, onImportarExcel, on
 
   if (loading) {
     return (
-      <div className="loading-container">
-        <div className="spinner"></div>
-        <p>Cargando productos...</p>
+      <div className="flex min-h-[200px] flex-col items-center justify-center gap-3">
+        <div className="h-8 w-8 animate-spin rounded-full border-2 border-menta-petroleo border-t-transparent" />
+        <p className="text-sm font-medium text-menta-petroleo">Cargando productos...</p>
       </div>
     );
   }
 
   return (
-    <div className="lista-productos-container">
-      <div className="header-section">
-        <h2>Gestión de Productos y Presentaciones</h2>
-        <div className="header-actions">
-          <button 
-            className="btn-config-columnas" 
-            onClick={() => setMostrarConfigColumnas(!mostrarConfigColumnas)}
-            title="Configurar columnas"
-          >
-            <Settings size={20} /> Columnas
-          </button>
-          
-          {/* Acciones en Select */}
-          <select
-            className="acciones-select"
-            defaultValue=""
-            onChange={(e) => {
-              const value = e.target.value;
-              switch (value) {
-                case 'importar_productos':
-                  if (typeof onImportarExcel === 'function') onImportarExcel();
-                  break;
-                case 'importar_presentaciones':
-                  if (typeof onImportarPresentaciones === 'function') onImportarPresentaciones();
-                  break;
-                case 'exportar_productos':
-                  if (typeof onExportarExcel === 'function') onExportarExcel();
-                  break;
-                case 'exportar_presentaciones':
-                  if (typeof onExportarPresentaciones === 'function') onExportarPresentaciones();
-                  break;
-                case 'exportar_etiquetas':
-                  if (typeof onExportarEtiquetas === 'function') onExportarEtiquetas();
-                  break;
-                default:
-                  break;
-              }
-              e.target.value = '';
-            }}
-            title="Opciones de archivo"
-          >
-            <option value="" disabled>Selecciona una opción…</option>
-            <option value="importar_productos">Importar: Productos en Excel</option>
-            <option value="importar_presentaciones">Importar: Presentaciones en Excel</option>
-            <option value="exportar_productos">Exportar: Productos en Excel</option>
-            <option value="exportar_presentaciones">Exportar: Presentaciones en Excel</option>
-            <option value="exportar_etiquetas">Exportar: Etiquetas de productos</option>
-          </select>
+    <div className="space-y-6">
+      <div className="flex w-full flex-nowrap items-center gap-2">
+        <button
+          type="button"
+          className="inline-flex shrink-0 items-center gap-2 rounded-lg border border-slate-200 bg-white px-3 py-2 text-sm font-medium text-menta-petroleo shadow-sm transition hover:bg-menta-claro"
+          onClick={() => setMostrarConfigColumnas(!mostrarConfigColumnas)}
+          title="Configurar columnas"
+        >
+          <Settings size={18} /> Columnas
+        </button>
 
+        <select
+          className={`${inputBase} w-auto min-w-[200px] shrink-0`}
+          defaultValue=""
+          onChange={(e) => {
+            const value = e.target.value;
+            switch (value) {
+              case 'importar_productos':
+                if (typeof onImportarExcel === 'function') onImportarExcel();
+                break;
+              case 'importar_presentaciones':
+                if (typeof onImportarPresentaciones === 'function') onImportarPresentaciones();
+                break;
+              case 'exportar_productos':
+                if (typeof onExportarExcel === 'function') onExportarExcel();
+                break;
+              case 'exportar_presentaciones':
+                if (typeof onExportarPresentaciones === 'function') onExportarPresentaciones();
+                break;
+              case 'exportar_etiquetas':
+                if (typeof onExportarEtiquetas === 'function') onExportarEtiquetas();
+                break;
+              default:
+                break;
+            }
+            e.target.value = '';
+          }}
+          title="Opciones de archivo"
+        >
+          <option value="" disabled>Selecciona una opción…</option>
+          <option value="importar_productos">Importar: Productos en Excel</option>
+          <option value="importar_presentaciones">Importar: Presentaciones en Excel</option>
+          <option value="exportar_productos">Exportar: Productos en Excel</option>
+          <option value="exportar_presentaciones">Exportar: Presentaciones en Excel</option>
+          <option value="exportar_etiquetas">Exportar: Etiquetas de productos</option>
+        </select>
 
-           {/*no se usa por ahora */}
-           {/*  <button className="btn-migracion" onClick={onMigrarProductos}>
-            <ArrowRightLeft size={20} /> Migrar Productos
-          </button>*/}
-         
-
-
-
-           <button className="btn-nuevo" onClick={handleNuevoProducto}>
-            <Plus size={20} /> Nuevo Producto
-          </button> 
-
-
-
-        </div>
+        <button
+          type="button"
+          className="ml-auto inline-flex shrink-0 items-center gap-2 rounded-xl bg-menta-petroleo px-4 py-2 text-sm font-medium text-white shadow-sm transition hover:bg-menta-marino"
+          onClick={handleNuevoProducto}
+        >
+          <Plus size={18} /> Nuevo Producto
+        </button>
       </div>
 
       {mostrarFormularioProducto && (
@@ -749,136 +434,135 @@ function ListaProductos({ onNuevoProducto, onEditarProducto, onImportarExcel, on
           onGuardar={() => {
             setMostrarFormularioProducto(false);
             if (typeof recargarProductos === 'function') {
-              try { recargarProductos(); } catch {}
+              try { recargarProductos(); } catch (_) { void _; }
             }
           }}
           onCancelar={() => setMostrarFormularioProducto(false)}
         />
       )}
 
-      <div className="filtros-section">
-        <div className="filtros-header">
-          <h3>Filtros de búsqueda</h3>
-          <button 
-            className="btn-toggle-avanzada" 
+      <div className="rounded-xl border border-slate-200 bg-white p-4 shadow-sm">
+        <div className="mb-4 flex flex-wrap items-center justify-between gap-2">
+          <h3 className="text-base font-semibold text-fondo">Filtros de búsqueda</h3>
+          <button
+            type="button"
+            className="inline-flex items-center gap-2 rounded-lg border border-slate-200 bg-white px-3 py-2 text-sm font-medium text-menta-petroleo transition hover:bg-slate-50"
             onClick={toggleBusquedaAvanzada}
           >
             <Filter size={16} /> {busquedaAvanzada ? 'Búsqueda Simple' : 'Búsqueda Avanzada'}
           </button>
         </div>
-        
-        <div className="filtros-grid">
-          <div className="filtro-group">
-            <label>Buscar por nombre:</label>
+
+        <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-4">
+          <div>
+            <label className="mb-1 block text-sm font-medium text-menta-petroleo">Buscar por nombre</label>
             <input
               type="text"
               name="nombre"
               value={filtros.nombre}
               onChange={handleFiltroChange}
               placeholder="Nombre del producto..."
+              className={inputBase}
             />
           </div>
-          
-          <div className="filtro-group">
-            <label>Categoría:</label>
-            <select
-              name="categoriaId"
-              value={filtros.categoriaId}
-              onChange={handleFiltroChange}
-            >
+
+          <div>
+            <label className="mb-1 block text-sm font-medium text-menta-petroleo">Categoría</label>
+            <select name="categoriaId" value={filtros.categoriaId} onChange={handleFiltroChange} className={inputBase}>
               <option value="">Todas las categorías</option>
               {categorias.map(categoria => (
-                <option key={categoria.id} value={categoria.id}>
-                  {categoria.nombre}
-                </option>
+                <option key={categoria.id} value={categoria.id}>{categoria.nombre}</option>
               ))}
             </select>
           </div>
-          
+
           {busquedaAvanzada && (
             <>
-              <div className="filtro-group">
-                <label>Código:</label>
+              <div>
+                <label className="mb-1 block text-sm font-medium text-menta-petroleo">Código</label>
                 <input
                   type="text"
                   name="codigo"
                   value={filtros.codigo}
                   onChange={handleFiltroChange}
                   placeholder="Código del producto..."
+                  className={inputBase}
                 />
               </div>
-              
-              <div className="filtro-group">
-                <label>Estado:</label>
-                <select
-                  name="estado"
-                  value={filtros.estado}
-                  onChange={handleFiltroChange}
-                >
+              <div>
+                <label className="mb-1 block text-sm font-medium text-menta-petroleo">Estado</label>
+                <select name="estado" value={filtros.estado} onChange={handleFiltroChange} className={inputBase}>
                   <option value="">Todos los estados</option>
                   <option value="activo">Activo</option>
                   <option value="inactivo">Inactivo</option>
                 </select>
               </div>
-              
-
             </>
           )}
-          
-          <div className="filtro-actions">
-            <button className="btn-aplicar" onClick={aplicarFiltros}>
+
+          <div className="flex items-end gap-2 sm:col-span-2 lg:col-span-1">
+            <button
+              type="button"
+              className="inline-flex flex-1 items-center justify-center gap-2 rounded-lg bg-menta-petroleo px-4 py-2 text-sm font-medium text-white transition hover:bg-menta-marino"
+              onClick={aplicarFiltros}
+            >
               <Search size={16} /> Buscar
             </button>
-            <button className="btn-limpiar" onClick={limpiarFiltros}>
+            <button
+              type="button"
+              className="inline-flex flex-1 items-center justify-center gap-2 rounded-lg border border-slate-200 bg-white px-4 py-2 text-sm font-medium text-menta-petroleo transition hover:bg-slate-50"
+              onClick={limpiarFiltros}
+            >
               <X size={16} /> Limpiar
             </button>
           </div>
         </div>
       </div>
 
-      {/* Panel de configuración de columnas */}
       {mostrarConfigColumnas && (
-        <div className="config-columnas-panel">
-          <div className="config-header">
-            <h3>Configurar Columnas</h3>
-            <div className="config-actions">
-              <button 
-                className="btn-toggle-all"
+        <div className="rounded-xl border border-slate-200 bg-slate-50/80 p-4">
+          <div className="mb-3 flex flex-wrap items-center justify-between gap-2">
+            <h3 className="text-sm font-semibold text-menta-petroleo">Configurar Columnas</h3>
+            <div className="flex flex-wrap items-center gap-2">
+              <button
+                type="button"
+                className="inline-flex items-center gap-1.5 rounded-lg bg-menta-petroleo px-3 py-1.5 text-xs font-medium text-white transition hover:bg-menta-marino"
                 onClick={() => toggleTodasColumnas(true)}
               >
                 <Eye size={14} /> Mostrar Todas
               </button>
-              <button 
-                className="btn-toggle-all"
+              <button
+                type="button"
+                className="inline-flex items-center gap-1.5 rounded-lg bg-slate-500 px-3 py-1.5 text-xs font-medium text-white transition hover:bg-slate-600"
                 onClick={() => toggleTodasColumnas(false)}
-                style={{background: '#6c757d'}}
               >
                 <EyeOff size={14} /> Ocultar Todas
               </button>
-              <button 
-                className="btn-cerrar-config"
+              <button
+                type="button"
+                className="inline-flex items-center gap-1.5 rounded-lg border border-slate-300 bg-white px-3 py-1.5 text-xs font-medium text-slate-700 transition hover:bg-slate-100"
                 onClick={() => setMostrarConfigColumnas(false)}
               >
-                ✕ Cerrar
+                <X size={14} /> Cerrar
               </button>
             </div>
           </div>
-          
-          <div className="columnas-grid">
+          <div className="grid grid-cols-2 gap-2 sm:grid-cols-3 md:grid-cols-4">
             {todasLasColumnas.map(columna => {
               const esObligatoria = ['numero', 'acciones'].includes(columna.key);
               return (
-                <div key={columna.key} className="columna-item">
-                  <label className="columna-checkbox">
+                <div key={columna.key} className="rounded-lg p-2 transition hover:bg-slate-100">
+                  <label className="flex cursor-pointer items-center gap-2">
                     <input
                       type="checkbox"
                       checked={columnasVisibles[columna.key]}
                       onChange={() => !esObligatoria && toggleColumna(columna.key)}
                       disabled={esObligatoria}
+                      className="rounded border-slate-300 text-menta-petroleo focus:ring-menta-turquesa"
                     />
-                    <span className={`columna-label ${esObligatoria ? 'obligatoria' : ''}`}>
+                    <span className={`text-sm select-none ${esObligatoria ? 'font-medium text-slate-500' : 'text-menta-petroleo'}`}>
                       {columna.label}
-                      {esObligatoria && <span className="obligatoria-badge"> *</span>}
+                      {esObligatoria && <span className="ml-0.5 font-bold text-red-500">*</span>}
                     </span>
                   </label>
                 </div>
@@ -888,160 +572,153 @@ function ListaProductos({ onNuevoProducto, onEditarProducto, onImportarExcel, on
         </div>
       )}
 
-      <div className="productos-table-container">
+      <div className="overflow-hidden rounded-xl border border-slate-200 bg-white shadow-sm">
         {productos.length === 0 ? (
-          <div className="no-productos">
-            <p>No se encontraron productos</p>
+          <div className="flex min-h-[200px] flex-col items-center justify-center rounded-xl border border-slate-200 bg-slate-50/50 py-12">
+            <p className="text-sm font-medium text-menta-petroleo">No se encontraron productos</p>
           </div>
         ) : (
-          <div className="productos-table">
-            <div 
-               className="table-header"
-               style={{
-                 gridTemplateColumns: `repeat(${Object.values(columnasVisibles).filter(Boolean).length}, minmax(150px, 1fr))`
-               }}
-             >
-              {columnasVisibles.numero && <div>N°</div>}
-               {columnasVisibles.id && <div>ID</div>}
-               {columnasVisibles.codigo && <div>CÓD. INTERNO</div>}
-               {columnasVisibles.unidad && <div>UNIDAD</div>}
-               {columnasVisibles.nombre && <div>NOMBRE</div>}
-               {columnasVisibles.descripcion && <div>DESCRIPCIÓN</div>}
-               {columnasVisibles.categoria && <div>CATEGORÍA</div>}
-               {columnasVisibles.sucursal && <div>SUCURSAL</div>}
-               {columnasVisibles.marca && <div>MARCA</div>}
-               {columnasVisibles.modelo && <div>MODELO</div>}
-               {columnasVisibles.codigoSunat && <div>CÓD. SUNAT</div>}
-               {columnasVisibles.codigoBarras && <div>CÓD. BARRAS</div>}
-               {columnasVisibles.tipodeAfectacion && <div>TIPO AFECTACIÓN</div>}
-               {columnasVisibles.origen && <div>ORIGEN</div>}
-               {columnasVisibles.codigoprovedorOEM && <div>CÓD. PROVEEDOR OEM</div>}
-               {columnasVisibles.codigoCompetencia && <div>CÓD. COMPETENCIA</div>}
-               {columnasVisibles.rangoAnos && <div>RANGO AÑOS</div>}
-               {columnasVisibles.observaciones && <div>OBSERVACIONES</div>}
-               {columnasVisibles.precioVenta && <div>P.UNITARIO (VENTA)</div>}
-               {columnasVisibles.precioCompra && <div>P.UNITARIO (COMPRA)</div>}
-               {columnasVisibles.productosRelacionados && <div>PRODUCTOS RELACIONADOS</div>}
-               {columnasVisibles.codigoTipoMoneda && <div>CÓDIGO TIPO MONEDA</div>}
-               {columnasVisibles.codigoTipoAfectacionIgvVenta && <div>CÓDIGO AFECTACIÓN IGV VENTA</div>}
-               {columnasVisibles.tieneIgv && <div>TIENE IGV</div>}
-               {columnasVisibles.codigoTipoAfectacionIgvCompra && <div>CÓDIGO AFECTACIÓN IGV COMPRA</div>}
-               {columnasVisibles.stock && <div>STOCK</div>}
-               {columnasVisibles.stockMinimo && <div>STOCK MÍNIMO</div>}
-               {columnasVisibles.iscActivo && <div>ISC ACTIVO</div>}
-               {columnasVisibles.tipoAplicacionISC && <div>TIPO APLICACIÓN ISC</div>}
-               {columnasVisibles.sujetoDetraccion && <div>SUJETO DETRACCIÓN</div>}
-               {columnasVisibles.estado && <div>ESTADO</div>}
-               {columnasVisibles.acciones && <div className="acciones-header">ACCIONES</div>}
+          <div className="min-h-[400px] overflow-x-auto">
+            <div
+              className="sticky top-0 z-10 grid min-h-[55px] gap-px bg-menta-petroleo text-xs font-semibold uppercase tracking-wider text-white"
+              style={{
+                gridTemplateColumns: `repeat(${Object.values(columnasVisibles).filter(Boolean).length}, minmax(150px, 1fr))`
+              }}
+            >
+              {columnasVisibles.numero && <div className="flex items-center justify-center border-r border-white/20 px-3 py-3.5">N°</div>}
+              {columnasVisibles.id && <div className="flex items-center justify-center border-r border-white/20 px-3 py-3.5">ID</div>}
+              {columnasVisibles.codigo && <div className="flex items-center justify-center border-r border-white/20 px-3 py-3.5">CÓD. INTERNO</div>}
+              {columnasVisibles.unidad && <div className="flex items-center justify-center border-r border-white/20 px-3 py-3.5">UNIDAD</div>}
+              {columnasVisibles.nombre && <div className="flex items-center justify-center border-r border-white/20 px-3 py-3.5">NOMBRE</div>}
+              {columnasVisibles.descripcion && <div className="flex items-center justify-center border-r border-white/20 px-3 py-3.5">DESCRIPCIÓN</div>}
+              {columnasVisibles.categoria && <div className="flex items-center justify-center border-r border-white/20 px-3 py-3.5">CATEGORÍA</div>}
+              {columnasVisibles.sucursal && <div className="flex items-center justify-center border-r border-white/20 px-3 py-3.5">SUCURSAL</div>}
+              {columnasVisibles.marca && <div className="flex items-center justify-center border-r border-white/20 px-3 py-3.5">MARCA</div>}
+              {columnasVisibles.modelo && <div className="flex items-center justify-center border-r border-white/20 px-3 py-3.5">MODELO</div>}
+              {columnasVisibles.codigoSunat && <div className="flex items-center justify-center border-r border-white/20 px-3 py-3.5">CÓD. SUNAT</div>}
+              {columnasVisibles.codigoBarras && <div className="flex items-center justify-center border-r border-white/20 px-3 py-3.5">CÓD. BARRAS</div>}
+              {columnasVisibles.tipodeAfectacion && <div className="flex items-center justify-center border-r border-white/20 px-3 py-3.5">TIPO AFECTACIÓN</div>}
+              {columnasVisibles.origen && <div className="flex items-center justify-center border-r border-white/20 px-3 py-3.5">ORIGEN</div>}
+              {columnasVisibles.codigoprovedorOEM && <div className="flex items-center justify-center border-r border-white/20 px-3 py-3.5">CÓD. PROVEEDOR OEM</div>}
+              {columnasVisibles.codigoCompetencia && <div className="flex items-center justify-center border-r border-white/20 px-3 py-3.5">CÓD. COMPETENCIA</div>}
+              {columnasVisibles.rangoAnos && <div className="flex items-center justify-center border-r border-white/20 px-3 py-3.5">RANGO AÑOS</div>}
+              {columnasVisibles.observaciones && <div className="flex items-center justify-center border-r border-white/20 px-3 py-3.5">OBSERVACIONES</div>}
+              {columnasVisibles.precioVenta && <div className="flex items-center justify-center border-r border-white/20 px-3 py-3.5">P.UNITARIO (VENTA)</div>}
+              {columnasVisibles.precioCompra && <div className="flex items-center justify-center border-r border-white/20 px-3 py-3.5">P.UNITARIO (COMPRA)</div>}
+              {columnasVisibles.productosRelacionados && <div className="flex items-center justify-center border-r border-white/20 px-3 py-3.5">PRODUCTOS RELACIONADOS</div>}
+              {columnasVisibles.codigoTipoMoneda && <div className="flex items-center justify-center border-r border-white/20 px-3 py-3.5">CÓDIGO TIPO MONEDA</div>}
+              {columnasVisibles.codigoTipoAfectacionIgvVenta && <div className="flex items-center justify-center border-r border-white/20 px-3 py-3.5">CÓDIGO AFECTACIÓN IGV VENTA</div>}
+              {columnasVisibles.tieneIgv && <div className="flex items-center justify-center border-r border-white/20 px-3 py-3.5">TIENE IGV</div>}
+              {columnasVisibles.codigoTipoAfectacionIgvCompra && <div className="flex items-center justify-center border-r border-white/20 px-3 py-3.5">CÓDIGO AFECTACIÓN IGV COMPRA</div>}
+              {columnasVisibles.stock && <div className="flex items-center justify-center border-r border-white/20 px-3 py-3.5">STOCK</div>}
+              {columnasVisibles.stockMinimo && <div className="flex items-center justify-center border-r border-white/20 px-3 py-3.5">STOCK MÍNIMO</div>}
+              {columnasVisibles.iscActivo && <div className="flex items-center justify-center border-r border-white/20 px-3 py-3.5">ISC ACTIVO</div>}
+              {columnasVisibles.tipoAplicacionISC && <div className="flex items-center justify-center border-r border-white/20 px-3 py-3.5">TIPO APLICACIÓN ISC</div>}
+              {columnasVisibles.sujetoDetraccion && <div className="flex items-center justify-center border-r border-white/20 px-3 py-3.5">SUJETO DETRACCIÓN</div>}
+              {columnasVisibles.estado && <div className="flex items-center justify-center border-r border-white/20 px-3 py-3.5">ESTADO</div>}
+              {columnasVisibles.acciones && <div className="sticky right-0 z-[15] flex min-w-[100px] items-center justify-center border-l-2 border-white/30 bg-menta-petroleo px-3 py-3.5">ACCIONES</div>}
             </div>
             
             {productos.map((producto, index) => (
-              <div 
-                 key={producto.id} 
-                 className="table-row"
-                 style={{
-                   gridTemplateColumns: `repeat(${Object.values(columnasVisibles).filter(Boolean).length}, minmax(150px, 1fr))`
-                 }}
-               >
-                {columnasVisibles.numero && <div className="table-cell">{index + 1}</div>}
-                {columnasVisibles.id && <div className="table-cell">{producto.id}</div>}
-                {columnasVisibles.codigo && <div className="table-cell">{producto.codigo || '-'}</div>}
-                {columnasVisibles.unidad && <div className="table-cell">{producto.unidadMedida || 'NIU'}</div>}
+              <div
+                key={producto.id}
+                className="grid min-h-[70px] border-b border-slate-200 bg-white transition hover:bg-slate-50/80"
+                style={{
+                  gridTemplateColumns: `repeat(${Object.values(columnasVisibles).filter(Boolean).length}, minmax(150px, 1fr))`
+                }}
+              >
+                {columnasVisibles.numero && <div className="flex min-w-[120px] items-center justify-center border-r border-slate-200 px-3 py-3.5 text-sm text-menta-marino">{index + 1}</div>}
+                {columnasVisibles.id && <div className="flex min-w-[120px] items-center justify-center border-r border-slate-200 px-3 py-3.5 text-sm text-menta-marino">{producto.id}</div>}
+                {columnasVisibles.codigo && <div className="flex min-w-[120px] items-center justify-center border-r border-slate-200 px-3 py-3.5 text-sm text-menta-marino">{producto.codigo || '-'}</div>}
+                {columnasVisibles.unidad && <div className="flex min-w-[120px] items-center justify-center border-r border-slate-200 px-3 py-3.5 text-sm text-menta-marino">{producto.unidadMedida || 'NIU'}</div>}
                 {columnasVisibles.nombre && (
-                  <div className="table-cell nombre-cell" 
-                       onClick={() => {
-                         setProductoSeleccionado(producto);
-                         setGaleriaAbierta(true);
-                       }}>
-                    <span className="nombre-link">{producto.nombre}</span>
+                  <div
+                    className="flex min-w-[200px] cursor-pointer items-center justify-start border-r border-slate-200 px-3 py-3.5 text-left font-medium text-fondo transition hover:bg-menta-claro/50"
+                    onClick={() => { setProductoSeleccionado(producto); setGaleriaAbierta(true); }}
+                  >
+                    <span className="cursor-pointer text-menta-turquesa hover:underline">{producto.nombre}</span>
                   </div>
                 )}
-                {columnasVisibles.descripcion && <div className="table-cell descripcion-cell">{producto.descripcion || '-'}</div>}
-                {columnasVisibles.categoria && <div className="table-cell">{producto.Categorium?.nombre || producto.categoria?.nombre || producto.categoriaNombre || '-'}</div>}
-                {columnasVisibles.sucursal && <div className="table-cell">{producto.Sucursal?.nombre || producto.sucursal?.nombre || producto.sucursalNombre || '-'}</div>}
-                {columnasVisibles.marca && <div className="table-cell">{producto.marca || '-'}</div>}
-                {columnasVisibles.modelo && <div className="table-cell">{producto.modelo || '-'}</div>}
-                {columnasVisibles.codigoSunat && <div className="table-cell">{producto.codigosunat || '-'}</div>}
-                {columnasVisibles.codigoBarras && <div className="table-cell">{producto.codigoBarras || '-'}</div>}
-                {columnasVisibles.tipodeAfectacion && <div className="table-cell">{producto.tipodeAfectacion || '-'}</div>}
-                {columnasVisibles.origen && <div className="table-cell">{producto.origen || '-'}</div>}
-                {columnasVisibles.codigoprovedorOEM && <div className="table-cell">{producto.codigoprovedorOEM || '-'}</div>}
-                {columnasVisibles.codigoCompetencia && <div className="table-cell">{producto.codigoCompetencia || '-'}</div>}
-                {columnasVisibles.rangoAnos && (
-                  <div className="table-cell">
-                    {producto.rangoAnos || '-'}
-                  </div>
-                )}
-                {columnasVisibles.observaciones && <div className="table-cell">{producto.observaciones || '-'}</div>}
-                {columnasVisibles.precioVenta && <div className="table-cell precio-cell">S/ {parseFloat(producto.precioVenta || 0).toFixed(2)}</div>}
-                {columnasVisibles.precioCompra && <div className="table-cell precio-cell">S/ {parseFloat(producto.precioCompra || 0).toFixed(2)}</div>}
-                {columnasVisibles.productosRelacionados && <div className="table-cell">{producto.productos_relacionados || '-'}</div>}
-                {columnasVisibles.codigoTipoMoneda && <div className="table-cell">{producto.codigo_tipo_moneda || '-'}</div>}
-                {columnasVisibles.codigoTipoAfectacionIgvVenta && <div className="table-cell">{producto.codigo_tipo_afectacion_igv_venta || '-'}</div>}
+                {columnasVisibles.descripcion && <div className="flex min-w-[250px] max-w-[300px] items-center justify-start truncate border-r border-slate-200 px-3 py-3.5 text-left text-sm text-slate-500">{producto.descripcion || '-'}</div>}
+                {columnasVisibles.categoria && <div className="flex min-w-[120px] items-center justify-center border-r border-slate-200 px-3 py-3.5 text-sm text-menta-marino">{producto.Categorium?.nombre || producto.categoria?.nombre || producto.categoriaNombre || '-'}</div>}
+                {columnasVisibles.sucursal && <div className="flex min-w-[120px] items-center justify-center border-r border-slate-200 px-3 py-3.5 text-sm text-menta-marino">{producto.Sucursal?.nombre || producto.sucursal?.nombre || producto.sucursalNombre || '-'}</div>}
+                {columnasVisibles.marca && <div className="flex min-w-[120px] items-center justify-center border-r border-slate-200 px-3 py-3.5 text-sm text-menta-marino">{producto.marca || '-'}</div>}
+                {columnasVisibles.modelo && <div className="flex min-w-[120px] items-center justify-center border-r border-slate-200 px-3 py-3.5 text-sm text-menta-marino">{producto.modelo || '-'}</div>}
+                {columnasVisibles.codigoSunat && <div className="flex min-w-[120px] items-center justify-center border-r border-slate-200 px-3 py-3.5 text-sm text-menta-marino">{producto.codigosunat || '-'}</div>}
+                {columnasVisibles.codigoBarras && <div className="flex min-w-[120px] items-center justify-center border-r border-slate-200 px-3 py-3.5 text-sm text-menta-marino">{producto.codigoBarras || '-'}</div>}
+                {columnasVisibles.tipodeAfectacion && <div className="flex min-w-[120px] items-center justify-center border-r border-slate-200 px-3 py-3.5 text-sm text-menta-marino">{producto.tipodeAfectacion || '-'}</div>}
+                {columnasVisibles.origen && <div className="flex min-w-[120px] items-center justify-center border-r border-slate-200 px-3 py-3.5 text-sm text-menta-marino">{producto.origen || '-'}</div>}
+                {columnasVisibles.codigoprovedorOEM && <div className="flex min-w-[120px] items-center justify-center border-r border-slate-200 px-3 py-3.5 text-sm text-menta-marino">{producto.codigoprovedorOEM || '-'}</div>}
+                {columnasVisibles.codigoCompetencia && <div className="flex min-w-[120px] items-center justify-center border-r border-slate-200 px-3 py-3.5 text-sm text-menta-marino">{producto.codigoCompetencia || '-'}</div>}
+                {columnasVisibles.rangoAnos && <div className="flex min-w-[120px] items-center justify-center border-r border-slate-200 px-3 py-3.5 text-sm text-menta-marino">{producto.rangoAnos || '-'}</div>}
+                {columnasVisibles.observaciones && <div className="flex min-w-[120px] items-center justify-center border-r border-slate-200 px-3 py-3.5 text-sm text-menta-marino">{producto.observaciones || '-'}</div>}
+                {columnasVisibles.precioVenta && <div className="flex min-w-[140px] items-center justify-center border-r border-slate-200 px-3 py-3.5 font-mono text-sm font-semibold text-menta-esmeralda">S/ {parseFloat(producto.precioVenta || 0).toFixed(2)}</div>}
+                {columnasVisibles.precioCompra && <div className="flex min-w-[140px] items-center justify-center border-r border-slate-200 px-3 py-3.5 font-mono text-sm font-semibold text-menta-esmeralda">S/ {parseFloat(producto.precioCompra || 0).toFixed(2)}</div>}
+                {columnasVisibles.productosRelacionados && <div className="flex min-w-[120px] items-center justify-center border-r border-slate-200 px-3 py-3.5 text-sm text-menta-marino">{producto.productos_relacionados || '-'}</div>}
+                {columnasVisibles.codigoTipoMoneda && <div className="flex min-w-[120px] items-center justify-center border-r border-slate-200 px-3 py-3.5 text-sm text-menta-marino">{producto.codigo_tipo_moneda || '-'}</div>}
+                {columnasVisibles.codigoTipoAfectacionIgvVenta && <div className="flex min-w-[120px] items-center justify-center border-r border-slate-200 px-3 py-3.5 text-sm text-menta-marino">{producto.codigo_tipo_afectacion_igv_venta || '-'}</div>}
                 {columnasVisibles.tieneIgv && (
-                  <div className="table-cell">
-                    <span className={`badge ${producto.tiene_igv ? 'badge-success' : 'badge-secondary'}`}>
+                  <div className="flex min-w-[120px] items-center justify-center border-r border-slate-200 px-3 py-3.5">
+                    <span className={`inline-block rounded px-2 py-0.5 text-xs font-medium ${producto.tiene_igv ? 'border border-green-200 bg-green-100 text-green-800' : 'border border-slate-200 bg-slate-100 text-slate-600'}`}>
                       {producto.tiene_igv ? 'Sí' : 'No'}
                     </span>
                   </div>
                 )}
-                {columnasVisibles.codigoTipoAfectacionIgvCompra && <div className="table-cell">{producto.codigo_tipo_afectacion_igv_compra || '-'}</div>}
-                {columnasVisibles.stock && <div className="table-cell">{producto.stock || 0}</div>}
-                {columnasVisibles.stockMinimo && <div className="table-cell">{producto.stockMinimo || 0}</div>}
+                {columnasVisibles.codigoTipoAfectacionIgvCompra && <div className="flex min-w-[120px] items-center justify-center border-r border-slate-200 px-3 py-3.5 text-sm text-menta-marino">{producto.codigo_tipo_afectacion_igv_compra || '-'}</div>}
+                {columnasVisibles.stock && <div className="flex min-w-[120px] items-center justify-center border-r border-slate-200 px-3 py-3.5 text-sm text-menta-marino">{producto.stock || 0}</div>}
+                {columnasVisibles.stockMinimo && <div className="flex min-w-[120px] items-center justify-center border-r border-slate-200 px-3 py-3.5 text-sm text-menta-marino">{producto.stockMinimo || 0}</div>}
                 {columnasVisibles.iscActivo && (
-                  <div className="table-cell">
-                    <span className={`badge ${producto.iscActivo ? 'badge-success' : 'badge-secondary'}`}>
+                  <div className="flex min-w-[120px] items-center justify-center border-r border-slate-200 px-3 py-3.5">
+                    <span className={`inline-block rounded px-2 py-0.5 text-xs font-medium ${producto.iscActivo ? 'border border-green-200 bg-green-100 text-green-800' : 'border border-slate-200 bg-slate-100 text-slate-600'}`}>
                       {producto.iscActivo ? 'Sí' : 'No'}
                     </span>
                   </div>
                 )}
-                {columnasVisibles.tipoAplicacionISC && <div className="table-cell">{producto.tipoAplicacionISC || '-'}</div>}
+                {columnasVisibles.tipoAplicacionISC && <div className="flex min-w-[120px] items-center justify-center border-r border-slate-200 px-3 py-3.5 text-sm text-menta-marino">{producto.tipoAplicacionISC || '-'}</div>}
                 {columnasVisibles.sujetoDetraccion && (
-                  <div className="table-cell">
-                    <span className={`badge ${producto.sujetoDetraccion ? 'badge-warning' : 'badge-secondary'}`}>
+                  <div className="flex min-w-[120px] items-center justify-center border-r border-slate-200 px-3 py-3.5">
+                    <span className={`inline-block rounded px-2 py-0.5 text-xs font-medium ${producto.sujetoDetraccion ? 'border border-amber-200 bg-amber-100 text-amber-800' : 'border border-slate-200 bg-slate-100 text-slate-600'}`}>
                       {producto.sujetoDetraccion ? 'Sí' : 'No'}
                     </span>
                   </div>
                 )}
                 {columnasVisibles.estado && (
-                  <div className="table-cell">
-                    <span className={`badge ${producto.estado ? 'badge-success' : 'badge-danger'}`}>
+                  <div className="flex min-w-[120px] items-center justify-center border-r border-slate-200 px-3 py-3.5">
+                    <span className={`inline-block rounded px-2 py-0.5 text-xs font-medium ${producto.estado ? 'border border-green-200 bg-green-100 text-green-800' : 'border border-red-200 bg-red-100 text-red-800'}`}>
                       {producto.estado ? 'Activo' : 'Inactivo'}
                     </span>
                   </div>
                 )}
                 {columnasVisibles.acciones && (
-                  <div className="table-cell acciones-cell">
-                    <div className="acciones-dropdown">
-                      <button 
-                        className="btn-acciones"
+                  <div className="acciones-dropdown sticky right-0 z-[5] flex min-w-[100px] items-center justify-center border-l-2 border-slate-200 bg-white px-3 py-3.5 hover:bg-slate-50/80">
+                    <div className="relative">
+                      <button
+                        type="button"
+                        className="rounded-lg p-2 text-slate-500 transition hover:bg-menta-claro hover:text-menta-petroleo"
                         onClick={() => toggleDropdown(producto.id)}
                       >
-                        ⋮
+                        <span className="text-lg leading-none">⋮</span>
                       </button>
                       {dropdownAbierto === producto.id && (
-                        <div className="dropdown-menu show">
-                          <button 
-                            className="dropdown-item"
-                            onClick={() => {
-                              onEditarProducto(producto);
-                              cerrarDropdown();
-                            }}
+                        <div className="absolute right-0 top-full z-20 mt-1 min-w-[180px] rounded-lg border border-slate-200 bg-white py-1 shadow-lg">
+                          <button
+                            type="button"
+                            className="flex w-full items-center gap-2 px-3 py-2 text-left text-sm text-menta-petroleo transition hover:bg-slate-50"
+                            onClick={() => { onEditarProducto(producto); cerrarDropdown(); }}
                           >
                             <Edit3 size={14} /> Editar
                           </button>
-                          <button 
-                            className="dropdown-item"
+                          <button
+                            type="button"
+                            className="flex w-full items-center gap-2 px-3 py-2 text-left text-sm text-menta-petroleo transition hover:bg-slate-50"
                             onClick={() => abrirModalVerPresentaciones(producto)}
                           >
                             <Package size={14} /> Ver Presentaciones
                           </button>
-                          <button 
-                            className="dropdown-item eliminar"
-                            onClick={() => {
-                              handleEliminar(producto.id, producto.nombre);
-                              cerrarDropdown();
-                            }}
+                          <button
+                            type="button"
+                            className="flex w-full items-center gap-2 px-3 py-2 text-left text-sm text-red-600 transition hover:bg-red-50"
+                            onClick={() => { handleEliminar(producto.id, producto.nombre); cerrarDropdown(); }}
                           >
                             <Trash2 size={14} /> Eliminar
                           </button>
@@ -1056,29 +733,32 @@ function ListaProductos({ onNuevoProducto, onEditarProducto, onImportarExcel, on
         )}
       </div>
 
-      <div className="productos-stats">
-        <p>Total de productos: {productos.length}</p>
+      <div className="flex flex-wrap items-center justify-between gap-4 border-t border-slate-200 bg-slate-50/80 px-4 py-3">
+        <p className="text-sm font-medium text-menta-petroleo">Total de productos: {productos.length}</p>
         {paginacion.total > 0 && (
-          <p>Mostrando página {paginacion.pagina} de {totalPaginas}</p>
+          <p className="text-sm text-menta-petroleo">Mostrando página {paginacion.pagina} de {totalPaginas}</p>
         )}
       </div>
-      
+
       {totalPaginas > 1 && (
-        <div className="paginacion">
-          <button 
-            className="btn-paginacion" 
+        <div className="flex flex-wrap items-center justify-center gap-2 py-4">
+          <button
+            type="button"
+            className="rounded-lg border border-slate-200 bg-white px-3 py-2 text-sm font-medium text-menta-petroleo transition hover:bg-slate-50 disabled:opacity-50 disabled:hover:bg-white"
             onClick={() => cambiarPagina(paginacion.pagina - 1)}
             disabled={paginacion.pagina === 1}
           >
             ← Anterior
           </button>
-          
-          <div className="numeros-pagina">
+          <div className="flex flex-wrap items-center gap-1">
             {Array.from({ length: totalPaginas }, (_, i) => i + 1).map(numeroPagina => (
               <button
                 key={numeroPagina}
-                className={`btn-numero-pagina ${
-                  numeroPagina === paginacion.pagina ? 'activa' : ''
+                type="button"
+                className={`rounded-lg px-3 py-2 text-sm font-medium transition ${
+                  numeroPagina === paginacion.pagina
+                    ? 'bg-menta-petroleo text-white'
+                    : 'border border-slate-200 bg-white text-menta-petroleo hover:bg-menta-claro'
                 }`}
                 onClick={() => cambiarPagina(numeroPagina)}
               >
@@ -1086,9 +766,9 @@ function ListaProductos({ onNuevoProducto, onEditarProducto, onImportarExcel, on
               </button>
             ))}
           </div>
-          
-          <button 
-            className="btn-paginacion" 
+          <button
+            type="button"
+            className="rounded-lg border border-slate-200 bg-white px-3 py-2 text-sm font-medium text-menta-petroleo transition hover:bg-slate-50 disabled:opacity-50 disabled:hover:bg-white"
             onClick={() => cambiarPagina(paginacion.pagina + 1)}
             disabled={paginacion.pagina === totalPaginas}
           >

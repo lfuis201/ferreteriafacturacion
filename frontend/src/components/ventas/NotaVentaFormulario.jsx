@@ -1,41 +1,42 @@
 import React, { useState, useEffect } from 'react';
-import { Camera, Info, Plus, Trash2 } from 'lucide-react';
-import '../../styles/NotaVentaFormulario.css';
+import {
+  Plus,
+  Trash2,
+  X,
+  Search,
+  Save,
+  UserPlus,
+  ShoppingCart,
+  Building,
+  DollarSign,
+  Calendar,
+  FileText,
+  AlertTriangle,
+  Info,
+  CheckCircle,
+  Truck,
+  Hash,
+  CreditCard,
+  Clock,
+  Briefcase
+} from 'lucide-react';
 import ModalCliente from './ModalCliente';
 import FormularioVentaProductServicio from './FormularioVentaProductServicio';
 import { obtenerClientes } from '../../services/clienteService';
-import { crearNotaVenta, generarPdfNotaVenta } from '../../services/notaVentaService';
-const NotaVentaFormulario = () => {
+import { crearNotaVenta } from '../../services/notaVentaService';
+import Swal from 'sweetalert2';
+
+const NotaVentaFormulario = ({ onCancel, onSuccess }) => {
   const [pagos, setPagos] = useState([
     {
       id: 1,
-      fecha: '2025-06-30',
+      fecha: new Date().toISOString().split('T')[0],
       metodoPago: 'Efectivo',
-      destino: 'CAJA GENERAL - Adminitrac',
+      destino: 'CAJA GENERAL',
       referencia: '',
       glosa: '',
       monto: 0,
       agregar: true
-    },
-    {
-      id: 2,
-      fecha: '2025-06-30',
-      metodoPago: 'Efectivo',
-      destino: 'CAJA GENERAL - Adminitrac',
-      referencia: '',
-      glosa: '',
-      monto: 0,
-      agregar: false
-    },
-    {
-      id: 3,
-      fecha: '2025-06-30',
-      metodoPago: 'Efectivo',
-      destino: 'CAJA GENERAL - Adminitrac',
-      referencia: '',
-      glosa: '',
-      monto: 0,
-      agregar: false
     }
   ]);
 
@@ -67,9 +68,6 @@ const NotaVentaFormulario = () => {
   const [igv, setIgv] = useState(0);
   const [total, setTotal] = useState(0);
   const [loading, setLoading] = useState(false);
-  const [showPreview, setShowPreview] = useState(false);
-  const [previewPdfUrl, setPreviewPdfUrl] = useState('');
-  const [notaGuardada, setNotaGuardada] = useState(null);
 
   // Cargar clientes al montar el componente
   useEffect(() => {
@@ -84,54 +82,6 @@ const NotaVentaFormulario = () => {
     cargarClientes();
   }, []);
 
-  const agregarPago = () => {
-    const nuevoPago = {
-      id: pagos.length + 1,
-      fecha: '2025-06-30',
-      metodoPago: 'Efectivo',
-      destino: 'CAJA GENERAL - Adminitrac',
-      referencia: '',
-      glosa: '',
-      monto: 0,
-      agregar: false
-    };
-    setPagos([...pagos, nuevoPago]);
-  };
-
-  const eliminarPago = (id) => {
-    setPagos(pagos.filter(pago => pago.id !== id));
-  };
-
-  const agregarProducto = () => {
-    const nuevoProducto = {
-      id: Date.now(), // Usar timestamp para evitar conflictos de ID
-      productoId: null, // Se asignará cuando se seleccione un producto real
-      descripcion: '',
-      unidad: 'UND',
-      cantidad: 1,
-      valorU: 0,
-      precioU: 0,
-      precioUnitario: 0,
-      subtotal: 0,
-      total: 0,
-      codigo: '',
-      stock: 0
-    };
-    setProductos(prevProductos => [...prevProductos, nuevoProducto]);
-  };
-
-  const handleCloseModal = () => {
-    setShowModalCliente(false);
-  };
-
-  const handleClienteCreado = (nuevoCliente) => {
-    console.log('Cliente creado:', nuevoCliente);
-    // Actualizar la lista de clientes y seleccionar el nuevo cliente
-    setClientes(prevClientes => [...prevClientes, nuevoCliente]);
-    setClienteSeleccionado(nuevoCliente.id);
-    setShowModalCliente(false);
-  };
-
   // Función para manejar cambios en el formulario
   const handleInputChange = (e) => {
     const { name, value } = e.target;
@@ -143,12 +93,11 @@ const NotaVentaFormulario = () => {
 
   // Función para manejar cambios en productos
   const handleProductoChange = (id, campo, valor) => {
-    setProductos(prevProductos => 
+    setProductos(prevProductos =>
       prevProductos.map(producto => {
         if (producto.id === id) {
           const productoActualizado = { ...producto, [campo]: valor };
-          
-          // Recalcular subtotal si cambia cantidad o precio
+
           if (campo === 'cantidad' || campo === 'precioU') {
             const cantidad = campo === 'cantidad' ? parseFloat(valor) || 0 : producto.cantidad;
             const precio = campo === 'precioU' ? parseFloat(valor) || 0 : producto.precioU;
@@ -157,7 +106,7 @@ const NotaVentaFormulario = () => {
             productoActualizado.valorU = precio;
             productoActualizado.precioUnitario = precio;
           }
-          
+
           return productoActualizado;
         }
         return producto;
@@ -165,36 +114,33 @@ const NotaVentaFormulario = () => {
     );
   };
 
-  // Función para eliminar producto
   const eliminarProducto = (id) => {
     setProductos(prevProductos => prevProductos.filter(producto => producto.id !== id));
   };
 
-  // Función para calcular totales
   const calcularTotales = () => {
     const subtotalCalculado = productos.reduce((sum, producto) => sum + (producto.subtotal || 0), 0);
     const igvCalculado = subtotalCalculado * 0.18;
     const totalCalculado = subtotalCalculado + igvCalculado;
-    
+
     setSubtotal(subtotalCalculado);
     setIgv(igvCalculado);
     setTotal(totalCalculado);
   };
 
-  // Efecto para recalcular totales cuando cambien los productos
   useEffect(() => {
     calcularTotales();
   }, [productos]);
 
-  // Función para guardar la nota de venta
-  const handleGuardarNotaVenta = async () => {
+  const handleGuardarNotaVenta = async (e) => {
+    e?.preventDefault();
     if (!clienteSeleccionado) {
-      alert('Por favor seleccione un cliente');
+      Swal.fire('Atención', 'Por favor seleccione un cliente', 'warning');
       return;
     }
 
     if (productos.length === 0) {
-      alert('Por favor agregue al menos un producto');
+      Swal.fire('Atención', 'Por favor agregue al menos un producto', 'warning');
       return;
     }
 
@@ -226,741 +172,438 @@ const NotaVentaFormulario = () => {
       };
 
       const response = await crearNotaVenta(notaVentaData);
-      console.log('Nota de venta creada:', response);
-      const info = response?.notaVenta;
-      setNotaGuardada(info);
-      
-      // Generar y mostrar PDF A4 en vista previa
-      try {
-        const blob = await generarPdfNotaVenta(info.id, 'A4');
-        const url = window.URL.createObjectURL(blob);
-        setPreviewPdfUrl(url);
-        setShowPreview(true);
-      } catch (e) {
-        console.error('No se pudo generar el PDF de la nota de venta:', e);
-      }
-      
-      // Limpiar formulario
-      setFormData({
-        direccionCliente: '',
-        establecimiento: 'Oficina Principal',
-        serie: 'NV01',
-        moneda: 'soles',
-        fechaEmision: new Date().toISOString().split('T')[0],
-        tipoPeriodo: '',
-        direccionEnvio: '',
-        fechaVencimiento: '',
-        placa: '',
-        tipoCambio: '3.848',
-        ordenCompra: '',
-        vendedor: 'Administrador',
-        observacion: ''
-      });
-      setClienteSeleccionado('');
-      setProductos([]);
-      setPagos([{
-        id: 1,
-        fecha: '2025-06-30',
-        metodoPago: 'Efectivo',
-        destino: 'CAJA GENERAL - Adminitrac',
-        referencia: '',
-        glosa: '',
-        monto: 0,
-        agregar: true
-      }]);
-      
+      onSuccess?.(response);
     } catch (error) {
       console.error('Error al guardar nota de venta:', error);
-      alert('Error al guardar la nota de venta: ' + (error.message || 'Error desconocido'));
+      Swal.fire('Error', error.message || 'No se pudo guardar la nota', 'error');
     } finally {
       setLoading(false);
     }
   };
 
-  const handleOpenModalProductos = () => {
-    setShowModalProductos(true);
-  };
-
-  const handleCloseModalProductos = () => {
-    setShowModalProductos(false);
-  };
-
   const handleProductoSeleccionado = (producto) => {
-    console.log('Producto seleccionado:', producto);
-    
-    // Verificar que el producto tenga los datos necesarios
-    if (!producto || !producto.id) {
-      console.error('Producto inválido:', producto);
-      alert('Error: Producto inválido seleccionado');
-      return;
-    }
+    if (!producto || !producto.id) return;
 
-    const precioVenta = parseFloat(producto.precioVenta || producto.precio || 0);
+    const precioVenta = parseFloat(producto.precio_venta || producto.precio || 0);
     const nuevoProducto = {
-      id: Date.now(), // Usar timestamp para evitar conflictos de ID
-      productoId: producto.id, // ID real del producto para el backend
+      id: Date.now(),
+      productoId: producto.id,
       descripcion: producto.nombre || producto.descripcion || 'Sin descripción',
-      unidad: producto.unidadMedida || producto.unidad || 'UND',
+      unidad: producto.unidad_medida || producto.unidad || 'UND',
       cantidad: 1,
       valorU: precioVenta,
       precioU: precioVenta,
-      precioUnitario: precioVenta, // Campo adicional para el backend
+      precioUnitario: precioVenta,
       subtotal: precioVenta,
       total: precioVenta,
-      // Datos adicionales del producto
       codigo: producto.codigo || '',
       stock: producto.stock || 0
     };
-    
+
     setProductos(prevProductos => [...prevProductos, nuevoProducto]);
     setShowModalProductos(false);
   };
 
+  const formatearMoneda = (monto) => {
+    return new Intl.NumberFormat('es-PE', {
+      style: 'currency',
+      currency: 'PEN',
+      minimumFractionDigits: 2
+    }).format(monto || 0);
+  };
+
   return (
-    <div >
-      <div className="nvf-header">
-        <div className="nvf-logo">
-          <Camera size={40} className="nvf-camera-icon" />
+    <div className="flex flex-col space-y-6 bg-white p-4 md:p-8 font-bold italic">
+      {/* Upper Grid - Primary Data */}
+      <div className="grid grid-cols-1 gap-6 lg:grid-cols-3">
+        {/* Left Card - Client Management */}
+        <div className="lg:col-span-2 space-y-6 rounded-2xl border border-slate-100 bg-white p-6 shadow-sm shadow-slate-200/50 italic">
+          <div className="flex items-center gap-3 border-b border-slate-50 pb-4">
+            <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-menta-suave text-menta-petroleo">
+              <User size={20} className="font-bold" />
+            </div>
+            <div>
+              <h3 className="text-sm font-black uppercase text-menta-petroleo tracking-wider">Identificación del Cliente</h3>
+              <p className="text-[10px] text-slate-400 font-bold italic">Seleccione o cree un cliente para la transacción</p>
+            </div>
+          </div>
+
+          <div className="grid grid-cols-1 gap-5 sm:grid-cols-2">
+            <div className="space-y-2">
+              <label className="flex items-center justify-between text-[10px] font-black uppercase tracking-widest text-slate-500 italic">
+                <span>Cliente / Entidad</span>
+                <button
+                  type="button"
+                  onClick={() => setShowModalCliente(true)}
+                  className="flex items-center gap-1.5 text-menta-turquesa hover:text-menta-marino transition font-bold"
+                >
+                  <UserPlus size={14} />
+                  NUEVO CLIENTE
+                </button>
+              </label>
+              <div className="relative font-bold italic">
+                <Search className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-300" size={16} />
+                <select
+                  className="w-full appearance-none rounded-xl border border-slate-200 bg-slate-50/50 py-3 pl-10 pr-10 text-sm font-bold text-slate-700 outline-none focus:border-menta-turquesa focus:ring-4 focus:ring-menta-turquesa/10 transition"
+                  value={clienteSeleccionado}
+                  onChange={(e) => setClienteSeleccionado(e.target.value)}
+                >
+                  <option value="">Seleccionar cliente...</option>
+                  {clientes.map((cliente) => (
+                    <option key={cliente.id} value={cliente.id} className="font-bold">
+                      {cliente.numeroDocumento} - {cliente.nombre}
+                    </option>
+                  ))}
+                </select>
+              </div>
+            </div>
+
+            <div className="space-y-2">
+              <label className="text-[10px] font-black uppercase tracking-widest text-slate-500 italic">Dirección Fiscal / Habitación</label>
+              <div className="relative font-bold italic">
+                <Building className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-300" size={16} />
+                <input
+                  type="text"
+                  placeholder="Calle, Av. o Distrito..."
+                  className="w-full rounded-xl border border-slate-200 bg-slate-50/50 py-3 pl-10 pr-4 text-sm font-bold text-slate-700 outline-none focus:border-menta-turquesa focus:ring-4 focus:ring-menta-turquesa/10 transition"
+                  name="direccionCliente"
+                  value={formData.direccionCliente}
+                  onChange={handleInputChange}
+                />
+              </div>
+            </div>
+          </div>
+
+          <div className="grid grid-cols-1 gap-5 sm:grid-cols-3">
+            <div className="space-y-2">
+              <label className="text-[10px] font-black uppercase tracking-widest text-slate-500 italic">Establecimiento</label>
+              <div className="relative font-bold italic">
+                <Building className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-300" size={16} />
+                <input
+                  type="text"
+                  className="w-full rounded-xl border border-slate-200 bg-slate-50/50 py-3 pl-10 pr-4 text-sm font-bold text-slate-700 outline-none focus:border-menta-turquesa transition"
+                  name="establecimiento"
+                  value={formData.establecimiento}
+                  onChange={handleInputChange}
+                />
+              </div>
+            </div>
+            <div className="space-y-2">
+              <label className="text-[10px] font-black uppercase tracking-widest text-slate-500 italic">Serie Comprobante</label>
+              <div className="relative font-bold italic">
+                <Hash className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-300" size={16} />
+                <input
+                  type="text"
+                  className="w-full rounded-xl border border-slate-200 bg-slate-50/50 py-3 pl-10 pr-4 text-sm font-black text-menta-petroleo outline-none focus:border-menta-turquesa transition italic"
+                  name="serie"
+                  value={formData.serie}
+                  onChange={handleInputChange}
+                />
+              </div>
+            </div>
+            <div className="space-y-2 font-bold italic">
+              <label className="text-[10px] font-black uppercase tracking-widest text-slate-500 italic">Divisa Venta</label>
+              <div className="relative font-bold italic">
+                <DollarSign className="absolute left-3 top-1/2 -translate-y-1/2 text-emerald-500" size={16} />
+                <select
+                  className="w-full appearance-none rounded-xl border border-slate-200 bg-slate-50/50 py-3 pl-10 pr-10 text-sm font-bold text-slate-700 outline-none focus:border-menta-turquesa transition italic"
+                  name="moneda"
+                  value={formData.moneda}
+                  onChange={handleInputChange}
+                >
+                  <option value="soles">Soles Peruanos (S/.)</option>
+                  <option value="dolares">Dólares Americanos ($)</option>
+                </select>
+              </div>
+            </div>
+          </div>
         </div>
-        <div className="nvf-info">
-          <h3>Nota de venta</h3>
-          <p className="nvf-empresa">SISTEMATIZATE PERU SOCIEDAD ANONIMA CERRADA</p>
-          <p className="nvf-direccion">Lima, Lima, LIMA - PERU</p>
+
+        {/* Right Card - Logistics/Context */}
+        <div className="space-y-6 rounded-2xl bg-slate-900 p-6 text-white shadow-xl shadow-slate-200 italic font-bold">
+          <div className="flex items-center gap-3 border-b border-slate-800 pb-4 font-bold italic">
+            <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-slate-800 text-menta-suave italic font-bold">
+              <Calendar size={20} />
+            </div>
+            <div className="font-bold italic">
+              <h3 className="text-sm font-black uppercase tracking-wider text-white italic font-bold">Lógica de Tiempo</h3>
+              <p className="text-[10px] text-slate-500 font-bold italic uppercase">Fechas y responsabilidad</p>
+            </div>
+          </div>
+
+          <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 font-bold italic">
+            <div className="space-y-2 font-bold italic">
+              <label className="text-[10px] font-black uppercase tracking-widest text-slate-400 italic font-bold">F. Emisión</label>
+              <input
+                type="date"
+                className="w-full rounded-xl border border-slate-800 bg-slate-800 py-3 px-4 text-sm font-bold text-white outline-none focus:ring-2 focus:ring-menta-turquesa transition italic font-bold"
+                name="fechaEmision"
+                value={formData.fechaEmision}
+                onChange={handleInputChange}
+              />
+            </div>
+            <div className="space-y-2 font-bold italic">
+              <label className="text-[10px] font-black uppercase tracking-widest text-slate-400 italic font-bold">F. Vencimiento</label>
+              <input
+                type="date"
+                className="w-full rounded-xl border border-slate-800 bg-slate-800 py-3 px-4 text-sm font-bold text-white outline-none focus:ring-2 focus:ring-menta-turquesa transition italic font-bold"
+                name="fechaVencimiento"
+                value={formData.fechaVencimiento}
+                onChange={handleInputChange}
+              />
+            </div>
+          </div>
+
+          <div className="space-y-2 font-bold italic">
+            <label className="text-[10px] font-black uppercase tracking-widest text-slate-400 italic font-bold">Responsable Venta</label>
+            <div className="relative font-bold italic">
+              <Briefcase className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-500" size={16} />
+              <input
+                type="text"
+                className="w-full rounded-xl border border-slate-800 bg-slate-800 py-3 pl-10 pr-4 text-sm font-bold text-white outline-none focus:ring-2 focus:ring-menta-turquesa transition italic font-bold"
+                name="vendedor"
+                value={formData.vendedor}
+                onChange={handleInputChange}
+              />
+            </div>
+          </div>
+
+          <div className="flex items-center gap-2 rounded-xl bg-slate-800/50 p-3 text-[10px] text-slate-400 font-bold italic uppercase">
+            <Info size={14} className="text-menta-turquesa shrink-0" />
+            Esta nota será generada como un comprobante interno.
+          </div>
         </div>
       </div>
 
-      <div className="nvf-form-section">
-        <div className="nvf-row">
-          <div className="nvf-field nvf-field-half">
-            <label className="nvf-label">
-              Cliente | <button 
-                type="button"
-                className="nvf-btn-nuevo" 
-                onClick={() => setShowModalCliente(true)}
-              >
-                Nuevo(s)
-              </button>
-            </label>
-            <div className="nvf-input-group">
-              <select 
-                className="nvf-input" 
-                value={clienteSeleccionado}
-                onChange={(e) => setClienteSeleccionado(e.target.value)}
-              >
-                <option value="">Seleccionar cliente...</option>
-                {/* Opción fija para ventas a "Clientes - Varios" */}
-               
-                {clientes.map((cliente) => (
-                  <option key={cliente.id} value={cliente.id}>
-                    {cliente.numeroDocumento} - {cliente.nombre}
-                  </option> 
-                  
-                ))}
-              </select>
-            </div>
+      {/* Items Management */}
+      <div className="space-y-4 font-bold italic">
+        <div className="flex items-center justify-between border-b border-slate-100 pb-4 font-bold italic">
+          <div className="flex items-center gap-2 text-menta-petroleo font-bold italic">
+            <ShoppingCart size={22} className="text-menta-marino" />
+            <h3 className="text-lg font-black uppercase tracking-tighter italic font-bold">Detalle de Productos / Servicios</h3>
           </div>
-          <div className="nvf-field nvf-field-half">
-            <label className="nvf-label">Dirección</label>
-            <input 
-              type="text" 
-              className="nvf-input" 
-              name="direccionCliente"
-              value={formData.direccionCliente}
-              onChange={handleInputChange}
-            />
-          </div>
+          <button
+            type="button"
+            onClick={() => setShowModalProductos(true)}
+            className="flex items-center gap-2 rounded-xl bg-menta-petroleo px-6 py-3 text-sm font-black text-white shadow-xl shadow-menta-petroleo/20 transition hover:bg-menta-marino active:scale-95 font-bold italic font-bold"
+          >
+            <Plus size={20} />
+            AGREGAR ITEM
+          </button>
         </div>
 
-        <div className="nvf-row">
-          <div className="nvf-field nvf-field-quarter">
-            <label className="nvf-label">Establecimiento</label>
-            <input 
-              type="text" 
-              className="nvf-input" 
-              name="establecimiento"
-              value={formData.establecimiento}
-              onChange={handleInputChange}
-            />
-          </div>
-          <div className="nvf-field nvf-field-quarter">
-            <label className="nvf-label">Serie</label>
-            <input 
-              type="text" 
-              className="nvf-input" 
-              name="serie"
-              value={formData.serie}
-              onChange={handleInputChange}
-            />
-          </div>
-          <div className="nvf-field nvf-field-quarter">
-            <label className="nvf-label">Moneda</label>
-            <select 
-              className="nvf-select"
-              name="moneda"
-              value={formData.moneda}
-              onChange={handleInputChange}
-            >
-              <option value="soles">Soles</option>
-              <option value="dolares">Dólares</option>
-            </select>
-          </div>
-          <div className="nvf-field nvf-field-quarter">
-            <label className="nvf-label">Fec. Emisión</label>
-            <input 
-              type="date" 
-              className="nvf-input" 
-              name="fechaEmision"
-              value={formData.fechaEmision}
-              onChange={handleInputChange}
-            />
-          </div>
+        <div className="overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-sm font-bold italic">
+          <table className="w-full text-left text-sm whitespace-nowrap italic font-bold">
+            <thead className="bg-slate-50/80 text-[10px] font-black uppercase tracking-widest text-slate-400 font-bold">
+              <tr>
+                <th className="px-5 py-5 text-center font-bold">#</th>
+                <th className="px-5 py-5 font-bold">Descripción Técnica</th>
+                <th className="px-5 py-5 text-center font-bold">U.M.</th>
+                <th className="px-5 py-5 text-center font-bold">Cantidad</th>
+                <th className="px-5 py-5 text-right font-bold">Precio Unit.</th>
+                <th className="px-5 py-5 text-right font-bold">Total</th>
+                <th className="px-5 py-5 text-center font-bold"></th>
+              </tr>
+            </thead>
+            <tbody className="divide-y divide-slate-100 font-bold italic">
+              {productos.length === 0 ? (
+                <tr>
+                  <td colSpan="7" className="py-24 text-center font-bold italic">
+                    <div className="flex flex-col items-center gap-4 text-slate-200 font-bold italic">
+                      <LayoutGrid size={64} strokeWidth={1} />
+                      <div className="font-bold italic">
+                        <p className="text-lg font-black text-slate-400 uppercase tracking-widest italic font-bold">Sin elementos</p>
+                        <p className="text-xs text-slate-300 italic font-bold">Agregue productos para iniciar la cotización</p>
+                      </div>
+                    </div>
+                  </td>
+                </tr>
+              ) : (
+                productos.map((producto, index) => (
+                  <tr key={producto.id} className="group transition hover:bg-slate-50/50 font-bold italic">
+                    <td className="px-5 py-4 text-center font-bold text-slate-300 font-bold italic">{index + 1}</td>
+                    <td className="px-5 py-4 font-bold italic">
+                      <input
+                        type="text"
+                        className="w-full border-none bg-transparent p-0 font-bold text-slate-800 focus:ring-0 outline-none italic font-bold"
+                        placeholder="Descripción personalizada..."
+                        value={producto.descripcion}
+                        onChange={(e) => handleProductoChange(producto.id, 'descripcion', e.target.value)}
+                      />
+                    </td>
+                    <td className="px-5 py-4 text-center font-bold italic">
+                      <span className="inline-flex rounded-lg bg-slate-100 px-2.5 py-1 text-[10px] font-black text-slate-500 uppercase tracking-widest font-bold italic">
+                        {producto.unidad}
+                      </span>
+                    </td>
+                    <td className="px-5 py-4 text-center font-bold italic">
+                      <input
+                        type="number"
+                        className="w-20 rounded-xl border border-slate-100 bg-slate-50 py-1.5 px-3 text-center text-sm font-black text-slate-800 outline-none focus:border-menta-turquesa transition font-bold italic"
+                        value={producto.cantidad}
+                        onChange={(e) => handleProductoChange(producto.id, 'cantidad', e.target.value)}
+                        min="0"
+                        step="0.01"
+                      />
+                    </td>
+                    <td className="px-5 py-4 text-right font-bold italic">
+                      <input
+                        type="number"
+                        className="w-28 rounded-xl border border-slate-100 bg-slate-50 py-1.5 px-3 text-right text-sm font-black text-slate-800 outline-none focus:border-menta-turquesa transition font-bold italic"
+                        value={producto.precioU}
+                        onChange={(e) => handleProductoChange(producto.id, 'precioU', e.target.value)}
+                        min="0"
+                        step="0.01"
+                      />
+                    </td>
+                    <td className="px-5 py-4 text-right font-black text-menta-petroleo text-base italic font-bold">
+                      {formatearMoneda(producto.total)}
+                    </td>
+                    <td className="px-5 py-4 text-center font-bold italic">
+                      <button
+                        type="button"
+                        onClick={() => eliminarProducto(producto.id)}
+                        className="rounded-xl p-2.5 text-slate-300 transition-all hover:bg-red-50 hover:text-red-500 hover:scale-110 font-bold italic"
+                      >
+                        <Trash2 size={18} />
+                      </button>
+                    </td>
+                  </tr>
+                ))
+              )}
+            </tbody>
+          </table>
         </div>
+      </div>
 
-        <div className="nvf-row">
-          <div className="nvf-field nvf-field-third">
-            <label className="nvf-label">
-              Tipo periodo <Info size={14} className="nvf-info-icon" />
-            </label>
-            <select 
-              className="nvf-select"
-              name="tipoPeriodo"
-              value={formData.tipoPeriodo}
-              onChange={handleInputChange}
-            >
-              <option value="">Cant. Periodos</option>
-              <option value="diario">Diario</option>
-              <option value="semanal">Semanal</option>
-              <option value="mensual">Mensual</option>
-            </select>
-          </div>
-          <div className="nvf-field nvf-field-third">
-            <label className="nvf-label">Dirección de envío</label>
-            <input 
-              type="text" 
-              className="nvf-input" 
-              name="direccionEnvio"
-              value={formData.direccionEnvio}
-              onChange={handleInputChange}
-            />
-          </div>
-          <div className="nvf-field nvf-field-third">
-            <label className="nvf-label">
-              Fec. Vencimiento
-            </label>
-            <input 
-              type="date" 
-              className="nvf-input" 
-              name="fechaVencimiento"
-              value={formData.fechaVencimiento}
-              onChange={handleInputChange}
-            />
-          </div>
-        </div>
-
-        <div className="nvf-row">
-          <div className="nvf-field nvf-field-quarter">
-            <label className="nvf-label">Placa</label>
-            <div className="nvf-input-with-counter">
-              <input 
-                type="text" 
-                className="nvf-input" 
-                name="placa"
-                value={formData.placa}
-                onChange={handleInputChange}
-              />
-              <span className="nvf-counter">{formData.placa.length}</span>
-          
-            </div>
-          </div>
-          <div className="nvf-field nvf-field-quarter">
-            <label className="nvf-label">
-              Tipo de cambio <Info size={14} className="nvf-info-icon" />
-            </label>
-            <input 
-              type="text" 
-              className="nvf-input" 
-              name="tipoCambio"
-              value={formData.tipoCambio}
-              onChange={handleInputChange}
-            />
-          </div>
-          <div className="nvf-field nvf-field-half">
-            <label className="nvf-label">Orden de compra</label>
-            <input 
-              type="text" 
-              className="nvf-input" 
-              name="ordenCompra"
-              value={formData.ordenCompra}
-              onChange={handleInputChange}
-            />
-          </div>
-        </div>
-
-        <div className="nvf-row">
-          <div className="nvf-field nvf-field-half">
-            <label className="nvf-label">Vendedor</label>
-            <input 
-              type="text" 
-              className="nvf-input" 
-              name="vendedor"
-              value={formData.vendedor}
-              onChange={handleInputChange}
-            />
-          </div>
-          <div className="nvf-field nvf-field-full">
-            <label className="nvf-label">Observación</label>
-            <textarea 
-              className="nvf-textarea" 
-              rows="3"
+      {/* Footer Grid - Observations & Summary */}
+      <div className="grid grid-cols-1 gap-8 lg:grid-cols-2 font-bold italic">
+        {/* Aditional Context */}
+        <div className="space-y-6 font-bold italic">
+          <div className="space-y-2 font-bold italic">
+            <label className="text-[10px] font-black uppercase tracking-widest text-slate-500 italic font-bold">Notas y Observaciones</label>
+            <textarea
+              className="w-full rounded-2xl border border-slate-200 bg-slate-50/50 p-4 text-sm font-bold text-slate-700 outline-none focus:border-menta-turquesa transition font-bold italic"
+              rows="4"
+              placeholder="Detalles internos, condiciones de pago, etc..."
               name="observacion"
               value={formData.observacion}
               onChange={handleInputChange}
             ></textarea>
           </div>
-        </div>
-      </div>
-     
 
-
-     {/*
-      <div className="nvf-section-title">
-        <span>Buscar productos o servicios</span>
-      </div>
-
-      <div className="nvf-pagos-section">
-        <table className="nvf-pagos-table">
-          <thead>
-            <tr>
-              <th>Fecha</th>
-              <th>Método de pago</th>
-              <th>
-                Destino <Info size={14} className="nvf-info-icon-inline" />
-              </th>
-              <th>Referencia</th>
-              <th>Glosa</th>
-              <th>Monto</th>
-             
-            </tr>
-          </thead>
-          <tbody>
-            {pagos.map((pago, index) => (
-              <tr key={pago.id}>
-                <td>
-                  <input 
-                    type="date" 
-                    className="nvf-table-input" 
-                    value={pago.fecha}
-                    onChange={(e) => {
-                      const newPagos = [...pagos];
-                      newPagos[index].fecha = e.target.value;
-                      setPagos(newPagos);
-                    }}
-                  />
-                </td>
-                <td>
-                  <select 
-                    className="nvf-table-select"
-                    value={pago.metodoPago}
-                    onChange={(e) => {
-                      const newPagos = [...pagos];
-                      newPagos[index].metodoPago = e.target.value;
-                      setPagos(newPagos);
-                    }}
-                  >
-                    <option>Efectivo</option>
-                    <option>Transferencia</option>
-                    <option>Tarjeta</option>
-                  </select>
-                </td>
-                <td>
-                  <select 
-                    className="nvf-table-select"
-                    value={pago.destino}
-                    onChange={(e) => {
-                      const newPagos = [...pagos];
-                      newPagos[index].destino = e.target.value;
-                      setPagos(newPagos);
-                    }}
-                  >
-                    <option>CAJA GENERAL - Adminitrac</option>
-                    <option>Banco</option>
-                  </select>
-                </td>
-                <td>
-                  <input 
-                    type="text" 
-                    className="nvf-table-input"
-                    value={pago.referencia}
-                    onChange={(e) => {
-                      const newPagos = [...pagos];
-                      newPagos[index].referencia = e.target.value;
-                      setPagos(newPagos);
-                    }}
-                  />
-                </td>
-                <td>
-                  <input 
-                    type="text" 
-                    className="nvf-table-input"
-                    value={pago.glosa}
-                    onChange={(e) => {
-                      const newPagos = [...pagos];
-                      newPagos[index].glosa = e.target.value;
-                      setPagos(newPagos);
-                    }}
-                  />
-                </td>
-                <td>
-                  <input 
-                    type="number" 
-                    className="nvf-table-input"
-                    value={pago.monto}
-                    onChange={(e) => {
-                      const newPagos = [...pagos];
-                      newPagos[index].monto = e.target.value;
-                      setPagos(newPagos);
-                    }}
-                  />
-                </td>
-                <td>
-                  <button 
-                    className="nvf-btn-delete"
-                    onClick={() => eliminarPago(pago.id)}
-                  >
-                    <Trash2 size={16} />
-                  </button>
-                </td>
-              </tr>
-            ))}
-          </tbody>
-        </table>
-        
-       
-      </div> */}
-
-
-       <div className="nvf-actions-row">
-          <button className="nvf-btn-agregar" onClick={handleOpenModalProductos}>
-            + Agregar Producto
-          </button> 
-
-
-          {/*   <button className="nvf-btn-consulta">
-            Consulta de documentos
-          </button>*/}
-        
+          <div className="grid grid-cols-1 gap-5 sm:grid-cols-2 font-bold italic">
+            <div className="space-y-2 font-bold italic">
+              <label className="text-[10px] font-black uppercase tracking-widest text-slate-500 italic font-bold">Asociar Placa</label>
+              <div className="relative font-bold italic">
+                <Truck className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-300" size={16} />
+                <input
+                  type="text"
+                  className="w-full rounded-xl border border-slate-200 py-3 pl-10 pr-4 text-sm font-black text-slate-700 outline-none focus:border-menta-turquesa transition italic font-bold"
+                  name="placa"
+                  value={formData.placa}
+                  onChange={handleInputChange}
+                  placeholder="---"
+                />
+              </div>
+            </div>
+            <div className="space-y-2 font-bold italic">
+              <label className="text-[10px] font-black uppercase tracking-widest text-slate-500 italic font-bold">Referencia O/C</label>
+              <div className="relative font-bold italic">
+                <FileText className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-300" size={16} />
+                <input
+                  type="text"
+                  className="w-full rounded-xl border border-slate-200 py-3 pl-10 pr-4 text-sm font-black text-slate-700 outline-none focus:border-menta-turquesa transition italic font-bold"
+                  name="ordenCompra"
+                  value={formData.ordenCompra}
+                  onChange={handleInputChange}
+                  placeholder="N/A"
+                />
+              </div>
+            </div>
+          </div>
         </div>
 
-      <div className="nvf-productos-section">
-        <table className="nvf-productos-table">
-          <thead>
-            <tr>
-              <th>#</th>
-              <th>Descripción</th>
-              <th>Unidad</th>
-              <th>Cantidad</th>
-              <th>Valor U.</th>
-              <th>Precio U.</th>
-              <th>Subtotal</th>
-              <th>Total</th>
-            </tr>
-          </thead>
-          <tbody>
-            {productos.length === 0 ? (
-              <tr>
-                <td colSpan="8" className="nvf-empty-row">
-                  <div className="nvf-empty-message">
-                    No hay productos agregados
-                  </div>
-                </td>
-              </tr>
-            ) : (
-              productos.map((producto, index) => (
-                <tr key={producto.id}>
-                  <td>{index + 1}</td>
-                  <td>
-                    <input 
-                      type="text" 
-                      className="nvf-table-input"
-                      placeholder="Descripción"
-                      value={producto.descripcion}
-                      onChange={(e) => handleProductoChange(producto.id, 'descripcion', e.target.value)}
-                    />
-                  </td>
-                  <td>
-                    <input 
-                      type="text" 
-                      className="nvf-table-input"
-                      placeholder="Unidad"
-                      value={producto.unidad}
-                      onChange={(e) => handleProductoChange(producto.id, 'unidad', e.target.value)}
-                    />
-                  </td>
-                  <td>
-                    <input 
-                      type="number" 
-                      className="nvf-table-input"
-                      value={producto.cantidad}
-                      onChange={(e) => handleProductoChange(producto.id, 'cantidad', e.target.value)}
-                      min="0"
-                      step="0.01"
-                    />
-                  </td>
-                  <td>
-                    <input 
-                      type="number" 
-                      className="nvf-table-input"
-                      value={producto.valorU}
-                      onChange={(e) => handleProductoChange(producto.id, 'valorU', e.target.value)}
-                      min="0"
-                      step="0.01"
-                    />
-                  </td>
-                  <td>
-                    <input 
-                      type="number" 
-                      className="nvf-table-input"
-                      value={producto.precioU}
-                      onChange={(e) => handleProductoChange(producto.id, 'precioU', e.target.value)}
-                      min="0"
-                      step="0.01"
-                    />
-                  </td>
-                  <td>{(producto.subtotal || 0).toFixed(2)}</td>
-                  <td>
-                    {(producto.total || 0).toFixed(2)}
-                    <button 
-                      className="nvf-btn-delete-producto"
-                      onClick={() => eliminarProducto(producto.id)}
-                      style={{
-                        marginLeft: '8px',
-                        background: '#dc3545',
-                        color: 'white',
-                        border: 'none',
-                        borderRadius: '3px',
-                        padding: '2px 6px',
-                        cursor: 'pointer',
-                        fontSize: '12px'
-                      }}
-                    >
-                      ×
-                    </button>
-                  </td>
-                </tr>
-              ))
-            )}
-          </tbody>
-        </table>
-        
-        <div className="nvf-footer-actions">
-         
-          <button 
-            className="nvf-btn-guardar" 
-            onClick={handleGuardarNotaVenta}
-            disabled={loading}
-            type="button"
-            style={{
-              backgroundColor: '#28a745',
-              color: 'white',
-              marginLeft: '10px',
-              padding: '8px 16px',
-              border: 'none',
-              borderRadius: '4px',
-              cursor: loading ? 'not-allowed' : 'pointer'
-            }}
-          >
-            {loading ? 'Guardando...' : 'Guardar Nota de Venta'}
-          </button>
-          <button 
-            className="nvf-btn-limpiar" 
-            onClick={() => {
-              setFormData({
-                direccionCliente: '',
-                establecimiento: 'Oficina Principal',
-                serie: 'NV01',
-                moneda: 'soles',
-                fechaEmision: new Date().toISOString().split('T')[0],
-                tipoPeriodo: '',
-                direccionEnvio: '',
-                fechaVencimiento: '',
-                placa: '',
-                tipoCambio: '3.848',
-                ordenCompra: '',
-                vendedor: 'Administrador',
-                observacion: ''
-              });
-              setClienteSeleccionado('');
-              setProductos([]);
-            }}
-            type="button"
-            style={{
-              backgroundColor: '#6c757d',
-              color: 'white',
-              marginLeft: '10px',
-              padding: '8px 16px',
-              border: 'none',
-              borderRadius: '4px',
-              cursor: 'pointer'
-            }}
-          >
-            Limpiar
-          </button>
-        </div>
+        {/* Calculation Board */}
+        <div className="flex flex-col rounded-3xl bg-slate-900 p-8 text-white shadow-2xl shadow-slate-200 font-bold italic">
+          <div className="flex-1 space-y-5 font-bold italic">
+            <div className="flex items-center justify-between font-bold italic">
+              <div className="flex items-center gap-2 text-slate-400 font-bold italic">
+                <LayoutGrid size={14} className="text-slate-500" />
+                <span className="text-xs font-black uppercase tracking-widest italic font-bold">Subtotal Gravada</span>
+              </div>
+              <span className="text-xl font-bold italic">{formatearMoneda(subtotal)}</span>
+            </div>
+            <div className="flex items-center justify-between font-bold italic">
+              <div className="flex items-center gap-2 text-slate-400 font-bold italic">
+                <AlertTriangle size={14} className="text-slate-500" />
+                <span className="text-xs font-black uppercase tracking-widest italic font-bold">IGV Sistematizado (18%)</span>
+              </div>
+              <span className="text-xl font-bold italic">{formatearMoneda(igv)}</span>
+            </div>
+            <div className="my-8 border-t border-slate-800 pt-8 font-bold italic">
+              <div className="flex items-end justify-between font-bold italic">
+                <div className="font-bold italic">
+                  <span className="flex items-center gap-2 text-xs font-black uppercase tracking-[4px] text-menta-turquesa italic font-bold">
+                    <CheckCircle size={14} />
+                    Importe Total
+                  </span>
+                  <p className="mt-1 text-[10px] text-slate-500 font-bold italic uppercase tracking-wider">Cálculo exacto en soles</p>
+                </div>
+                <div className="flex flex-col items-end font-bold italic">
+                  <span className="text-5xl font-black tracking-tighter text-white italic font-bold underline decoration-menta-turquesa/30 underline-offset-8">
+                    {formatearMoneda(total)}
+                  </span>
+                </div>
+              </div>
+            </div>
+          </div>
 
-        {/* Mostrar totales */}
-        <div className="nvf-totales" style={{
-          marginTop: '20px',
-          padding: '15px',
-          backgroundColor: '#f8f9fa',
-          borderRadius: '4px',
-          textAlign: 'right'
-        }}>
-          <div><strong>Subtotal: S/ {subtotal.toFixed(2)}</strong></div>
-          <div><strong>IGV (18%): S/ {igv.toFixed(2)}</strong></div>
-          <div style={{ fontSize: '18px', color: '#28a745' }}>
-            <strong>Total: S/ {total.toFixed(2)}</strong>
+          <div className="mt-10 flex flex-col gap-4 sm:flex-row font-bold italic">
+            <button
+              type="button"
+              onClick={onCancel}
+              className="flex-1 rounded-2xl border border-slate-700 bg-transparent py-4 text-xs font-black uppercase tracking-widest text-slate-400 transition hover:bg-slate-800 hover:text-white font-bold italic"
+            >
+              DESCARTAR
+            </button>
+            <button
+              type="submit"
+              onClick={handleGuardarNotaVenta}
+              disabled={loading}
+              className="flex-[2] flex items-center justify-center gap-3 rounded-2xl bg-menta-petroleo py-5 text-sm font-black uppercase tracking-widest text-white shadow-2xl shadow-menta-petroleo/30 transition hover:bg-menta-marino hover:scale-[1.02] active:scale-95 disabled:opacity-50 font-bold italic"
+            >
+              {loading ? (
+                <div className="h-6 w-6 animate-spin rounded-full border-4 border-white/20 border-t-white" />
+              ) : (
+                <>
+                  <Save size={22} strokeWidth={2.5} />
+                  GUARDAR NOTA DE VENTA
+                </>
+              )}
+            </button>
           </div>
         </div>
       </div>
 
-      {/* Modal Cliente */}
+      {/* Overlays / Modales */}
       {showModalCliente && (
         <ModalCliente
-          onClose={handleCloseModal}
-          onClienteCreado={handleClienteCreado}
+          onClose={() => setShowModalCliente(false)}
+          onClienteCreado={(nuevo) => {
+            setClientes([...clientes, nuevo]);
+            setClienteSeleccionado(nuevo.id);
+            setShowModalCliente(false);
+          }}
         />
       )}
 
-      {/* Modal Productos */}
       {showModalProductos && (
-        <div className="modal-overlay">
-          <div className="modal-content-large">
-            <div className="modal-header">
-              <h3>Seleccionar Producto</h3>
-              <button 
-                className="modal-close-btn"
-                onClick={handleCloseModalProductos}
-              >
-                ×
-              </button>
-            </div>
-            <FormularioVentaProductServicio
-              onProductoSeleccionado={handleProductoSeleccionado}
-            />
-          </div>
-        </div>
+        <FormularioVentaProductServicio
+          onClose={() => setShowModalProductos(false)}
+          onProductoSeleccionado={handleProductoSeleccionado}
+        />
       )}
-
-      {/* Vista previa de Nota de Venta con opciones de impresión */}
-      {showPreview && (
-        <div className="modal-overlay" style={{ zIndex: 1000 }}>
-          <div className="modal-content-large" style={{ width: '90%', maxWidth: '1100px' }}>
-            <div className="modal-header" style={{ backgroundColor: '#e74c3c', color: 'white' }}>
-              <h3 style={{ margin: 0 }}>
-                {`Nota de venta registrada: ${notaGuardada?.serieComprobante || ''}-${notaGuardada?.numeroComprobante || ''}`}
-              </h3>
-              <button 
-                className="modal-close-btn"
-                onClick={() => {
-                  setShowPreview(false);
-                  if (previewPdfUrl) {
-                    window.URL.revokeObjectURL(previewPdfUrl);
-                    setPreviewPdfUrl('');
-                  }
-                }}
-                style={{ color: 'white', borderColor: 'white' }}
-              >
-                ×
-              </button>
-            </div>
-
-            {/* Barra de acciones */}
-            <div style={{ display: 'flex', gap: '12px', padding: '10px 12px' }}>
-              <button
-                onClick={async () => {
-                  const blob = await generarPdfNotaVenta(notaGuardada.id, 'A4');
-                  const url = window.URL.createObjectURL(blob);
-                  setPreviewPdfUrl((old) => { if (old) window.URL.revokeObjectURL(old); return url; });
-                }}
-                style={{ background: 'transparent', color: '#e74c3c', border: 'none', cursor: 'pointer' }}
-              >
-                Imprimir A4
-              </button>
-              <button
-                onClick={async () => {
-                  const blob = await generarPdfNotaVenta(notaGuardada.id, '80mm');
-                  const url = window.URL.createObjectURL(blob);
-                  setPreviewPdfUrl((old) => { if (old) window.URL.revokeObjectURL(old); return url; });
-                }}
-                style={{ background: 'transparent', color: '#e74c3c', border: 'none', cursor: 'pointer' }}
-              >
-                Imprimir Ticket
-              </button>
-              <button
-                onClick={async () => {
-                  // A5 no está soportado explícitamente; usamos A4 como alternativa
-                  const blob = await generarPdfNotaVenta(notaGuardada.id, 'A4');
-                  const url = window.URL.createObjectURL(blob);
-                  setPreviewPdfUrl((old) => { if (old) window.URL.revokeObjectURL(old); return url; });
-                }}
-                style={{ background: 'transparent', color: '#e74c3c', border: 'none', cursor: 'pointer' }}
-              >
-                Imprimir A5
-              </button>
-            </div>
-
-            {/* Contenedor del PDF */}
-            <div style={{ height: '70vh', borderTop: '1px solid #eee' }}>
-              {previewPdfUrl ? (
-                <iframe
-                  title="Vista previa PDF Nota de Venta"
-                  src={previewPdfUrl}
-                  style={{ width: '100%', height: '100%', border: 'none' }}
-                />
-              ) : (
-                <div style={{ padding: '20px' }}>Cargando PDF…</div>
-              )}
-            </div>
-
-            {/* Botones de descarga rápida al pie */}
-            <div style={{ display: 'flex', gap: '8px', padding: '10px 12px', justifyContent: 'flex-start' }}>
-              <button
-                onClick={async () => {
-                  const blob = await generarPdfNotaVenta(notaGuardada.id, 'A4');
-                  const url = window.URL.createObjectURL(blob);
-                  const a = document.createElement('a');
-                  a.href = url;
-                  a.download = `${notaGuardada?.serieComprobante || 'NV'}-${notaGuardada?.numeroComprobante || ''}.pdf`;
-                  document.body.appendChild(a);
-                  a.click();
-                  document.body.removeChild(a);
-                  window.URL.revokeObjectURL(url);
-                }}
-                style={{ border: '1px solid #ddd', borderRadius: 8, padding: 10 }}
-              >
-                A4
-              </button>
-              <button
-                onClick={async () => {
-                  const blob = await generarPdfNotaVenta(notaGuardada.id, '80mm');
-                  const url = window.URL.createObjectURL(blob);
-                  const a = document.createElement('a');
-                  a.href = url;
-                  a.download = `ticket_${notaGuardada?.serieComprobante || 'NV'}-${notaGuardada?.numeroComprobante || ''}.pdf`;
-                  document.body.appendChild(a);
-                  a.click();
-                  document.body.removeChild(a);
-                  window.URL.revokeObjectURL(url);
-                }}
-                style={{ border: '1px solid #ddd', borderRadius: 8, padding: 10 }}
-              >
-                80MM
-              </button>
-            </div>
-          </div>
-        </div>
-      )}
-
     </div>
   );
 };

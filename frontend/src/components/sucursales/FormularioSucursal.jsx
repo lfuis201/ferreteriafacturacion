@@ -25,7 +25,11 @@ import {
   tieneErrores,
   MENSAJES_ERROR,
 } from "../../utils/validacionesSucursal";
-import "../../styles/FormularioSucursal.css";
+
+const inputBase =
+  "w-full rounded-lg border px-3 py-2.5 text-slate-900 shadow-sm transition placeholder:text-slate-400 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500";
+const inputError = "border-red-500 bg-red-50 focus:ring-red-500 focus:border-red-500";
+const inputValidando = "border-blue-400 bg-blue-50/50 focus:ring-blue-500";
 
 const FormularioSucursal = () => {
   const { id } = useParams();
@@ -229,35 +233,56 @@ const FormularioSucursal = () => {
     }
   };
 
+  const inputClass = (name) =>
+    [
+      inputBase,
+      errores[name] ? inputError : "",
+      validandoCampo === name ? inputValidando : "",
+      !errores[name] && validandoCampo !== name ? "border-slate-300" : "",
+    ]
+      .filter(Boolean)
+      .join(" ");
+
+  const FormGroup = ({ id, name, label, required, children, span2 }) => (
+    <div className={span2 ? "md:col-span-2" : ""}>
+      <label htmlFor={id} className="mb-1 block text-sm font-semibold text-slate-700">
+        {label}{required && " *"}
+      </label>
+      {children}
+      {errores[name] && (
+        <p className="mt-1 text-sm font-medium text-red-600">{errores[name]}</p>
+      )}
+    </div>
+  );
+
   if (cargando && esEdicion) {
     return (
-      <div className="formulario-sucursal">
-        <div className="loading-container">
-          <div className="loading-spinner"></div>
-          <p>Cargando datos de la sucursal...</p>
+      <div className="mx-auto max-w-4xl py-6">
+        <div className="flex flex-col items-center justify-center rounded-xl border border-slate-200 bg-white p-12 shadow-sm">
+          <div className="h-12 w-12 animate-spin rounded-full border-2 border-slate-200 border-t-blue-600" />
+          <p className="mt-4 text-slate-600">Cargando datos de la sucursal...</p>
         </div>
       </div>
     );
   }
 
   return (
-    <div className="formulario-sucursal">
-      <div className="header-section">
+    <div className="mx-auto space-y-6 px-6">
+      <div className="flex flex-col gap-2">
         <button
-          className="btn-back"
-          onClick={() => navigate("/sucursales/gestion")}
           type="button"
+          onClick={() => navigate("/sucursales/gestion")}
+          className="inline-flex w-fit items-center gap-2 rounded-lg bg-slate-100 px-4 py-2.5 text-sm font-semibold text-slate-700 transition hover:bg-slate-200 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2"
         >
-          <ArrowLeft className="icon" />
+          <ArrowLeft size={20} />
           Volver
         </button>
-
-        <div className="title-section">
-          <h2>
-            <Building className="icon" />
+        <div>
+          <h2 className="flex items-center gap-2 text-xl font-bold text-slate-900 sm:text-2xl">
+            <Building size={28} className="shrink-0 text-blue-600" />
             {esEdicion ? "Editar Sucursal" : "Nueva Sucursal"}
           </h2>
-          <p className="subtitle">
+          <p className="mt-1 text-sm text-slate-500">
             {esEdicion
               ? "Modifica los datos de la sucursal"
               : "Completa los datos para crear una nueva sucursal"}
@@ -266,23 +291,21 @@ const FormularioSucursal = () => {
       </div>
 
       {error && (
-        <div className="error-banner">
-          <p>{error}</p>
+        <div className="rounded-lg border border-red-200 bg-red-50 px-4 py-3 text-sm font-medium text-red-700">
+          {error}
         </div>
       )}
 
-      <form onSubmit={manejarEnvio} className="form-container">
-        <div className="form-sections">
+      <form onSubmit={manejarEnvio} className="overflow-hidden rounded-xl border border-slate-200 bg-white shadow-sm">
+        <div className="space-y-8 p-4 sm:p-6 lg:p-8">
           {/* Información Básica */}
-          <div className="form-section">
-            <h3 className="section-title">
-              <Building className="section-icon" />
+          <section>
+            <h3 className="mb-4 flex items-center gap-2 border-b border-slate-200 pb-3 text-lg font-semibold text-slate-900">
+              <Building size={20} className="text-blue-600" />
               Información Básica
             </h3>
-
-            <div className="form-grid">
-              <div className="form-group">
-                <label htmlFor="nombre">Nombre de la Sucursal *</label>
+            <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
+              <FormGroup id="nombre" name="nombre" label="Nombre de la Sucursal" required>
                 <input
                   type="text"
                   id="nombre"
@@ -290,18 +313,11 @@ const FormularioSucursal = () => {
                   value={formData.nombre}
                   onChange={manejarCambio}
                   onBlur={manejarBlur}
-                  className={`${errores.nombre ? "error" : ""} ${
-                    validandoCampo === "nombre" ? "validando" : ""
-                  }`}
+                  className={inputClass("nombre")}
                   placeholder="Ej: Sucursal Principal"
                 />
-                {errores.nombre && (
-                  <span className="error-message">{errores.nombre}</span>
-                )}
-              </div>
-
-              <div className="form-group">
-                <label htmlFor="ubicacion">Ubicación *</label>
+              </FormGroup>
+              <FormGroup id="ubicacion" name="ubicacion" label="Ubicación" required>
                 <input
                   type="text"
                   id="ubicacion"
@@ -309,18 +325,11 @@ const FormularioSucursal = () => {
                   value={formData.ubicacion}
                   onChange={manejarCambio}
                   onBlur={manejarBlur}
-                  className={`${errores.ubicacion ? "error" : ""} ${
-                    validandoCampo === "ubicacion" ? "validando" : ""
-                  }`}
+                  className={inputClass("ubicacion")}
                   placeholder="Ej: Av. Principal 123"
                 />
-                {errores.ubicacion && (
-                  <span className="error-message">{errores.ubicacion}</span>
-                )}
-              </div>
-
-              <div className="form-group">
-                <label htmlFor="telefono">Teléfono</label>
+              </FormGroup>
+              <FormGroup id="telefono" name="telefono" label="Teléfono">
                 <input
                   type="tel"
                   id="telefono"
@@ -328,18 +337,11 @@ const FormularioSucursal = () => {
                   value={formData.telefono}
                   onChange={manejarCambio}
                   onBlur={manejarBlur}
-                  className={`${errores.telefono ? "error" : ""} ${
-                    validandoCampo === "telefono" ? "validando" : ""
-                  }`}
+                  className={inputClass("telefono")}
                   placeholder="Ej: 987654321"
                 />
-                {errores.telefono && (
-                  <span className="error-message">{errores.telefono}</span>
-                )}
-              </div>
-
-              <div className="form-group">
-                <label htmlFor="email">Email</label>
+              </FormGroup>
+              <FormGroup id="email" name="email" label="Email">
                 <input
                   type="email"
                   id="email"
@@ -347,28 +349,21 @@ const FormularioSucursal = () => {
                   value={formData.email}
                   onChange={manejarCambio}
                   onBlur={manejarBlur}
-                  className={`${errores.email ? "error" : ""} ${
-                    validandoCampo === "email" ? "validando" : ""
-                  }`}
+                  className={inputClass("email")}
                   placeholder="sucursal@empresa.com"
                 />
-                {errores.email && (
-                  <span className="error-message">{errores.email}</span>
-                )}
-              </div>
+              </FormGroup>
             </div>
-          </div>
+          </section>
 
           {/* Información Fiscal */}
-          <div className="form-section">
-            <h3 className="section-title">
-              <FileText className="section-icon" />
+          <section>
+            <h3 className="mb-4 flex items-center gap-2 border-b border-slate-200 pb-3 text-lg font-semibold text-slate-900">
+              <FileText size={20} className="text-blue-600" />
               Información Fiscal (SUNAT)
             </h3>
-
-            <div className="form-grid">
-              <div className="form-group">
-                <label htmlFor="ruc">RUC</label>
+            <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
+              <FormGroup id="ruc" name="ruc" label="RUC">
                 <input
                   type="text"
                   id="ruc"
@@ -376,19 +371,12 @@ const FormularioSucursal = () => {
                   value={formData.ruc}
                   onChange={manejarCambio}
                   onBlur={manejarBlur}
-                  className={`${errores.ruc ? "error" : ""} ${
-                    validandoCampo === "ruc" ? "validando" : ""
-                  }`}
+                  className={inputClass("ruc")}
                   placeholder="20123456789"
-                  maxLength="11"
+                  maxLength={11}
                 />
-                {errores.ruc && (
-                  <span className="error-message">{errores.ruc}</span>
-                )}
-              </div>
-
-              <div className="form-group">
-                <label htmlFor="razonSocial">Razón Social *</label>
+              </FormGroup>
+              <FormGroup id="razonSocial" name="razonSocial" label="Razón Social" required>
                 <input
                   type="text"
                   id="razonSocial"
@@ -396,18 +384,11 @@ const FormularioSucursal = () => {
                   value={formData.razonSocial}
                   onChange={manejarCambio}
                   onBlur={manejarBlur}
-                  className={`${errores.razonSocial ? "error" : ""} ${
-                    validandoCampo === "razonSocial" ? "validando" : ""
-                  }`}
+                  className={inputClass("razonSocial")}
                   placeholder="EMPRESA DEMO S.A.C."
                 />
-                {errores.razonSocial && (
-                  <span className="error-message">{errores.razonSocial}</span>
-                )}
-              </div>
-
-              <div className="form-group span-2">
-                <label htmlFor="nombreComercial">Nombre Comercial *</label>
+              </FormGroup>
+              <FormGroup id="nombreComercial" name="nombreComercial" label="Nombre Comercial" required span2>
                 <input
                   type="text"
                   id="nombreComercial"
@@ -415,30 +396,21 @@ const FormularioSucursal = () => {
                   value={formData.nombreComercial}
                   onChange={manejarCambio}
                   onBlur={manejarBlur}
-                  className={`${errores.nombreComercial ? "error" : ""} ${
-                    validandoCampo === "nombreComercial" ? "validando" : ""
-                  }`}
+                  className={inputClass("nombreComercial")}
                   placeholder="EMPRESA DEMO"
                 />
-                {errores.nombreComercial && (
-                  <span className="error-message">
-                    {errores.nombreComercial}
-                  </span>
-                )}
-              </div>
+              </FormGroup>
             </div>
-          </div>
+          </section>
 
-          {/* Información de Ubicación */}
-          <div className="form-section">
-            <h3 className="section-title">
-              <MapPin className="section-icon" />
+          {/* Ubicación Detallada */}
+          <section>
+            <h3 className="mb-4 flex items-center gap-2 border-b border-slate-200 pb-3 text-lg font-semibold text-slate-900">
+              <MapPin size={20} className="text-blue-600" />
               Ubicación Detallada
             </h3>
-
-            <div className="form-grid">
-              <div className="form-group span-2">
-                <label htmlFor="direccion">Dirección Completa *</label>
+            <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
+              <FormGroup id="direccion" name="direccion" label="Dirección Completa" required span2>
                 <input
                   type="text"
                   id="direccion"
@@ -446,17 +418,11 @@ const FormularioSucursal = () => {
                   value={formData.direccion}
                   onChange={manejarCambio}
                   onBlur={manejarBlur}
-                  className={`${errores.direccion ? "error" : ""} ${
-                    validandoCampo === "direccion" ? "validando" : ""
-                  }`}
+                  className={inputClass("direccion")}
                   placeholder="Av. Principal 123, Urbanización Ejemplo"
                 />
-                {errores.direccion && (
-                  <span className="error-message">{errores.direccion}</span>
-                )}
-              </div>
-              <div className="form-group">
-                <label htmlFor="ubigeo">UBIGEO *</label>
+              </FormGroup>
+              <FormGroup id="ubigeo" name="ubigeo" label="UBIGEO" required>
                 <input
                   type="text"
                   id="ubigeo"
@@ -464,19 +430,12 @@ const FormularioSucursal = () => {
                   value={formData.ubigeo}
                   onChange={manejarCambio}
                   onBlur={manejarBlur}
-                  className={`${errores.ubigeo ? "error" : ""} ${
-                    validandoCampo === "ubigeo" ? "validando" : ""
-                  }`}
+                  className={inputClass("ubigeo")}
                   placeholder="150101"
-                  maxLength="6"
+                  maxLength={6}
                 />
-                {errores.ubigeo && (
-                  <span className="error-message">{errores.ubigeo}</span>
-                )}
-              </div>
-              
-              <div className="form-group">
-                <label htmlFor="urbanizacion">Urbanización *</label>
+              </FormGroup>
+              <FormGroup id="urbanizacion" name="urbanizacion" label="Urbanización" required>
                 <input
                   type="text"
                   id="urbanizacion"
@@ -484,18 +443,11 @@ const FormularioSucursal = () => {
                   value={formData.urbanizacion}
                   onChange={manejarCambio}
                   onBlur={manejarBlur}
-                  className={`${errores.urbanizacion ? "error" : ""} ${
-                    validandoCampo === "urbanizacion" ? "validando" : ""
-                  }`}
+                  className={inputClass("urbanizacion")}
                   placeholder="Urbanización Ejemplo"
                 />
-                {errores.urbanizacion && (
-                  <span className="error-message">{errores.urbanizacion}</span>
-                )}
-              </div>
-
-              <div className="form-group">
-                <label htmlFor="distrito">Distrito *</label>
+              </FormGroup>
+              <FormGroup id="distrito" name="distrito" label="Distrito" required>
                 <input
                   type="text"
                   id="distrito"
@@ -503,17 +455,11 @@ const FormularioSucursal = () => {
                   value={formData.distrito}
                   onChange={manejarCambio}
                   onBlur={manejarBlur}
-                  className={`${errores.distrito ? "error" : ""} ${
-                    validandoCampo === "distrito" ? "validando" : ""
-                  }`}
+                  className={inputClass("distrito")}
                   placeholder="Lima"
                 />
-                {errores.distrito && (
-                  <span className="error-message">{errores.distrito}</span>
-                )}
-              </div>
-              <div className="form-group">
-                <label htmlFor="provincia">Provincia *</label>
+              </FormGroup>
+              <FormGroup id="provincia" name="provincia" label="Provincia" required>
                 <input
                   type="text"
                   id="provincia"
@@ -521,17 +467,11 @@ const FormularioSucursal = () => {
                   value={formData.provincia}
                   onChange={manejarCambio}
                   onBlur={manejarBlur}
-                  className={`${errores.provincia ? "error" : ""} ${
-                    validandoCampo === "provincia" ? "validando" : ""
-                  }`}
+                  className={inputClass("provincia")}
                   placeholder="Lima"
                 />
-                {errores.provincia && (
-                  <span className="error-message">{errores.provincia}</span>
-                )}
-              </div>
-              <div className="form-group">
-                <label htmlFor="departamento">Departamento *</label>
+              </FormGroup>
+              <FormGroup id="departamento" name="departamento" label="Departamento" required>
                 <input
                   type="text"
                   id="departamento"
@@ -539,38 +479,36 @@ const FormularioSucursal = () => {
                   value={formData.departamento}
                   onChange={manejarCambio}
                   onBlur={manejarBlur}
-                  className={`${errores.departamento ? "error" : ""} ${
-                    validandoCampo === "departamento" ? "validando" : ""
-                  }`}
+                  className={inputClass("departamento")}
                   placeholder="Lima"
                 />
-                {errores.departamento && (
-                  <span className="error-message">{errores.departamento}</span>
-                )}
-              </div>
+              </FormGroup>
             </div>
-          </div>
+          </section>
         </div>
 
-        <div className="form-actions">
+        <div className="flex flex-col gap-3 border-t border-slate-200 bg-slate-50/80 px-4 py-4 sm:flex-row sm:justify-end sm:px-6 sm:py-5">
           <button
             type="button"
-            className="btn-secondary"
-            onClick={() => navigate("/sucursales")}
+            onClick={() => navigate("/sucursales/gestion")}
             disabled={cargando}
+            className="order-2 rounded-lg border border-slate-300 bg-white px-4 py-2.5 text-sm font-semibold text-slate-700 shadow-sm transition hover:bg-slate-50 disabled:opacity-60 sm:order-1"
           >
             Cancelar
           </button>
-
-          <button type="submit" className="btn-primary" disabled={cargando}>
+          <button
+            type="submit"
+            disabled={cargando}
+            className="inline-flex items-center justify-center gap-2 rounded-lg bg-blue-600 px-5 py-2.5 text-sm font-semibold text-white shadow-sm transition hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 disabled:opacity-60"
+          >
             {cargando ? (
               <>
-                <div className="btn-spinner"></div>
+                <span className="h-4 w-4 animate-spin rounded-full border-2 border-white border-t-transparent" />
                 {esEdicion ? "Actualizando..." : "Creando..."}
               </>
             ) : (
               <>
-                <Save className="icon" />
+                <Save size={18} />
                 {esEdicion ? "Actualizar Sucursal" : "Crear Sucursal"}
               </>
             )}

@@ -1,6 +1,30 @@
 import React, { useState } from 'react';
+import {
+  AlertTriangle,
+  Search,
+  Filter,
+  X,
+  ChevronLeft,
+  ChevronRight,
+  Send,
+  FileText,
+  CheckCircle,
+  XCircle,
+  Clock,
+  RefreshCcw,
+  Download,
+  Settings,
+  User,
+  ChevronFirst,
+  ChevronLast,
+  LayoutGrid,
+  FileCode,
+  FilePieChart,
+  ChevronDown,
+  Code
+} from 'lucide-react';
 import useComprobanteContingencia from '../../hooks/useComprobanteContingencia';
-import '../../styles/ComprobanteContingencia.css';
+import Swal from 'sweetalert2';
 
 const ComprobanteContingencia = () => {
   // Hook para manejar datos de comprobantes de contingencia
@@ -20,15 +44,16 @@ const ComprobanteContingencia = () => {
   } = useComprobanteContingencia();
 
   // Estados locales para UI
+  const [mostrarFiltros, setMostrarFiltros] = useState(true);
   const [mostrarMenuColumnas, setMostrarMenuColumnas] = useState(false);
-  
+
   // Estado para controlar visibilidad de columnas
   const [columnasVisibles, setColumnasVisibles] = useState({
     usuario: true,
-    exportacion: true,
-    gratuita: true,
-    inafecta: true,
-    exonerado: true
+    exportacion: false,
+    gratuita: false,
+    inafecta: false,
+    exonerado: false
   });
 
   // Manejadores de eventos
@@ -41,7 +66,6 @@ const ComprobanteContingencia = () => {
   };
 
   const handleBuscar = () => {
-    console.log('Buscando con filtros:', filtros);
     buscar();
   };
 
@@ -50,12 +74,27 @@ const ComprobanteContingencia = () => {
   };
 
   const handleReenviarComprobante = async (comprobanteId) => {
-    if (window.confirm('¿Está seguro de que desea reenviar este comprobante a SUNAT?')) {
+    const result = await Swal.fire({
+      title: '¿Reenviar a SUNAT?',
+      text: '¿Está seguro de que desea reenviar este comprobante de contingencia?',
+      icon: 'question',
+      showCancelButton: true,
+      confirmButtonText: 'Sí, reenviar',
+      confirmButtonColor: '#126171',
+      cancelButtonText: 'Cancelar'
+    });
+
+    if (result.isConfirmed) {
+      Swal.fire({
+        title: 'Reenviando...',
+        allowOutsideClick: false,
+        didOpen: () => Swal.showLoading()
+      });
       const resultado = await reenviarComprobante(comprobanteId);
       if (resultado.success) {
-        alert('Comprobante reenviado exitosamente');
+        Swal.fire('¡Éxito!', 'Comprobante reenviado exitosamente', 'success');
       } else {
-        alert(`Error: ${resultado.mensaje}`);
+        Swal.fire('Error', resultado.mensaje, 'error');
       }
     }
   };
@@ -63,7 +102,7 @@ const ComprobanteContingencia = () => {
   const handleDescargarArchivo = async (comprobanteId, tipo) => {
     const resultado = await descargarArchivo(comprobanteId, tipo);
     if (!resultado.success) {
-      alert(`Error: ${resultado.mensaje}`);
+      Swal.fire('Error', resultado.mensaje, 'error');
     }
   };
 
@@ -74,275 +113,368 @@ const ComprobanteContingencia = () => {
     }));
   };
 
-  // Calcular número de columnas para el colspan
-  const calcularColspan = () => {
-    let count = 10; // Columnas base: #, Fecha, Cliente, Número, Estado, Moneda, T.Gravado, T.Igv, Total, Descargas, Acciones
-    if (columnasVisibles.usuario) count++;
-    if (columnasVisibles.exportacion) count++;
-    if (columnasVisibles.gratuita) count++;
-    if (columnasVisibles.inafecta) count++;
-    if (columnasVisibles.exonerado) count++;
-    return count;
-  };
-
   return (
-    <div className="contingencia-container">
-      {/* Header con alerta */}
-      <div className="contingencia-header">
-        <div className="contingencia-alert">
-          <span className="contingencia-alert-text">
-            COMPROBANTES / FACTURAS - BOLETAS DE CONTINGENCIA
-          </span>
+    <div className="flex flex-col space-y-6 p-4 md:p-6 bg-slate-50/40 animate-in fade-in duration-500">
+      {/* Header Section */}
+      <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
+        <div className="flex items-center gap-5">
+          <div className="flex h-16 w-16 items-center justify-center rounded-2xl bg-gradient-to-br from-amber-500 to-amber-600 text-white shadow-xl shadow-amber-200">
+            <AlertTriangle size={32} />
+          </div>
+          <div>
+            <h2 className="text-2xl font-bold tracking-tight text-menta-petroleo uppercase">Comprobantes de Contingencia</h2>
+            <p className="text-sm font-medium text-slate-500">Gestión de facturas y boletas emitidas por contingencia</p>
+          </div>
+        </div>
+        <div className="flex items-center gap-3">
+          <button
+            onClick={handleRefrescar}
+            disabled={loading}
+            className="group inline-flex h-11 items-center gap-2 rounded-xl border border-slate-200 bg-white px-5 py-2 text-sm font-semibold text-slate-600 transition hover:bg-slate-50 hover:text-menta-petroleo shadow-sm active:scale-95 disabled:opacity-50"
+          >
+            <RefreshCcw size={18} className={`${loading ? 'animate-spin' : 'group-hover:rotate-180 transition-transform duration-500'}`} />
+            Actualizar
+          </button>
         </div>
       </div>
 
-      {/* Mostrar estado de carga y errores */}
-      {loading && (
-        <div className="contingencia-loading">
-          <p>Cargando comprobantes...</p>
+      {/* Alert logic */}
+      {resumen?.pendientes > 0 && (
+        <div className="flex items-center gap-4 rounded-2xl border border-amber-200 bg-amber-50/50 p-4 text-amber-800 shadow-sm border-l-4 border-l-amber-500 animate-in slide-in-from-left duration-300">
+          <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-white text-amber-600 shadow-sm">
+            <AlertTriangle className="h-5 w-5 shrink-0" />
+          </div>
+          <div>
+            <p className="text-sm font-bold uppercase tracking-tight">Atención: Pendientes de Envío</p>
+            <p className="text-xs font-medium text-amber-700/80">Tiene <span className="font-bold underline">{resumen.pendientes}</span> comprobantes pendientes de informar a SUNAT.</p>
+          </div>
         </div>
       )}
 
-      {error && (
-        <div className="contingencia-error">
-          <p>Error: {error}</p>
-          <button onClick={handleRefrescar} className="contingencia-btn-refrescar">
-            Reintentar
-          </button>
-        </div>
-      )}
-
-      {/* Filtros de búsqueda */}
-      <div className="contingencia-filtros">
-        <div className="contingencia-filtro-numero">
-          <select 
-            className="contingencia-select"
-            value={filtros.tipoComprobante}
-            onChange={handleTipoComprobanteChange}
-            disabled={loading}
-          >
-            <option value="">Todos los tipos</option>
-            <option value="FACTURA">Factura</option>
-            <option value="BOLETA">Boleta</option>
-          </select>
-        </div>
-
-        <div className="contingencia-filtro-busqueda">
-          <input
-            type="text"
-            className="contingencia-input-buscar"
-            placeholder="🔍 Buscar por serie o número"
-            value={filtros.busqueda}
-            onChange={handleBusquedaChange}
-            disabled={loading}
-          />
-        </div>
-
-        <button 
-          className="contingencia-btn-buscar"
-          onClick={handleBuscar}
-          disabled={loading}
-        >
-          🔍 Buscar
-        </button>
-
-        <button 
-          className="contingencia-btn-refrescar"
-          onClick={handleRefrescar}
-          disabled={loading}
-        >
-          🔄 Refrescar
-        </button>
-
-        {/* Botón para mostrar/ocultar columnas */}
-        <div className="contingencia-columnas-wrapper">
-          <button 
-            className="contingencia-btn-columnas"
-            onClick={() => setMostrarMenuColumnas(!mostrarMenuColumnas)}
-          >
-            Mostrar/Ocultar columnas ⌄
-          </button>
-          
-          {mostrarMenuColumnas && (
-            <div className="contingencia-menu-columnas">
-              <label className="contingencia-columna-item">
-                <input
-                  type="checkbox"
-                  checked={columnasVisibles.usuario}
-                  onChange={() => toggleColumna('usuario')}
-                />
-                <span>Usuario</span>
-              </label>
-              <label className="contingencia-columna-item">
-                <input
-                  type="checkbox"
-                  checked={columnasVisibles.exportacion}
-                  onChange={() => toggleColumna('exportacion')}
-                />
-                <span>T.Exportación</span>
-              </label>
-              <label className="contingencia-columna-item">
-                <input
-                  type="checkbox"
-                  checked={columnasVisibles.gratuita}
-                  onChange={() => toggleColumna('gratuita')}
-                />
-                <span>T.Gratuita</span>
-              </label>
-              <label className="contingencia-columna-item">
-                <input
-                  type="checkbox"
-                  checked={columnasVisibles.inafecta}
-                  onChange={() => toggleColumna('inafecta')}
-                />
-                <span>T.Inafecta</span>
-              </label>
-              <label className="contingencia-columna-item">
-                <input
-                  type="checkbox"
-                  checked={columnasVisibles.exonerado}
-                  onChange={() => toggleColumna('exonerado')}
-                />
-                <span>T.Exonerado</span>
-              </label>
+      {/* Resumen Cards Row */}
+      <div className="grid grid-cols-4 gap-4 animate-in slide-in-from-top-4 duration-500">
+        <div className="relative group overflow-hidden rounded-2xl border border-slate-200 bg-white p-6 shadow-sm transition-all hover:shadow-md">
+          <div className="flex items-center justify-between">
+            <div className="flex h-11 w-11 items-center justify-center rounded-xl bg-slate-50 text-slate-400 group-hover:bg-menta-petroleo group-hover:text-white transition-colors">
+              <FilePieChart size={22} />
             </div>
-          )}
+            <div className="text-right">
+              <p className="text-[10px] font-bold uppercase tracking-widest text-slate-400 mb-1">Total Casos</p>
+              <p className="text-2xl font-bold text-slate-800">{resumen?.totalComprobantes || 0}</p>
+            </div>
+          </div>
+          <div className="absolute bottom-0 left-0 h-1 w-full bg-slate-200" />
+        </div>
+
+        <div className="relative group overflow-hidden rounded-2xl border border-amber-100 bg-white p-6 shadow-sm transition-all hover:shadow-md">
+          <div className="flex items-center justify-between">
+            <div className="flex h-11 w-11 items-center justify-center rounded-xl bg-amber-50 text-amber-600 transition-colors group-hover:bg-amber-500 group-hover:text-white">
+              <Clock size={22} />
+            </div>
+            <div className="text-right">
+              <p className="text-[10px] font-bold uppercase tracking-widest text-amber-500 mb-1">Pendientes</p>
+              <p className="text-2xl font-bold text-amber-600">{resumen?.pendientes || 0}</p>
+            </div>
+          </div>
+          <div className="absolute bottom-0 left-0 h-1 w-full bg-amber-500" />
+        </div>
+
+        <div className="relative group overflow-hidden rounded-2xl border border-red-100 bg-white p-6 shadow-sm transition-all hover:shadow-md">
+          <div className="flex items-center justify-between">
+            <div className="flex h-11 w-11 items-center justify-center rounded-xl bg-red-50 text-red-600 transition-colors group-hover:bg-red-500 group-hover:text-white">
+              <AlertTriangle size={22} />
+            </div>
+            <div className="text-right">
+              <p className="text-[10px] font-bold uppercase tracking-widest text-red-500 mb-1">Con Error</p>
+              <p className="text-2xl font-bold text-red-600">{resumen?.conError || 0}</p>
+            </div>
+          </div>
+          <div className="absolute bottom-0 left-0 h-1 w-full bg-red-500" />
+        </div>
+
+        <div className="relative group overflow-hidden rounded-2xl border border-red-200 bg-white p-6 shadow-sm transition-all hover:shadow-md">
+          <div className="flex items-center justify-between">
+            <div className="flex h-11 w-11 items-center justify-center rounded-xl bg-red-100 text-red-700 transition-colors group-hover:bg-red-700 group-hover:text-white">
+              <XCircle size={22} />
+            </div>
+            <div className="text-right">
+              <p className="text-[10px] font-bold uppercase tracking-widest text-red-700 mb-1">Rechazados</p>
+              <p className="text-2xl font-bold text-red-800">{resumen?.rechazados || 0}</p>
+            </div>
+          </div>
+          <div className="absolute bottom-0 left-0 h-1 w-full bg-red-700" />
         </div>
       </div>
 
-      {/* Resumen de comprobantes */}
-      {resumen && Object.keys(resumen).length > 0 && (
-        <div className="contingencia-resumen">
-          <p>
-            Total: {resumen.totalComprobantes || 0} | 
-            Pendientes: {resumen.pendientes || 0} | 
-            Con Error: {resumen.conError || 0} | 
-            Rechazados: {resumen.rechazados || 0}
-          </p>
+      {/* Filters Section */}
+      <div className="rounded-2xl border border-slate-200 bg-white p-6 shadow-sm animate-in zoom-in-95 duration-300">
+        <div className="mb-6 flex items-center justify-between border-b border-slate-100 pb-4">
+          <div className="flex items-center gap-2">
+            <div className="h-8 w-8 rounded-lg bg-slate-50 flex items-center justify-center text-menta-turquesa">
+              <Filter size={18} />
+            </div>
+            <h3 className="text-sm font-bold text-menta-petroleo uppercase tracking-tight">Panel de Búsqueda</h3>
+          </div>
+          <div className="flex items-center gap-4">
+            <button
+              onClick={() => setMostrarMenuColumnas(!mostrarMenuColumnas)}
+              className="group flex items-center gap-2 text-[10px] font-bold uppercase tracking-widest text-slate-400 hover:text-menta-petroleo transition-colors"
+            >
+              <Settings size={14} className="group-hover:rotate-90 transition-transform duration-500" />
+              Columnas
+            </button>
+            <button
+              onClick={() => setMostrarFiltros(!mostrarFiltros)}
+              className="text-[10px] font-bold uppercase tracking-widest text-slate-400 hover:text-menta-marino transition-colors"
+            >
+              {mostrarFiltros ? 'Contraer' : 'Expandir'}
+            </button>
+          </div>
         </div>
-      )}
 
-      {/* Tabla de comprobantes */}
-      <div className="contingencia-table-wrapper">
-        <table className="contingencia-table">
-          <thead className="contingencia-table-head">
-            <tr>
-              <th className="contingencia-th">#</th>
-              <th className="contingencia-th">Fecha Emisión</th>
-              <th className="contingencia-th">Cliente</th>
-              <th className="contingencia-th">Número</th>
-              <th className="contingencia-th">Estado</th>
-              {columnasVisibles.usuario && <th className="contingencia-th">Usuario</th>}
-              <th className="contingencia-th">Moneda</th>
-              {columnasVisibles.exportacion && <th className="contingencia-th">T.Exportación</th>}
-              {columnasVisibles.gratuita && <th className="contingencia-th">T.Gratuita</th>}
-              {columnasVisibles.inafecta && <th className="contingencia-th">T.Inafecta</th>}
-              {columnasVisibles.exonerado && <th className="contingencia-th">T.Exonerado</th>}
-              <th className="contingencia-th">T.Gravado</th>
-              <th className="contingencia-th">T.Igv</th>
-              <th className="contingencia-th">Total</th>
-              <th className="contingencia-th">Descargas</th>
-              <th className="contingencia-th">Acciones</th>
-            </tr>
-          </thead>
-          <tbody className="contingencia-table-body">
-            {comprobantes.length === 0 ? (
+        {mostrarMenuColumnas && (
+          <div className="mb-6 grid grid-cols-2 gap-3 rounded-xl bg-slate-50 p-4 sm:grid-cols-5 animate-in fade-in slide-in-from-top-2 duration-200">
+            {Object.keys(columnasVisibles).map((col) => (
+              <label key={col} className="flex cursor-pointer items-center gap-2 text-xs font-semibold text-slate-600 hover:text-menta-petroleo transition-colors px-2 py-1.5 rounded-lg hover:bg-white">
+                <input
+                  type="checkbox"
+                  checked={columnasVisibles[col]}
+                  onChange={() => toggleColumna(col)}
+                  className="h-4 w-4 rounded border-slate-300 text-menta-petroleo focus:ring-menta-petroleo/20 transition-all"
+                />
+                <span className="capitalize">{col.replace(/([A-Z])/g, ' $1')}</span>
+              </label>
+            ))}
+          </div>
+        )}
+
+        {mostrarFiltros && (
+          <div className="flex flex-row items-end gap-4 animate-in fade-in duration-300 overflow-x-auto pb-2">
+            <div className="w-64 shrink-0 space-y-2">
+              <div className="flex items-center gap-2 text-slate-400 uppercase tracking-widest text-[10px] font-bold">
+                <FileText size={14} className="text-menta-turquesa" />
+                <label>Tipo de Documento</label>
+              </div>
+              <div className="relative">
+                <select
+                  className="w-full appearance-none rounded-xl border border-slate-200 bg-slate-50/50 py-2.5 pl-4 pr-10 text-sm font-semibold text-slate-700 focus:border-menta-turquesa focus:ring-4 focus:ring-menta-turquesa/10 outline-none transition"
+                  value={filtros.tipoComprobante}
+                  onChange={handleTipoComprobanteChange}
+                  disabled={loading}
+                >
+                  <option value="">Todos los documentos</option>
+                  <option value="FACTURA">Facturas</option>
+                  <option value="BOLETA">Boletas</option>
+                </select>
+                <div className="pointer-events-none absolute inset-y-0 right-0 flex items-center px-4 text-slate-400">
+                  <ChevronDown size={18} />
+                </div>
+              </div>
+            </div>
+
+            <div className="flex-1 min-w-[200px] space-y-2">
+              <div className="flex items-center gap-2 text-slate-400 uppercase tracking-widest text-[10px] font-bold">
+                <Search size={14} className="text-menta-turquesa" />
+                <label>Búsqueda General</label>
+              </div>
+              <input
+                type="text"
+                placeholder="Serie o correlativo (ej. F001-234)..."
+                className="w-full rounded-xl border border-slate-200 bg-slate-50/50 py-2.5 px-4 text-sm font-semibold text-slate-700 focus:border-menta-turquesa focus:ring-4 focus:ring-menta-turquesa/10 outline-none transition placeholder:text-slate-300"
+                value={filtros.busqueda}
+                onChange={handleBusquedaChange}
+                disabled={loading}
+                onKeyPress={(e) => e.key === 'Enter' && handleBuscar()}
+              />
+            </div>
+
+            <div className="shrink-0">
+              <button
+                onClick={handleBuscar}
+                disabled={loading}
+                className="group h-11 flex items-center justify-center gap-2 rounded-xl bg-menta-petroleo text-white px-6 font-bold transition shadow-lg shadow-menta-petroleo/20 active:scale-95 disabled:opacity-50 uppercase tracking-tighter"
+              >
+                {loading ? <RefreshCcw size={18} className="animate-spin" /> : <Search size={18} className="group-hover:scale-110 transition-transform" />}
+                BUSCAR
+              </button>
+            </div>
+          </div>
+        )}
+      </div>
+
+      {/* Table Section */}
+      <div className="overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-sm">
+        <div className="overflow-x-auto">
+          <table className="w-full text-left text-sm whitespace-nowrap">
+            <thead className="bg-slate-50 border-b border-slate-100">
               <tr>
-                <td colSpan={calcularColspan()} className="contingencia-empty">
-                  <div className="contingencia-empty-content">
-                    {loading ? 'Cargando...' : `Total ${paginacion.totalItems || 0} comprobantes`}
-                  </div>
-                </td>
+                <th className="px-6 py-4 text-center text-[10px] font-bold uppercase tracking-widest text-slate-400">#</th>
+                <th className="px-6 py-4 text-[10px] font-bold uppercase tracking-widest text-menta-petroleo">Emisión</th>
+                <th className="px-6 py-4 text-[10px] font-bold uppercase tracking-widest text-menta-petroleo">Detalle Cliente</th>
+                <th className="px-6 py-4 text-[10px] font-bold uppercase tracking-widest text-menta-petroleo">N° Comprobante</th>
+                <th className="px-6 py-4 text-[10px] font-bold uppercase tracking-widest text-menta-petroleo">Estado SUNAT</th>
+                {columnasVisibles.usuario && <th className="px-6 py-4 text-[10px] font-bold uppercase tracking-widest text-menta-petroleo">Usuario</th>}
+                <th className="px-6 py-4 text-[10px] font-bold uppercase tracking-widest text-menta-petroleo">Impuestos</th>
+                <th className="px-6 py-4 text-right text-[10px] font-bold uppercase tracking-widest text-menta-petroleo">Total</th>
+                <th className="px-6 py-4 text-center text-[10px] font-bold uppercase tracking-widest text-menta-petroleo">Documentos</th>
+                <th className="px-6 py-4 text-center text-[10px] font-bold uppercase tracking-widest text-menta-petroleo">Acción</th>
               </tr>
-            ) : (
-              comprobantes.map((comp, index) => (
-                <tr key={comp.id} className="contingencia-table-row">
-                  <td className="contingencia-td">{((paginacion.page - 1) * paginacion.limit) + index + 1}</td>
-                  <td className="contingencia-td">{new Date(comp.fechaEmision).toLocaleDateString()}</td>
-                  <td className="contingencia-td">{comp.cliente || 'Sin cliente'}</td>
-                  <td className="contingencia-td">{comp.comprobante || `${comp.serie}-${comp.numero}`}</td>
-                  <td className="contingencia-td">
-                    <span className={`contingencia-estado ${comp.estadoSunat?.toLowerCase()}`}>
-                      {comp.estadoSunat || 'PENDIENTE'}
-                    </span>
-                  </td>
-                  {columnasVisibles.usuario && <td className="contingencia-td">{comp.usuario || '-'}</td>}
-                  <td className="contingencia-td">{comp.moneda || 'PEN'}</td>
-                  {columnasVisibles.exportacion && <td className="contingencia-td">0.00</td>}
-                  {columnasVisibles.gratuita && <td className="contingencia-td">0.00</td>}
-                  {columnasVisibles.inafecta && <td className="contingencia-td">0.00</td>}
-                  {columnasVisibles.exonerado && <td className="contingencia-td">0.00</td>}
-                  <td className="contingencia-td">{comp.subtotal || '0.00'}</td>
-                  <td className="contingencia-td">{comp.igv || '0.00'}</td>
-                  <td className="contingencia-td">{comp.total || '0.00'}</td>
-                  <td className="contingencia-td">
-                    <div className="contingencia-descargas">
-                      <button 
-                        onClick={() => handleDescargarArchivo(comp.id, 'xml')}
-                        className="contingencia-btn-descarga"
-                        title="Descargar XML"
-                      >
-                        XML
-                      </button>
-                      <button 
-                        onClick={() => handleDescargarArchivo(comp.id, 'pdf')}
-                        className="contingencia-btn-descarga"
-                        title="Descargar PDF"
-                      >
-                        PDF
-                      </button>
-                      <button 
-                        onClick={() => handleDescargarArchivo(comp.id, 'cdr')}
-                        className="contingencia-btn-descarga"
-                        title="Descargar CDR"
-                      >
-                        CDR
-                      </button>
-                    </div>
-                  </td>
-                  <td className="contingencia-td">
-                    <div className="contingencia-acciones">
-                      <button 
-                        onClick={() => handleReenviarComprobante(comp.id)}
-                        className="contingencia-btn-accion"
-                        title="Reenviar a SUNAT"
-                        disabled={loading}
-                      >
-                        📤
-                      </button>
+            </thead>
+            <tbody className="divide-y divide-slate-50">
+              {loading && comprobantes.length === 0 ? (
+                <tr>
+                  <td colSpan="10" className="py-24 text-center">
+                    <div className="flex flex-col items-center gap-4">
+                      <div className="h-12 w-12 animate-spin rounded-full border-4 border-slate-100 border-t-amber-500" />
+                      <p className="text-sm font-semibold text-slate-400 uppercase tracking-widest">Sincronizando contingencia...</p>
                     </div>
                   </td>
                 </tr>
-              ))
-            )}
-          </tbody>
-        </table>
+              ) : comprobantes.length === 0 ? (
+                <tr>
+                  <td colSpan="10" className="py-32 text-center text-slate-400">
+                    <div className="flex flex-col items-center gap-4">
+                      <FilePieChart size={48} className="text-slate-200" />
+                      <div className="space-y-1">
+                        <p className="text-lg font-bold uppercase tracking-tighter">Sin registros</p>
+                        <p className="text-xs">No se detectaron comprobantes registrados</p>
+                      </div>
+                    </div>
+                  </td>
+                </tr>
+              ) : (
+                comprobantes.map((comp, index) => (
+                  <tr key={comp.id || index} className="group transition hover:bg-slate-50/50">
+                    <td className="px-6 py-4 text-center text-xs font-bold text-slate-300">
+                      {((paginacion.page - 1) * paginacion.limit) + index + 1}
+                    </td>
+                    <td className="px-6 py-4">
+                      <div className="flex items-center gap-2 text-sm font-semibold text-slate-700">
+                        <Calendar size={14} className="text-slate-300" />
+                        {new Date(comp.fechaEmision).toLocaleDateString('es-PE')}
+                      </div>
+                    </td>
+                    <td className="px-6 py-4">
+                      <div className="flex flex-col overflow-hidden max-w-[200px]">
+                        <span className="truncate text-sm font-semibold text-slate-700 uppercase" title={comp.cliente}>
+                          {comp.cliente || 'CONSUMIDOR FINAL'}
+                        </span>
+                        <span className="text-[10px] font-medium text-slate-400 uppercase tracking-tighter">CONTINGENCIA EMITIDA</span>
+                      </div>
+                    </td>
+                    <td className="px-6 py-4">
+                      <span className="text-sm font-bold text-menta-petroleo tracking-tighter uppercase">
+                        {comp.comprobante || `${comp.serie}-${comp.numero}`}
+                      </span>
+                    </td>
+                    <td className="px-6 py-4">
+                      <span className={`inline-flex items-center gap-1.5 rounded-full px-3 py-1 text-[10px] font-bold uppercase ring-1 ${comp.estadoSunat?.toLowerCase() === 'aceptado' ? 'bg-emerald-50 text-emerald-600 ring-emerald-100' :
+                        comp.estadoSunat?.toLowerCase() === 'rechazado' ? 'bg-red-50 text-red-600 ring-red-100' :
+                          'bg-amber-50 text-amber-600 ring-amber-100'
+                        }`}>
+                        {comp.estadoSunat?.toLowerCase() === 'aceptado' ? <CheckCircle size={12} className="shrink-0" /> :
+                          comp.estadoSunat?.toLowerCase() === 'rechazado' ? <XCircle size={12} className="shrink-0" /> : <Clock size={12} className="shrink-0" />}
+                        {comp.estadoSunat || 'PENDIENTE'}
+                      </span>
+                    </td>
+                    {columnasVisibles.usuario && (
+                      <td className="px-6 py-4">
+                        <div className="flex items-center gap-2 text-xs font-semibold text-slate-500">
+                          <User size={12} className="text-slate-300" />
+                          {comp.usuario || '-'}
+                        </div>
+                      </td>
+                    )}
+                    <td className="px-6 py-4">
+                      <div className="flex flex-col gap-0.5 text-[10px]">
+                        <div className="flex justify-between gap-4 text-slate-400">
+                          <span>Gravado:</span>
+                          <span className="font-bold text-slate-600">S/. {comp.subtotal || '0.00'}</span>
+                        </div>
+                        <div className="flex justify-between gap-4 text-slate-400 border-t border-slate-50 pt-0.5">
+                          <span>IGV (18%):</span>
+                          <span className="font-bold text-slate-600">S/. {comp.igv || '0.00'}</span>
+                        </div>
+                      </div>
+                    </td>
+                    <td className="px-6 py-4 text-right">
+                      <span className="text-sm font-bold text-slate-900 tracking-tighter">
+                        S/. {comp.total || '0.00'}
+                      </span>
+                    </td>
+                    <td className="px-6 py-4">
+                      <div className="flex justify-center gap-1.5">
+                        <button
+                          onClick={() => handleDescargarArchivo(comp.id, 'xml')}
+                          className="flex h-8 items-center gap-1.5 rounded-lg bg-slate-50 px-2 text-[10px] font-bold text-slate-500 hover:bg-menta-petroleo hover:text-white transition-all active:scale-95"
+                          title="Descargar XML"
+                        >
+                          <FileCode size={12} />
+                          XML
+                        </button>
+                        <button
+                          onClick={() => handleDescargarArchivo(comp.id, 'pdf')}
+                          className="flex h-8 items-center gap-1.5 rounded-lg bg-slate-50 px-2 text-[10px] font-bold text-slate-500 hover:bg-red-600 hover:text-white transition-all active:scale-95"
+                          title="Descargar PDF"
+                        >
+                          <FileText size={12} />
+                          PDF
+                        </button>
+                      </div>
+                    </td>
+                    <td className="px-6 py-4 text-center">
+                      <button
+                        onClick={() => handleReenviarComprobante(comp.id)}
+                        className="mx-auto flex h-9 w-9 items-center justify-center rounded-xl text-slate-300 hover:bg-menta-turquesa hover:text-white hover:shadow-lg hover:shadow-menta-turquesa/20 transition-all active:scale-95"
+                        title="Reenviar a SUNAT"
+                        disabled={loading}
+                      >
+                        <Send size={16} />
+                      </button>
+                    </td>
+                  </tr>
+                ))
+              )}
+            </tbody>
+          </table>
+        </div>
 
-        {/* Footer con paginación */}
-        <div className="contingencia-footer">
-          <div className="contingencia-info">
-            <span>
-              Mostrando {comprobantes.length} de {paginacion.totalItems || 0} comprobantes
-              {paginacion.totalPages > 0 && ` - Página ${paginacion.page} de ${paginacion.totalPages}`}
-            </span>
-          </div>
-          <div className="contingencia-pagination">
-            <button 
-              className="contingencia-pagination-btn" 
-              disabled={!paginacion.hasPrevPage || loading}
+        {/* Pagination Footer */}
+        <div className="flex flex-col items-center justify-between gap-6 border-t border-slate-100 bg-slate-50/30 px-8 py-6 sm:flex-row">
+          <p className="text-xs font-semibold text-slate-400 uppercase tracking-widest">
+            Mostrando <span className="font-bold text-menta-marino">{comprobantes.length}</span> de <span className="font-bold text-menta-marino">{paginacion.totalItems || 0}</span> documentos
+          </p>
+          <div className="flex items-center gap-2">
+            <button
+              className="flex h-10 w-10 items-center justify-center rounded-xl border border-slate-100 bg-white text-slate-400 shadow-sm transition hover:bg-slate-100 disabled:opacity-20 active:scale-90"
+              onClick={() => cambiarPagina(1)}
+              disabled={paginacion.page === 1 || loading}
+            >
+              <ChevronFirst size={20} />
+            </button>
+            <button
+              className="flex h-10 w-10 items-center justify-center rounded-xl border border-slate-100 bg-white text-slate-400 shadow-sm transition hover:bg-slate-100 disabled:opacity-20 active:scale-90"
               onClick={() => cambiarPagina(paginacion.page - 1)}
+              disabled={!paginacion.hasPrevPage || loading}
             >
-              ‹
+              <ChevronLeft size={20} />
             </button>
-            <button className="contingencia-pagination-btn contingencia-pagination-active">
+            <div className="flex h-10 min-w-[40px] items-center justify-center rounded-xl bg-amber-500 px-4 text-sm font-bold text-white shadow-lg shadow-amber-500/20">
               {paginacion.page}
-            </button>
-            <button 
-              className="contingencia-pagination-btn" 
-              disabled={!paginacion.hasNextPage || loading}
+            </div>
+            <button
+              className="flex h-10 w-10 items-center justify-center rounded-xl border border-slate-100 bg-white text-slate-400 shadow-sm transition hover:bg-slate-100 disabled:opacity-20 active:scale-90"
               onClick={() => cambiarPagina(paginacion.page + 1)}
+              disabled={!paginacion.hasNextPage || loading}
             >
-              ›
+              <ChevronRight size={20} />
+            </button>
+            <button
+              className="flex h-10 w-10 items-center justify-center rounded-xl border border-slate-100 bg-white text-slate-400 shadow-sm transition hover:bg-slate-100 disabled:opacity-20 active:scale-90"
+              onClick={() => cambiarPagina(paginacion.totalPages)}
+              disabled={paginacion.page === paginacion.totalPages || loading}
+            >
+              <ChevronLast size={20} />
             </button>
           </div>
         </div>

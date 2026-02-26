@@ -1,9 +1,11 @@
 import React, { useEffect, useState } from 'react';
-import '../../styles/Lotes.css'; // Archivo CSS específico para este componente
+import { Layers, Plus, Pencil, Trash2, X } from 'lucide-react';
 import loteService from '../../services/loteService';
 import { obtenerProductos } from '../../services/productoService';
-import { obtenerAlmacenes } from '../../services/almacenService';
 import { obtenerSucursales } from '../../services/sucursalService';
+
+const inputBase =
+  'w-full rounded-lg border border-slate-300 px-3 py-2.5 text-sm text-slate-900 shadow-sm transition placeholder:text-slate-400 focus:border-menta-turquesa focus:outline-none focus:ring-2 focus:ring-menta-turquesa';
 
 const Lotes = () => {
   const [showModal, setShowModal] = useState(false);
@@ -11,14 +13,15 @@ const Lotes = () => {
   const [total, setTotal] = useState(0);
   const [page, setPage] = useState(1);
   const [limit] = useState(10);
+  const totalPaginas = Math.max(1, Math.ceil(total / limit));
   const [loteEditando, setLoteEditando] = useState(null);
   const [productos, setProductos] = useState([]);
   const [sucursales, setSucursales] = useState([]);
   const [formData, setFormData] = useState({
     lote: '',
-    producto: '', // Puede ser ID o nombre
+    producto: '',
     vencimiento: '',
-    almacén: '', // Puede ser ID o nombre
+    almacén: '',
     estado: 'Activo',
     stock: '0'
   });
@@ -44,7 +47,7 @@ const Lotes = () => {
 
   const cargarLotes = async () => {
     try {
-      const { data, total } = await loteService.obtenerLotes({ page, limit });
+      const { data, total: t } = await loteService.obtenerLotes({ page, limit });
       const filas = (data || []).map((item) => ({
         id: item.id,
         lote: item.lote,
@@ -57,7 +60,7 @@ const Lotes = () => {
         stock: item.stock
       }));
       setLotes(filas);
-      setTotal(total || filas.length);
+      setTotal(t ?? filas.length);
     } catch (error) {
       console.error('Error al cargar lotes:', error.message);
     }
@@ -70,55 +73,44 @@ const Lotes = () => {
 
   useEffect(() => {
     cargarLotes();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [page]);
 
-  // Abrir modal para nuevo lote
   const abrirModalNuevo = () => {
     setLoteEditando(null);
     setFormData({ lote: '', producto: '', vencimiento: '', almacén: '', estado: 'Activo', stock: '0' });
     setShowModal(true);
   };
 
-  // Abrir modal para editar lote
   const abrirModalEditar = (lote) => {
     setLoteEditando(lote);
     setFormData({
       lote: lote?.lote || '',
       producto: String(lote?.productoId || ''),
       vencimiento: lote?.vencimiento || '',
-      // Para edición, dejamos la sucursal vacía para que el usuario elija
-      almacén: '',
+      almacén: String(lote?.almacenId || ''),
       estado: lote?.estado || 'Activo',
       stock: String(lote?.stock ?? '0')
     });
     setShowModal(true);
   };
 
-  // Cerrar modal
   const cerrarModal = () => {
     setShowModal(false);
     setLoteEditando(null);
   };
 
-  // Manejar cambios en el formulario
   const handleInputChange = (e) => {
     const { name, value } = e.target;
-    setFormData(prev => ({
-      ...prev,
-      [name]: value
-    }));
+    setFormData(prev => ({ ...prev, [name]: value }));
   };
 
-  // Guardar lote (nuevo o edición)
-  const guardarLote = async () => {
+  const guardarLote = async (e) => {
+    if (e) e.preventDefault();
     const parseId = (valor, lista, campoNombre) => {
       if (!valor) return undefined;
       if (/^\d+$/.test(valor)) return Number(valor);
-      const arr = Array.isArray(lista)
-        ? lista
-        : (Array.isArray(lista?.data) ? lista.data
-          : (Array.isArray(lista?.productos) ? lista.productos
-            : (Array.isArray(lista?.almacenes) ? lista.almacenes : [])));
+      const arr = Array.isArray(lista) ? lista : (lista?.data ?? lista?.productos ?? lista?.almacenes ?? []);
       const encontrado = arr.find((x) => String(x[campoNombre] || '').toLowerCase() === String(valor).toLowerCase());
       return encontrado?.id;
     };
@@ -126,30 +118,20 @@ const Lotes = () => {
     const payload = {
       lote: formData.lote,
       productoId: parseId(formData.producto, productos, 'nombre'),
-      // Enviar también el nombre para que el backend resuelva o cree el producto
       producto: (formData.producto || '').trim() || undefined,
-      // Enviar sucursalId para que el backend resuelva/cree almacén por defecto
-      sucursalId: (/^\d+$/.test(formData['almacén']) ? Number(formData['almacén']) : undefined),
-      // No enviamos nombre de almacén desde el formulario de sucursal
+      sucursalId: (/^\d+$/.test(formData.almacén) ? Number(formData.almacén) : undefined),
       almacen: undefined,
       vencimiento: formData.vencimiento || null,
       estado: formData.estado || 'Activo',
       stock: Number(formData.stock) || 0,
     };
 
-    // Validación previa: asegurar que producto y almacén existan en listas
     const norm = (s) => (s ?? '').toString().trim().toLowerCase();
-    const productosLista = Array.isArray(productos)
-      ? productos
-      : (Array.isArray(productos?.productos) ? productos.productos : []);
+    const productosLista = Array.isArray(productos) ? productos : (productos?.productos ?? []);
     const productoSeleccionado = productosLista.find((p) => norm(p?.nombre) === norm(formData.producto));
     if (!payload.productoId && productoSeleccionado?.id) {
       payload.productoId = productoSeleccionado.id;
     }
-    
-    // No resolvemos almacén en frontend; el backend lo hará en base a sucursalId
-
-    // No bloquear envío: si no se resuelven IDs, el backend intentará resolver por nombre
 
     try {
       if (loteEditando?.id) {
@@ -164,161 +146,176 @@ const Lotes = () => {
     }
   };
 
-  // Eliminar lote
   const eliminarLote = async (id) => {
-    if (window.confirm('¿Estás seguro de que quieres eliminar este lote?')) {
-      try {
-        await loteService.eliminarLote(id);
-        await cargarLotes();
-      } catch (error) {
-        alert(error.message || 'Error al eliminar el lote');
-      }
+    if (!window.confirm('¿Estás seguro de que quieres eliminar este lote?')) return;
+    try {
+      await loteService.eliminarLote(id);
+      await cargarLotes();
+    } catch (error) {
+      alert(error.message || 'Error al eliminar el lote');
     }
   };
 
   return (
-    <div className="lotes-container">
-      <div className="lotes-header">
-        <h1 className="lotes-title">Lotes</h1>
-       
-        
-      </div>
-
-      <div className="lotes-actions">
-        <button 
-          className="lotes-btn-nuevo"
-          onClick={abrirModalNuevo}
-        >
-          Nuevo
-        </button>
-        <div className="lotes-total">
-          Total: ({total})
+    <div className="mx-auto max-w-7xl space-y-6">
+      <div className="flex flex-wrap items-center justify-between gap-4">
+        <div className="flex items-center gap-2">
+          <span className="flex h-11 w-11 items-center justify-center rounded-xl bg-menta-suave text-menta-petroleo">
+            <Layers size={24} />
+          </span>
+          <h1 className="text-2xl font-semibold text-fondo">Lotes</h1>
+        </div>
+        <div className="flex items-center gap-3">
+          <span className="text-sm font-medium text-menta-petroleo">Total: {total}</span>
+          <button
+            type="button"
+            onClick={abrirModalNuevo}
+            className="inline-flex items-center gap-2 rounded-xl bg-menta-petroleo px-4 py-2.5 text-sm font-medium text-white shadow-sm transition hover:bg-menta-marino"
+          >
+            <Plus size={18} /> Nuevo
+          </button>
         </div>
       </div>
 
-      <div className="lotes-tabla-container">
-        <table className="lotes-tabla">
-          <thead>
-            <tr>
-              <th>#</th>
-              <th>Lote</th>
-              <th>Producto</th>
-              <th>Vencimiento</th>
-              <th>Almacén</th>
-              <th>Estado</th>
-              <th>Stock</th>
-              <th>Acciones</th>
-            </tr>
-          </thead>
-          <tbody>
-            {lotes.length === 0 ? (
+      <div className="overflow-hidden rounded-xl border border-slate-200 bg-white shadow-sm">
+        <div className="overflow-x-auto">
+          <table className="min-w-full divide-y divide-slate-200">
+            <thead className="bg-slate-50">
               <tr>
-                <td colSpan="10" className="lotes-tabla-vacia">
-                  No hay lotes registrados
-                </td>
+                <th className="px-4 py-3 text-left text-xs font-semibold uppercase tracking-wider text-menta-petroleo">#</th>
+                <th className="px-4 py-3 text-left text-xs font-semibold uppercase tracking-wider text-menta-petroleo">Lote</th>
+                <th className="px-4 py-3 text-left text-xs font-semibold uppercase tracking-wider text-menta-petroleo">Producto</th>
+                <th className="px-4 py-3 text-left text-xs font-semibold uppercase tracking-wider text-menta-petroleo">Vencimiento</th>
+                <th className="px-4 py-3 text-left text-xs font-semibold uppercase tracking-wider text-menta-petroleo">Almacén</th>
+                <th className="px-4 py-3 text-left text-xs font-semibold uppercase tracking-wider text-menta-petroleo">Estado</th>
+                <th className="px-4 py-3 text-left text-xs font-semibold uppercase tracking-wider text-menta-petroleo">Stock</th>
+                <th className="px-4 py-3 text-right text-xs font-semibold uppercase tracking-wider text-menta-petroleo">Acciones</th>
               </tr>
-            ) : (
-              lotes.map((lote, index) => (
-                <tr key={lote.id}>
-                  <td>{index + 1}</td>
-                  <td>{lote.lote}</td>
-                  <td>{lote.producto}</td>
-                  <td>{lote.vencimiento}</td>
-                  <td>{lote.almacén}</td>
-                  <td>{lote.estado}</td>
-                  <td>{lote.stock}</td>
-                
-                  <td className="lotes-acciones">
-                    <button 
-                      className="lotes-btn-editar"
-                      onClick={() => abrirModalEditar(lote)}
-                    >
-                      Editar
-                    </button>
-                    <button 
-                      className="lotes-btn-eliminar"
-                      onClick={() => eliminarLote(lote.id)}
-                    >
-                      Eliminar
-                    </button>
+            </thead>
+            <tbody className="divide-y divide-slate-200 bg-white">
+              {lotes.length === 0 ? (
+                <tr>
+                  <td colSpan={8} className="px-4 py-12 text-center text-sm text-menta-petroleo">
+                    No hay lotes registrados
                   </td>
                 </tr>
-              ))
-            )}
-          </tbody>
-        </table>
-      </div>
-
-      {/* Modal */}
-      {showModal && (
-        <div className="lotes-modal-overlay">
-          <div className="lotes-modal">
-            <div className="lotes-modal-header">
-              <h2 className="lotes-modal-title">
-                {loteEditando ? 'Editar Lote' : 'Nuevo Lote'}
-              </h2>
-              <button 
-                className="lotes-modal-cerrar"
-                onClick={cerrarModal}
+              ) : (
+                lotes.map((lote, index) => (
+                  <tr key={lote.id} className="transition-colors hover:bg-slate-50/80">
+                    <td className="whitespace-nowrap px-4 py-3 text-sm text-menta-marino">{index + 1}</td>
+                    <td className="whitespace-nowrap px-4 py-3 font-medium text-fondo">{lote.lote}</td>
+                    <td className="whitespace-nowrap px-4 py-3 text-sm text-menta-marino">{lote.producto}</td>
+                    <td className="whitespace-nowrap px-4 py-3 text-sm text-menta-marino">{lote.vencimiento || '-'}</td>
+                    <td className="whitespace-nowrap px-4 py-3 text-sm text-menta-marino">{lote.almacén || '-'}</td>
+                    <td className="whitespace-nowrap px-4 py-3 text-sm text-menta-marino">{lote.estado}</td>
+                    <td className="whitespace-nowrap px-4 py-3 text-sm text-menta-marino">{lote.stock}</td>
+                    <td className="whitespace-nowrap px-4 py-3 text-right">
+                      <div className="flex items-center justify-end gap-1">
+                        <button
+                          type="button"
+                          onClick={() => abrirModalEditar(lote)}
+                          className="inline-flex items-center gap-1.5 rounded-lg px-2.5 py-1.5 text-sm font-medium text-menta-petroleo transition hover:bg-menta-claro"
+                        >
+                          <Pencil size={16} /> Editar
+                        </button>
+                        <button
+                          type="button"
+                          onClick={() => eliminarLote(lote.id)}
+                          className="inline-flex items-center gap-1.5 rounded-lg px-2.5 py-1.5 text-sm font-medium text-slate-500 transition hover:bg-red-50 hover:text-red-600"
+                        >
+                          <Trash2 size={16} /> Eliminar
+                        </button>
+                      </div>
+                    </td>
+                  </tr>
+                ))
+              )}
+            </tbody>
+          </table>
+        </div>
+        <div className="flex flex-wrap items-center justify-between gap-2 border-t border-slate-200 bg-slate-50/80 px-4 py-3">
+          <span className="text-sm text-menta-petroleo">Total: {total}</span>
+          {totalPaginas > 1 && (
+            <div className="flex items-center gap-1">
+              <button
+                type="button"
+                onClick={() => setPage(p => Math.max(1, p - 1))}
+                disabled={page <= 1}
+                className="rounded-lg border border-slate-200 bg-white px-3 py-2 text-sm font-medium text-menta-petroleo transition hover:bg-slate-50 disabled:opacity-50"
               >
-                ×
+                ‹
+              </button>
+              <span className="px-3 py-2 text-sm text-menta-petroleo">{page} / {totalPaginas}</span>
+              <button
+                type="button"
+                onClick={() => setPage(p => Math.min(totalPaginas, p + 1))}
+                disabled={page >= totalPaginas}
+                className="rounded-lg border border-slate-200 bg-white px-3 py-2 text-sm font-medium text-menta-petroleo transition hover:bg-slate-50 disabled:opacity-50"
+              >
+                ›
               </button>
             </div>
-            
-            <div className="lotes-modal-body">
-              <div className="lotes-form-grid">
-                <div className="lotes-form-group">
-                  <label className="lotes-form-label">Lote</label>
+          )}
+        </div>
+      </div>
+
+      {showModal && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 p-4" onClick={cerrarModal}>
+          <div className="max-h-[90vh] w-full max-w-2xl overflow-y-auto rounded-xl border border-slate-200 bg-white shadow-xl" onClick={(e) => e.stopPropagation()}>
+            <div className="sticky top-0 flex items-center justify-between border-b border-slate-200 bg-white px-5 py-4">
+              <h2 className="text-lg font-semibold text-fondo">{loteEditando ? 'Editar Lote' : 'Nuevo Lote'}</h2>
+              <button
+                type="button"
+                onClick={cerrarModal}
+                className="rounded-lg p-2 text-slate-500 transition hover:bg-slate-100 hover:text-slate-700"
+              >
+                <X size={20} />
+              </button>
+            </div>
+
+            <form onSubmit={guardarLote} className="p-5">
+              <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
+                <div>
+                  <label className="mb-1 block text-sm font-medium text-menta-petroleo">Lote</label>
                   <input
                     type="text"
                     name="lote"
                     value={formData.lote}
                     onChange={handleInputChange}
-                    className="lotes-form-input"
+                    className={inputBase}
                   />
                 </div>
-                
-                <div className="lotes-form-group">
-                  <label className="lotes-form-label">Producto</label>
+                <div>
+                  <label className="mb-1 block text-sm font-medium text-menta-petroleo">Producto</label>
                   <select
                     name="producto"
                     value={formData.producto}
                     onChange={handleInputChange}
-                    className="lotes-form-input"
+                    className={inputBase}
                   >
                     <option value="">Seleccione producto</option>
-                    {(
-                      Array.isArray(productos)
-                        ? productos
-                        : (Array.isArray(productos?.data)
-                            ? productos.data
-                            : (Array.isArray(productos?.productos)
-                                ? productos.productos
-                                : []))
-                    ).map((p) => (
+                    {(Array.isArray(productos) ? productos : productos?.productos ?? productos?.data ?? []).map((p) => (
                       <option key={p.id} value={String(p.id)}>{p.nombre}</option>
                     ))}
                   </select>
                 </div>
-                
-                <div className="lotes-form-group">
-                  <label className="lotes-form-label">Vencimiento</label>
+                <div>
+                  <label className="mb-1 block text-sm font-medium text-menta-petroleo">Vencimiento</label>
                   <input
                     type="date"
                     name="vencimiento"
                     value={formData.vencimiento}
                     onChange={handleInputChange}
-                    className="lotes-form-input"
+                    className={inputBase}
                   />
                 </div>
-                
-                <div className="lotes-form-group">
-                  <label className="lotes-form-label">Sucursal</label>
+                <div>
+                  <label className="mb-1 block text-sm font-medium text-menta-petroleo">Sucursal</label>
                   <select
                     name="almacén"
                     value={formData.almacén}
                     onChange={handleInputChange}
-                    className="lotes-form-input"
+                    className={inputBase}
                   >
                     <option value="">Seleccione sucursal</option>
                     {(Array.isArray(sucursales) ? sucursales : []).map((s) => (
@@ -326,49 +323,45 @@ const Lotes = () => {
                     ))}
                   </select>
                 </div>
-                
-                <div className="lotes-form-group">
-                  <label className="lotes-form-label">Estado</label>
+                <div>
+                  <label className="mb-1 block text-sm font-medium text-menta-petroleo">Estado</label>
                   <input
                     type="text"
                     name="estado"
                     value={formData.estado}
                     onChange={handleInputChange}
-                    className="lotes-form-input"
+                    className={inputBase}
                   />
                 </div>
-                
-                <div className="lotes-form-group">
-                  <label className="lotes-form-label">Stock</label>
+                <div>
+                  <label className="mb-1 block text-sm font-medium text-menta-petroleo">Stock</label>
                   <input
-                    type="text"
+                    type="number"
                     name="stock"
                     value={formData.stock}
                     onChange={handleInputChange}
-                    className="lotes-form-input"
+                    min="0"
+                    className={inputBase}
                   />
                 </div>
-                
-              
-                
-             
               </div>
-            </div>
-            
-            <div className="lotes-modal-footer">
-              <button 
-                className="lotes-btn-cancelar"
-                onClick={cerrarModal}
-              >
-                Cancelar
-              </button>
-              <button 
-                className="lotes-btn-guardar"
-                onClick={guardarLote}
-              >
-                {loteEditando ? 'Actualizar' : 'Guardar'}
-              </button>
-            </div>
+
+              <div className="mt-6 flex justify-end gap-2 border-t border-slate-200 pt-4">
+                <button
+                  type="button"
+                  onClick={cerrarModal}
+                  className="rounded-lg border border-slate-300 bg-white px-4 py-2.5 text-sm font-semibold text-slate-700 shadow-sm transition hover:bg-slate-50"
+                >
+                  Cancelar
+                </button>
+                <button
+                  type="submit"
+                  className="rounded-lg bg-menta-petroleo px-4 py-2.5 text-sm font-semibold text-white shadow-sm transition hover:bg-menta-marino"
+                >
+                  {loteEditando ? 'Actualizar' : 'Guardar'}
+                </button>
+              </div>
+            </form>
           </div>
         </div>
       )}

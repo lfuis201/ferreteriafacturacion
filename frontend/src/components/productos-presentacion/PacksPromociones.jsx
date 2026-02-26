@@ -1,9 +1,11 @@
 import React, { useEffect, useState } from 'react';
-import '../../styles/PacksPromociones.css';
+import { Package, Plus, Search, Pencil, Trash2, X } from 'lucide-react';
 import { listarProductosCompuestos, crearProductoCompuesto, actualizarProductoCompuesto, eliminarProductoCompuesto } from '../../services/productosCompuestosService';
 import { obtenerProductos } from '../../services/productoService';
 import { obtenerCategorias } from '../../services/categoriaService';
 import { obtenerSucursales, obtenerSucursalesPublico } from '../../services/sucursalService';
+
+const inputBase = 'w-full rounded-lg border border-slate-300 px-3 py-2.5 text-sm text-slate-900 shadow-sm transition placeholder:text-slate-400 focus:border-menta-turquesa focus:outline-none focus:ring-2 focus:ring-menta-turquesa';
 
 const PacksPromociones = () => {
   const [showModal, setShowModal] = useState(false);
@@ -214,161 +216,137 @@ const PacksPromociones = () => {
   };
 
   return (
-    <div className="packs-promociones-container">
-      <div className="packs-promociones-header">
-        <div className="packs-promociones-title">
-          <span className="packs-promociones-icon">📦</span>
-          <h1>PRODUCTOS</h1>
+    <div className="mx-auto max-w-7xl space-y-6">
+      <div className="flex flex-wrap items-center justify-between gap-4">
+        <div className="flex items-center gap-2">
+          <span className="flex h-11 w-11 items-center justify-center rounded-xl bg-menta-suave text-menta-petroleo">
+            <Package size={24} />
+          </span>
+          <h1 className="text-2xl font-semibold text-fondo">Packs y Promociones</h1>
         </div>
-        <div className="packs-promociones-actions">
-         
-          <button className="packs-promociones-btn-nuevo" onClick={() => setShowModal(true)}>
-            ⊕ Nuevo
-          </button>
-        
-        </div>
+        <button
+          type="button"
+          onClick={() => setShowModal(true)}
+          className="inline-flex items-center gap-2 rounded-xl bg-menta-petroleo px-4 py-2.5 text-sm font-medium text-white shadow-sm transition hover:bg-menta-marino"
+        >
+          <Plus size={18} /> Nuevo
+        </button>
       </div>
 
-      <div className="packs-promociones-section">
-        <div className="packs-promociones-section-header">
-          <h2>Productos compuestos</h2>
-       
-        </div>
-
-        <div className="packs-promociones-filters">
-          <input 
-            type="text" 
-            className="packs-promociones-filter-input"
+      <div className="rounded-xl border border-slate-200 bg-white p-4 shadow-sm">
+        <h2 className="mb-4 text-base font-semibold text-fondo">Productos compuestos</h2>
+        <div className="mb-4 flex flex-wrap items-center gap-2">
+          <input
+            type="text"
             placeholder="Nombre"
             value={filtroNombre}
             onChange={(e) => setFiltroNombre(e.target.value)}
+            className={`${inputBase} max-w-xs`}
           />
-         
-          <button className="packs-promociones-btn-buscar" onClick={async () => {
-            const lista = await listarProductosCompuestos({ nombre: filtroNombre });
-            setProductos(lista);
-          }}>🔍 Buscar</button>
+          <button
+            type="button"
+            onClick={async () => {
+              const lista = await listarProductosCompuestos({ nombre: filtroNombre });
+              setProductos(lista);
+            }}
+            className="inline-flex items-center gap-2 rounded-xl border border-slate-200 bg-white px-4 py-2.5 text-sm font-medium text-menta-petroleo transition hover:bg-slate-50"
+          >
+            <Search size={18} /> Buscar
+          </button>
         </div>
 
-        <div className="packs-promociones-table-wrapper">
-          <table className="packs-promociones-table">
-            <thead>
-              <tr>
-                <th>#</th>
-                <th>Cód. Interno</th>
-                <th>Unidad</th>
-                <th>Nombre</th>
-                <th>Descripción</th>
-                <th>Historial Ventas</th>
-                <th>P.Unitario (Venta)</th>
-                <th>Tiene Igv</th>
-                <th>Acciones</th>
-              </tr>
-            </thead>
-            <tbody>
-              {productos.length === 0 ? (
+        <div className="overflow-hidden rounded-xl border border-slate-200">
+          <div className="overflow-x-auto">
+            <table className="min-w-full divide-y divide-slate-200">
+              <thead className="bg-slate-50">
                 <tr>
-                  <td colSpan="9" className="packs-promociones-empty">
-                    Total 0
-                  </td>
+                  <th className="px-4 py-3 text-left text-xs font-semibold uppercase tracking-wider text-menta-petroleo">#</th>
+                  <th className="px-4 py-3 text-left text-xs font-semibold uppercase tracking-wider text-menta-petroleo">Cód. Interno</th>
+                  <th className="px-4 py-3 text-left text-xs font-semibold uppercase tracking-wider text-menta-petroleo">Unidad</th>
+                  <th className="px-4 py-3 text-left text-xs font-semibold uppercase tracking-wider text-menta-petroleo">Nombre</th>
+                  <th className="px-4 py-3 text-left text-xs font-semibold uppercase tracking-wider text-menta-petroleo">Descripción</th>
+                  <th className="px-4 py-3 text-left text-xs font-semibold uppercase tracking-wider text-menta-petroleo">Historial Ventas</th>
+                  <th className="px-4 py-3 text-left text-xs font-semibold uppercase tracking-wider text-menta-petroleo">P.Unitario (Venta)</th>
+                  <th className="px-4 py-3 text-left text-xs font-semibold uppercase tracking-wider text-menta-petroleo">Tiene Igv</th>
+                  <th className="px-4 py-3 text-right text-xs font-semibold uppercase tracking-wider text-menta-petroleo">Acciones</th>
                 </tr>
-              ) : (
-                productos.map((producto, index) => (
-                  <tr key={index}>
-                    <td>{index + 1}</td>
-                    <td>{producto.codigoInterno}</td>
-                    <td>{producto.unidad}</td>
-                    <td>{producto.nombre}</td>
-                    <td>{producto.descripcion}</td>
-                    <td>-</td>
-                    <td>{producto.precioUnitarioVenta}</td>
-                    <td>{(producto.tipoAfectacion || '').toLowerCase().includes('gravado') ? 'Sí' : 'No'}</td>
-                    <td>
-                      <button type="button" className="packs-promociones-btn-delete" onClick={() => abrirEdicion(producto)}>✎</button>
-                      <button type="button" className="packs-promociones-btn-delete" style={{ marginLeft: 8 }} onClick={() => borrarProducto(producto.id)}>🗑️</button>
+              </thead>
+              <tbody className="divide-y divide-slate-200 bg-white">
+                {productos.length === 0 ? (
+                  <tr>
+                    <td colSpan={9} className="px-4 py-12 text-center text-sm text-menta-petroleo">
+                      Total 0
                     </td>
                   </tr>
-                ))
-              )}
-            </tbody>
-          </table>
-          <div className="packs-promociones-pagination">
-            <button className="packs-promociones-page-btn">‹</button>
-            <button className="packs-promociones-page-btn packs-promociones-active">1</button>
-            <button className="packs-promociones-page-btn">›</button>
+                ) : (
+                  productos.map((producto, index) => (
+                    <tr key={producto.id ?? index} className="transition-colors hover:bg-slate-50/80">
+                      <td className="whitespace-nowrap px-4 py-3 text-sm text-menta-marino">{index + 1}</td>
+                      <td className="whitespace-nowrap px-4 py-3 text-sm text-menta-marino">{producto.codigoInterno}</td>
+                      <td className="whitespace-nowrap px-4 py-3 text-sm text-menta-marino">{producto.unidad}</td>
+                      <td className="whitespace-nowrap px-4 py-3 font-medium text-fondo">{producto.nombre}</td>
+                      <td className="max-w-[200px] truncate px-4 py-3 text-sm text-menta-marino">{producto.descripcion}</td>
+                      <td className="whitespace-nowrap px-4 py-3 text-sm text-menta-marino">-</td>
+                      <td className="whitespace-nowrap px-4 py-3 text-sm text-menta-marino">{producto.precioUnitarioVenta}</td>
+                      <td className="whitespace-nowrap px-4 py-3 text-sm text-menta-marino">{(producto.tipoAfectacion || '').toLowerCase().includes('gravado') ? 'Sí' : 'No'}</td>
+                      <td className="whitespace-nowrap px-4 py-3 text-right">
+                        <div className="flex items-center justify-end gap-1">
+                          <button type="button" onClick={() => abrirEdicion(producto)} className="rounded-lg p-2 text-slate-500 transition hover:bg-menta-claro hover:text-menta-petroleo" title="Editar">
+                            <Pencil size={18} />
+                          </button>
+                          <button type="button" onClick={() => borrarProducto(producto.id)} className="rounded-lg p-2 text-slate-500 transition hover:bg-red-50 hover:text-red-600" title="Eliminar">
+                            <Trash2 size={18} />
+                          </button>
+                        </div>
+                      </td>
+                    </tr>
+                  ))
+                )}
+              </tbody>
+            </table>
+          </div>
+          <div className="flex items-center justify-between border-t border-slate-200 bg-slate-50/80 px-4 py-3">
+            <span className="text-sm text-menta-petroleo">Total: {productos.length}</span>
           </div>
         </div>
       </div>
 
-      {/* Modal Nuevo Producto */}
       {showModal && (
-        <div className="packs-promociones-modal-overlay" onClick={() => setShowModal(false)}>
-          <div className="packs-promociones-modal" onClick={(e) => e.stopPropagation()}>
-            <div className="packs-promociones-modal-header">
-              <h2>Nuevo producto compuesto</h2>
-              <button 
-                className="packs-promociones-modal-close"
-                onClick={() => setShowModal(false)}
-              >
-                ×
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 p-4" onClick={() => setShowModal(false)}>
+          <div className="max-h-[90vh] w-full max-w-2xl overflow-y-auto rounded-xl border border-slate-200 bg-white shadow-xl" onClick={(e) => e.stopPropagation()}>
+            <div className="sticky top-0 flex items-center justify-between border-b border-slate-200 bg-white px-5 py-4">
+              <h2 className="text-lg font-semibold text-fondo">{isEditing ? 'Editar producto compuesto' : 'Nuevo producto compuesto'}</h2>
+              <button type="button" onClick={() => setShowModal(false)} className="rounded-lg p-2 text-slate-500 transition hover:bg-slate-100 hover:text-slate-700">
+                <X size={20} />
               </button>
             </div>
 
-            <form onSubmit={handleSubmit} className="packs-promociones-modal-body">
-              <div className="packs-promociones-form-section">
-                <div className="packs-promociones-form-row-2">
-                  <div className="packs-promociones-form-group">
-                    <label>
-                      Nombre <span className="packs-promociones-required">*</span>
-                    </label>
-                    <input 
-                      type="text"
-                      value={formData.nombre}
-                      onChange={(e) => setFormData({...formData, nombre: e.target.value})}
-                      className="packs-promociones-input"
-                      required
-                    />
+            <form onSubmit={handleSubmit} className="p-5">
+              <div className="space-y-4">
+                <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
+                  <div>
+                    <label className="mb-1 block text-sm font-medium text-menta-petroleo">Nombre *</label>
+                    <input type="text" value={formData.nombre} onChange={(e) => setFormData({ ...formData, nombre: e.target.value })} className={inputBase} required />
                   </div>
-
-                  <div className="packs-promociones-form-group">
-                    <label>Nombre secundario</label>
-                    <input 
-                      type="text"
-                      value={formData.nombreSecundario}
-                      onChange={(e) => setFormData({...formData, nombreSecundario: e.target.value})}
-                      className="packs-promociones-input"
-                    />
+                  <div>
+                    <label className="mb-1 block text-sm font-medium text-menta-petroleo">Nombre secundario</label>
+                    <input type="text" value={formData.nombreSecundario} onChange={(e) => setFormData({ ...formData, nombreSecundario: e.target.value })} className={inputBase} />
                   </div>
                 </div>
 
-                <div className="packs-promociones-form-row-3">
-                  <div className="packs-promociones-form-group">
-                    <label>Descripción</label>
-                    <textarea 
-                      value={formData.descripcion}
-                      onChange={(e) => setFormData({...formData, descripcion: e.target.value})}
-                      className="packs-promociones-textarea"
-                      rows="3"
-                    />
-                  </div>
+                <div>
+                  <label className="mb-1 block text-sm font-medium text-menta-petroleo">Descripción</label>
+                  <textarea value={formData.descripcion} onChange={(e) => setFormData({ ...formData, descripcion: e.target.value })} rows={3} className={inputBase} />
+                </div>
 
-                  <div className="packs-promociones-form-group">
-                    <label>Modelo</label>
-                    <input 
-                      type="text"
-                      value={formData.modelo}
-                      onChange={(e) => setFormData({...formData, modelo: e.target.value})}
-                      className="packs-promociones-input"
-                    />
+                <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
+                  <div>
+                    <label className="mb-1 block text-sm font-medium text-menta-petroleo">Modelo</label>
+                    <input type="text" value={formData.modelo} onChange={(e) => setFormData({ ...formData, modelo: e.target.value })} className={inputBase} />
                   </div>
-
-                  <div className="packs-promociones-form-group">
-                    <label>Unidad</label>
-                    <select 
-                      value={formData.unidad}
-                      onChange={(e) => setFormData({...formData, unidad: e.target.value})}
-                      className="packs-promociones-select"
-                    >
+                  <div>
+                    <label className="mb-1 block text-sm font-medium text-menta-petroleo">Unidad</label>
+                    <select value={formData.unidad} onChange={(e) => setFormData({ ...formData, unidad: e.target.value })} className={inputBase}>
                       <option value="Unidad">Unidad</option>
                       <option value="Caja">Caja</option>
                       <option value="Paquete">Paquete</option>
@@ -376,42 +354,21 @@ const PacksPromociones = () => {
                   </div>
                 </div>
 
-                <div className="packs-promociones-form-row-4">
-                  <div className="packs-promociones-form-group">
-                    <label>Moneda</label>
-                    <select 
-                      value={formData.moneda}
-                      onChange={(e) => setFormData({...formData, moneda: e.target.value})}
-                      className="packs-promociones-select"
-                    >
+                <div className="grid grid-cols-1 gap-4 sm:grid-cols-3">
+                  <div>
+                    <label className="mb-1 block text-sm font-medium text-menta-petroleo">Moneda</label>
+                    <select value={formData.moneda} onChange={(e) => setFormData({ ...formData, moneda: e.target.value })} className={inputBase}>
                       <option value="Soles">Soles</option>
                       <option value="Dólares">Dólares</option>
                     </select>
                   </div>
-
-                  <div className="packs-promociones-form-group">
-                    <label>
-                      Precio Unitario (Venta) <span className="packs-promociones-required">*</span>
-                    </label>
-                    <input 
-                      type="number"
-                      step="0.01"
-                      value={formData.precioUnitarioVenta}
-                      onChange={(e) => setFormData({...formData, precioUnitarioVenta: e.target.value})}
-                      className="packs-promociones-input"
-                      required
-                    />
+                  <div>
+                    <label className="mb-1 block text-sm font-medium text-menta-petroleo">Precio Unitario (Venta) *</label>
+                    <input type="number" step="0.01" value={formData.precioUnitarioVenta} onChange={(e) => setFormData({ ...formData, precioUnitarioVenta: e.target.value })} className={inputBase} required />
                   </div>
-
-              
-
-                  <div className="packs-promociones-form-group">
-                    <label>Sucursal</label>
-                    <select 
-                      value={formData.sucursalId}
-                      onChange={(e) => setFormData({...formData, sucursalId: e.target.value})}
-                      className="packs-promociones-select"
-                    >
+                  <div>
+                    <label className="mb-1 block text-sm font-medium text-menta-petroleo">Sucursal</label>
+                    <select value={formData.sucursalId} onChange={(e) => setFormData({ ...formData, sucursalId: e.target.value })} className={inputBase}>
                       <option value="">Seleccionar</option>
                       {sucursales.map((s) => (
                         <option key={s.id} value={s.id}>{s.nombre}</option>
@@ -420,57 +377,37 @@ const PacksPromociones = () => {
                   </div>
                 </div>
 
-                {/* Botón Agregar Productos */}
-                <button 
-                  type="button"
-                  onClick={agregarProducto}
-                  className="packs-promociones-btn-agregar-productos"
-                >
-                  + Agregar productos
+                <button type="button" onClick={agregarProducto} className="inline-flex items-center gap-2 rounded-lg border border-slate-200 bg-white px-4 py-2 text-sm font-medium text-menta-petroleo transition hover:bg-menta-claro">
+                  <Plus size={18} /> Agregar productos
                 </button>
 
-                {/* Tabla de Productos Asociados */}
                 {formData.productosAsociados.length > 0 && (
-                  <div className="packs-promociones-productos-section">
-                    <table className="packs-promociones-productos-table">
-                      <thead>
+                  <div className="overflow-hidden rounded-lg border border-slate-200">
+                    <table className="min-w-full divide-y divide-slate-200">
+                      <thead className="bg-slate-50">
                         <tr>
-                          <th>Producto</th>
-                          <th>Cantidad</th>
-                          <th></th>
+                          <th className="px-3 py-2 text-left text-xs font-semibold text-menta-petroleo">Producto</th>
+                          <th className="px-3 py-2 text-left text-xs font-semibold text-menta-petroleo">Cantidad</th>
+                          <th className="px-3 py-2 w-12" />
                         </tr>
                       </thead>
-                      <tbody>
+                      <tbody className="divide-y divide-slate-200 bg-white">
                         {formData.productosAsociados.map((producto, index) => (
                           <tr key={index}>
-                            <td>
-                              <select 
-                                value={producto.productoId}
-                                onChange={(e) => handleProductoChange(index, 'productoId', e.target.value)}
-                                className="packs-promociones-select-table"
-                              >
+                            <td className="px-3 py-2">
+                              <select value={producto.productoId} onChange={(e) => handleProductoChange(index, 'productoId', e.target.value)} className={inputBase}>
                                 <option value="">Seleccionar producto</option>
                                 {productosDisponibles.map(p => (
                                   <option key={p.id} value={p.id}>{p.nombre}</option>
                                 ))}
                               </select>
                             </td>
-                            <td>
-                              <input 
-                                type="number"
-                                min="1"
-                                value={producto.cantidad}
-                                onChange={(e) => handleProductoChange(index, 'cantidad', e.target.value)}
-                                className="packs-promociones-input-table"
-                              />
+                            <td className="px-3 py-2">
+                              <input type="number" min={1} value={producto.cantidad} onChange={(e) => handleProductoChange(index, 'cantidad', e.target.value)} className={`${inputBase} w-24`} />
                             </td>
-                            <td>
-                              <button 
-                                type="button"
-                                onClick={() => eliminarProducto(index)}
-                                className="packs-promociones-btn-delete"
-                              >
-                                🗑️
+                            <td className="px-3 py-2">
+                              <button type="button" onClick={() => eliminarProducto(index)} className="rounded-lg p-2 text-slate-500 transition hover:bg-red-50 hover:text-red-600">
+                                <Trash2 size={18} />
                               </button>
                             </td>
                           </tr>
@@ -481,14 +418,13 @@ const PacksPromociones = () => {
                 )}
 
                 {/* Campos Adicionales */}
-                <div className="packs-promociones-campos-adicionales">
-                  <h3>Campos adicionales</h3>
-                  
-                  <div className="packs-promociones-form-row-imagen"> 
+                <div className="border-t border-slate-200 pt-4">
+                  <h3 className="mb-3 text-sm font-semibold text-fondo">Campos adicionales</h3>
+                  <div> 
 
 
  {/* 
-                    <div className="packs-promociones-form-group">
+                    <div className="space-y-1">
                       <label>Imagen</label>
                       <div className="packs-promociones-imagen-upload">
                         <input 
@@ -512,13 +448,13 @@ const PacksPromociones = () => {
 
 
 
-                    <div className="packs-promociones-form-group-flex">
-                      <div className="packs-promociones-form-group">
+                    <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
+                      <div className="space-y-1">
                         <label>Tipo de afectación (Venta)</label>
                         <select 
                           value={formData.tipoAfectacion}
                           onChange={(e) => setFormData({...formData, tipoAfectacion: e.target.value})}
-                          className="packs-promociones-select"
+                          className={inputBase}
                         >
                           <option value="Gravado - Operación Onerosa">Gravado - Operación Onerosa</option>
                           <option value="Exonerado">Exonerado</option>
@@ -526,7 +462,7 @@ const PacksPromociones = () => {
                         </select>
                       </div>
 
-                      <div className="packs-promociones-form-group">
+                      <div className="space-y-1">
                         <label>
                           Código Sunat <span className="packs-promociones-info-icon">ⓘ</span>
                         </label>
@@ -534,14 +470,14 @@ const PacksPromociones = () => {
                           type="text"
                           value={formData.codigoSunat}
                           onChange={(e) => setFormData({...formData, codigoSunat: e.target.value})}
-                          className="packs-promociones-input"
+                          className={inputBase}
                         />
                       </div>
                     </div>
                   </div>
 
-                  <div className="packs-promociones-form-row-4">
-                    <div className="packs-promociones-form-group">
+                  <div className="mt-4 grid grid-cols-1 gap-4 sm:grid-cols-3">
+                    <div className="space-y-1">
                       <label>
                         Código interno <span className="packs-promociones-info-icon">ⓘ</span>
                       </label>
@@ -549,11 +485,11 @@ const PacksPromociones = () => {
                         type="text"
                         value={formData.codigoInterno}
                         onChange={(e) => setFormData({...formData, codigoInterno: e.target.value})}
-                        className="packs-promociones-input"
+                        className={inputBase}
                       />
                     </div>
 
-                    <div className="packs-promociones-form-group">
+                    <div className="space-y-1">
                       <label>
                         Total P. Compra (Referencia) <span className="packs-promociones-info-icon">ⓘ</span>
                       </label>
@@ -562,11 +498,11 @@ const PacksPromociones = () => {
                         step="0.01"
                         value={formData.totalPCompra}
                         onChange={(e) => setFormData({...formData, totalPCompra: e.target.value})}
-                        className="packs-promociones-input"
+                        className={inputBase}
                       />
                     </div>
 
-                    <div className="packs-promociones-form-group">
+                    <div className="space-y-1">
                       <label>
                         Precio Unitario (Compra) <span className="packs-promociones-required">*</span>
                       </label>
@@ -575,18 +511,18 @@ const PacksPromociones = () => {
                         step="0.01"
                         value={formData.precioUnitarioCompra}
                         onChange={(e) => setFormData({...formData, precioUnitarioCompra: e.target.value})}
-                        className="packs-promociones-input"
+                        className={inputBase}
                         required
                       />
                     </div>
                   </div>
 
-                  <div className="packs-promociones-form-row-2">
+                  <div className="hidden">
 
 
 
 {/*
-                    <div className="packs-promociones-form-group">
+                    <div className="space-y-1">
                       <label>
                         Categoría
                         
@@ -594,7 +530,7 @@ const PacksPromociones = () => {
                       <select 
                         value={formData.categoria}
                         onChange={(e) => setFormData({...formData, categoria: e.target.value})}
-                        className="packs-promociones-select"
+                        className={inputBase}
                       >
                         <option value="">Seleccionar</option>
                         {categorias.map(c => (
@@ -606,7 +542,7 @@ const PacksPromociones = () => {
 
 
 {/*
-                    <div className="packs-promociones-form-group">
+                    <div className="space-y-1">
                       <label>
                         Marca
                       
@@ -614,7 +550,7 @@ const PacksPromociones = () => {
                       <select 
                         value={formData.marca}
                         onChange={(e) => setFormData({...formData, marca: e.target.value})}
-                        className="packs-promociones-select"
+                        className={inputBase}
                       >
                         <option value="">Seleccionar</option>
                         {marcas.map(m => (
@@ -632,19 +568,12 @@ const PacksPromociones = () => {
                 </div>
               </div>
 
-              <div className="packs-promociones-modal-footer">
-                <button 
-                  type="button"
-                  onClick={() => setShowModal(false)}
-                  className="packs-promociones-btn-cancelar"
-                >
+              <div className="mt-6 flex justify-end gap-2 border-t border-slate-200 pt-4">
+                <button type="button" onClick={() => setShowModal(false)} className="rounded-lg border border-slate-300 bg-white px-4 py-2.5 text-sm font-semibold text-slate-700 shadow-sm transition hover:bg-slate-50">
                   Cancelar
                 </button>
-                <button 
-                  type="submit"
-                  className="packs-promociones-btn-guardar"
-                >
-                  Guardar
+                <button type="submit" className="rounded-lg bg-menta-petroleo px-4 py-2.5 text-sm font-semibold text-white shadow-sm transition hover:bg-menta-marino">
+                  {isEditing ? 'Actualizar' : 'Guardar'}
                 </button>
               </div>
             </form>

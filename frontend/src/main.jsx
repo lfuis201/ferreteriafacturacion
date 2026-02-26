@@ -2,7 +2,8 @@ import React from 'react';
 import ReactDOM from 'react-dom/client';
 import { BrowserRouter } from 'react-router-dom';
 import App from './App';
-//import './styles/global.css'; // Si tienes un CSS global
+import './styles/tailwind.css'; /* Tailwind: clases como flex, p-4, bg-blue-500, etc. */
+// import './styles/global.css'; // Si tienes un CSS global
 
 ReactDOM.createRoot(document.getElementById('root')).render(
   <React.StrictMode>

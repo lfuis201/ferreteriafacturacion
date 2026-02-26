@@ -1,5 +1,4 @@
 import React, { useState, useEffect } from "react";
-import "../../styles/FormularioVenta.css";
 import { productoService } from "../../services/productoService";
 import { clienteService } from "../../services/clienteService";
 import { ventaService, generarPdfVenta } from "../../services/ventaService";
@@ -20,9 +19,24 @@ import {
   X,
   HelpCircle,
   Truck,
+  ShoppingCart,
+  User,
+  Settings,
+  DollarSign,
+  Building,
+  RefreshCcw,
+  Search,
+  CheckCircle,
+  XCircle,
+  Hash,
+  Briefcase,
+  Layers,
+  Save,
+  Trash2,
+  Info
 } from "lucide-react";
 
-function FormularioVenta({ onVentaCreada, onCancelar }) {
+const FormularioVenta = ({ onVentaCreada, onCancelar }) => {
   const [loading, setLoading] = useState(false);
   const [productos, setProductos] = useState([]);
   const [clientes, setClientes] = useState([]);
@@ -35,8 +49,7 @@ function FormularioVenta({ onVentaCreada, onCancelar }) {
   const [mostrarSugerencias, setMostrarSugerencias] = useState(false);
   const [mostrarModalProducto, setMostrarModalProducto] = useState(false);
   const [mostrarModalCliente, setMostrarModalCliente] = useState(false);
-  const [mostrarModalHistorialCliente, setMostrarModalHistorialCliente] =
-    useState(false);
+  const [mostrarModalHistorialCliente, setMostrarModalHistorialCliente] = useState(false);
   const [mostrarModalAparcar, setMostrarModalAparcar] = useState(false);
   const [modoModalAparcar, setModoModalAparcar] = useState("aparcar");
   const [showPreviewVenta, setShowPreviewVenta] = useState(false);
@@ -58,7 +71,7 @@ function FormularioVenta({ onVentaCreada, onCancelar }) {
     tipoOperacion: "Venta interna",
     tipoDocumento: "FACTURA",
     placaVehiculo: "",
-    tipoCambio: "3.534",
+    tipoCambio: "3.848",
     tipoGravado: "1",
     tipoVenta: "01",
     direccion: "",
@@ -71,7 +84,6 @@ function FormularioVenta({ onVentaCreada, onCancelar }) {
     total: 0,
   });
 
-  // Función para resetear el formulario
   const resetearFormulario = () => {
     setFormData({
       clienteId: "",
@@ -88,7 +100,7 @@ function FormularioVenta({ onVentaCreada, onCancelar }) {
       tipoOperacion: "Venta interna",
       tipoDocumento: "FACTURA",
       placaVehiculo: "",
-      tipoCambio: "3.534",
+      tipoCambio: "3.848",
       tipoGravado: "1",
       tipoVenta: "01",
       direccion: "",
@@ -99,47 +111,33 @@ function FormularioVenta({ onVentaCreada, onCancelar }) {
     setMostrarSugerencias(false);
   };
 
-  // Cargar datos iniciales
   useEffect(() => {
-    const cargarDatos = async () => {
-      try {
-        setLoading(true);
-        const [productosData, clientesData] = await Promise.all([
-          productoService.obtenerProductos(),
-          clienteService.obtenerClientes(),
-        ]);
-        setProductos(productosData.productos || []);
-        setClientes(clientesData.clientes || []);
-      } catch (error) {
-        // console.error("Error al cargar datos:", error);
-      } finally {
-        setLoading(false);
-      }
-    };
     cargarDatos();
   }, []);
 
-  // Obtener usuario actual y establecer sucursalId
+  const cargarDatos = async () => {
+    try {
+      setLoading(true);
+      const [productosData, clientesData] = await Promise.all([
+        productoService.obtenerProductos(),
+        clienteService.obtenerClientes(),
+      ]);
+      setProductos(productosData.productos || []);
+      setClientes(clientesData.clientes || []);
+    } catch (error) {
+      console.error("Error al cargar datos:", error);
+    } finally {
+      setLoading(false);
+    }
+  };
+
   useEffect(() => {
     const usuarioGuardado = localStorage.getItem("usuario");
     if (usuarioGuardado) {
       const usuario = JSON.parse(usuarioGuardado);
-      if (usuario.sucursalId) {
-        setFormData((prev) => ({
-          ...prev,
-          sucursalId: usuario.sucursalId,
-        }));
-      } else {
-        setFormData((prev) => ({
-          ...prev,
-          sucursalId: 1,
-        }));
-      }
+      setFormData(prev => ({ ...prev, sucursalId: usuario.sucursalId || 1 }));
     } else {
-      setFormData((prev) => ({
-        ...prev,
-        sucursalId: 1,
-      }));
+      setFormData(prev => ({ ...prev, sucursalId: 1 }));
     }
   }, []);
 
@@ -149,16 +147,9 @@ function FormularioVenta({ onVentaCreada, onCancelar }) {
 
   useEffect(() => {
     if (busquedaProducto.length > 0) {
-      const filtrados = productos.filter(
-        (producto) =>
-          (producto.nombre &&
-            producto.nombre
-              .toLowerCase()
-              .includes(busquedaProducto.toLowerCase())) ||
-          (producto.codigo &&
-            producto.codigo
-              .toLowerCase()
-              .includes(busquedaProducto.toLowerCase()))
+      const filtrados = productos.filter(p =>
+        p.nombre?.toLowerCase().includes(busquedaProducto.toLowerCase()) ||
+        p.codigo?.toLowerCase().includes(busquedaProducto.toLowerCase())
       );
       setProductosFiltrados(filtrados);
       setMostrarSugerencias(true);
@@ -168,7 +159,6 @@ function FormularioVenta({ onVentaCreada, onCancelar }) {
     }
   }, [busquedaProducto, productos]);
 
-  // Generar número de comprobante automáticamente
   useEffect(() => {
     const generarNumeroComprobante = async () => {
       if (formData.serieComprobante && formData.sucursalId) {
@@ -177,215 +167,111 @@ function FormularioVenta({ onVentaCreada, onCancelar }) {
             formData.serieComprobante,
             formData.sucursalId
           );
-          setFormData((prev) => ({
-            ...prev,
-            numeroComprobante: response.siguienteNumero,
-          }));
+          setFormData(prev => ({ ...prev, numeroComprobante: response.siguienteNumero }));
         } catch (error) {
-          setFormData((prev) => ({
-            ...prev,
-            numeroComprobante: "000001",
-          }));
+          setFormData(prev => ({ ...prev, numeroComprobante: "000001" }));
         }
       }
     };
-
     generarNumeroComprobante();
   }, [formData.serieComprobante, formData.sucursalId]);
 
   const calcularTotales = () => {
-    const subtotal = detalles.reduce(
-      (sum, detalle) => sum + detalle.subtotal,
-      0
-    );
-    const igv = subtotal * 0.18;
-    const total = subtotal + igv;
+    const totalVenta = detalles.reduce((sum, d) => sum + (parseFloat(d.subtotal) || 0), 0);
+    const subtotalVenta = totalVenta / 1.18;
+    const igvVenta = totalVenta - subtotalVenta;
 
     setTotales({
-      subtotal: parseFloat(subtotal.toFixed(2)),
-      igv: parseFloat(igv.toFixed(2)),
-      total: parseFloat(total.toFixed(2)),
+      subtotal: parseFloat(subtotalVenta.toFixed(2)),
+      igv: parseFloat(igvVenta.toFixed(2)),
+      total: parseFloat(totalVenta.toFixed(2)),
     });
-  };
-
-  const validarPlacaVehiculo = (placa) => {
-    if (!placa) return true;
-    const patron = /^[A-Z0-9]{3}-?[A-Z0-9]{3}$/;
-    return patron.test(placa);
   };
 
   const handleInputChange = (e) => {
     const { name, value } = e.target;
-
     if (name === "clienteId" && value) {
-      const clienteSeleccionado = clientes.find(
-        (cliente) => cliente.id === parseInt(value)
-      );
-      if (clienteSeleccionado) {
-        setFormData((prev) => ({
-          ...prev,
-          [name]: value,
-          direccion: clienteSeleccionado.direccion || "",
-        }));
+      const c = clientes.find(cliente => cliente.id === parseInt(value));
+      if (c) {
+        setFormData(prev => ({ ...prev, [name]: value, direccion: c.direccion || "" }));
         return;
       }
     }
-
     if (name === "tipoComprobante") {
-      let nuevaSerie = "";
-      if (value === "FACTURA") {
-        nuevaSerie = "FTR1";
-      } else if (value === "BOLETA") {
-        nuevaSerie = "BLT1";
-      }
-
-      setFormData((prev) => ({
-        ...prev,
-        [name]: value,
-        serieComprobante: nuevaSerie,
-      }));
+      let serie = value === "FACTURA" ? "FTR1" : "BLT1";
+      setFormData(prev => ({ ...prev, [name]: value, serieComprobante: serie }));
       return;
     }
-
-    setFormData((prev) => ({ ...prev, [name]: value }));
+    setFormData(prev => ({ ...prev, [name]: value }));
   };
 
   const agregarProducto = (producto) => {
-    const productoExistente = detalles.find(
-      (d) => d.productoId === producto.id
-    );
-
-    if (productoExistente) {
-      setDetalles((prev) =>
-        prev.map((d) =>
-          d.productoId === producto.id
-            ? {
-                ...d,
-                cantidad: d.cantidad + 1,
-                subtotal: (d.cantidad + 1) * d.precioUnitario,
-              }
-            : d
-        )
-      );
+    const existente = detalles.find(d => d.productoId === producto.id);
+    if (existente) {
+      setDetalles(prev => prev.map(d =>
+        d.productoId === producto.id
+          ? { ...d, cantidad: d.cantidad + 1, subtotal: (d.cantidad + 1) * d.precioUnitario }
+          : d
+      ));
     } else {
-      const cantidadInicial = parseFloat(producto.cantidadSeleccionada || 1);
-      const precioInicial = parseFloat(producto.precioVenta);
-      const nuevoDetalle = {
+      const precio = parseFloat(producto.precioVenta || 0);
+      setDetalles(prev => [...prev, {
         productoId: producto.id,
         producto: producto,
-        cantidad: cantidadInicial,
-        precioUnitario: precioInicial,
-        subtotal: cantidadInicial * precioInicial,
-        unidad: producto.unidadSeleccionada || "Servicio",
-      };
-      setDetalles((prev) => [...prev, nuevoDetalle]);
+        cantidad: 1,
+        precioUnitario: precio,
+        subtotal: precio,
+        unidad: producto.unidadMedida || "UND",
+      }]);
     }
-
     setBusquedaProducto("");
     setMostrarSugerencias(false);
   };
 
   const actualizarDetalle = (index, campo, valor) => {
-    setDetalles((prev) =>
-      prev.map((detalle, i) => {
-        if (i === index) {
-          const nuevoDetalle = { ...detalle, [campo]: parseFloat(valor) || 0 };
-          if (campo === "cantidad" || campo === "precioUnitario") {
-            nuevoDetalle.subtotal =
-              nuevoDetalle.cantidad * nuevoDetalle.precioUnitario;
-          }
-          return nuevoDetalle;
+    setDetalles(prev => prev.map((d, i) => {
+      if (i === index) {
+        let actual = { ...d, [campo]: parseFloat(valor) || 0 };
+        if (campo === "cantidad" || campo === "precioUnitario") {
+          actual.subtotal = actual.cantidad * actual.precioUnitario;
         }
-        return detalle;
-      })
-    );
+        return actual;
+      }
+      return d;
+    }));
   };
 
   const eliminarDetalle = (index) => {
-    setDetalles((prev) => prev.filter((_, i) => i !== index));
+    setDetalles(prev => prev.filter((_, i) => i !== index));
   };
 
-  const handleSubmit = async (e) => {
-    e.preventDefault();
-
+  const handleSubmit = async () => {
     if (detalles.length === 0) {
-      Swal.fire({
-        icon: "warning",
-        title: "Advertencia",
-        text: "Debe agregar al menos un producto",
-        confirmButtonColor: "#3085d6",
-      });
+      Swal.fire("¡Atención!", "Debe agregar al menos un producto", "warning");
       return;
     }
-
     setLoading(true);
-
     try {
-      const ventaData = {
+      const payload = {
         ...formData,
-        clienteId:
-          formData.clienteId === "" ? null : parseInt(formData.clienteId),
+        clienteId: formData.clienteId ? parseInt(formData.clienteId) : null,
         sucursalId: parseInt(formData.sucursalId),
-        numeroComprobante:
-          formData.numeroComprobante === ""
-            ? "000001"
-            : formData.numeroComprobante,
-        observacion: formData.observacion === "" ? null : formData.observacion,
-        fechaVenta: undefined,
-        detalles: detalles.map((detalle) => ({
-          productoId: parseInt(detalle.productoId),
-          cantidad: parseFloat(detalle.cantidad),
-          precioUnitario: parseFloat(detalle.precioUnitario),
-          subtotal: parseFloat(detalle.subtotal),
+        detalles: detalles.map(d => ({
+          productoId: parseInt(d.productoId),
+          cantidad: parseFloat(d.cantidad),
+          precioUnitario: parseFloat(d.precioUnitario),
+          subtotal: parseFloat(d.subtotal),
         })),
-        total: parseFloat(totales.total),
-        subtotal: parseFloat(totales.subtotal),
-        igv: parseFloat(totales.igv),
+        total: totales.total,
+        subtotal: totales.subtotal,
+        igv: totales.igv,
       };
-
-      const response = await ventaService.crearVenta(ventaData);
-      const info = response?.venta || response?.data?.venta || response;
-
-      // Generar PDF en A4 y mostrar previsualización
-      try {
-        const blob = await generarPdfVenta(info.id, "A4");
-        const url = window.URL.createObjectURL(blob);
-        setPreviewVentaPdfUrl(url);
-        setVentaGuardadaInfo({
-          id: info.id,
-          serieComprobante: info.serieComprobante,
-          numeroComprobante: info.numeroComprobante,
-        });
-        setShowPreviewVenta(true);
-      } catch (pdfError) {
-        console.error("No se pudo generar el PDF de la venta:", pdfError);
-      }
-
-      if (onVentaCreada) {
-        onVentaCreada(response.data);
-      }
-
-      Swal.fire({
-        icon: "success",
-        title: "¡Éxito!",
-        text: "Venta creada exitosamente",
-        confirmButtonColor: "#28a745",
-      });
-
+      await ventaService.crearVenta(payload);
+      Swal.fire("¡Éxito!", "Venta registrada satisfactoriamente", "success");
       resetearFormulario();
+      onVentaCreada?.();
     } catch (error) {
-      const mensajeError =
-        error?.response?.data?.mensaje ??
-        error?.response?.data?.error ??
-        error?.message ??
-        "Error al crear la venta. Intente nuevamente.";
-
-      Swal.fire({
-        icon: "error",
-        title: "Error",
-        text: mensajeError,
-        confirmButtonColor: "#dc3545",
-      });
+      Swal.fire("Error", "No se pudo procesar la venta.", "error");
     } finally {
       setLoading(false);
     }
@@ -396,402 +282,330 @@ function FormularioVenta({ onVentaCreada, onCancelar }) {
     setMostrarModalProducto(false);
   };
 
-  const handleNuevoCliente = () => {
-    setMostrarModalCliente(true);
+  const handleRestaurarVenta = (datos) => {
+    setFormData(prev => ({ ...prev, ...datos.formData }));
+    setDetalles(datos.detalles);
+    setMostrarModalAparcar(false);
   };
 
-  const handleClienteCreado = (nuevoCliente) => {
-    setClientes((prev) => [nuevoCliente, ...prev]);
-    setFormData((prev) => ({
-      ...prev,
-      clienteId: nuevoCliente.id,
-      direccion: nuevoCliente.direccion || "",
-    }));
-  };
-
-  const handleAparcarVenta = (ventaAparcada) => {
-    resetearFormulario();
-  };
-
-  const handleRestaurarVenta = (datosVenta) => {
-    try {
-      console.log("Datos recibidos para restaurar:", datosVenta);
-
-      if (!datosVenta || !datosVenta.formData) {
-        throw new Error("Estructura de datos inválida");
-      }
-
-      setFormData({
-        ...datosVenta.formData,
-        fechaVenta: new Date().toISOString().split("T")[0],
-        fechaVencimiento: new Date().toISOString().split("T")[0],
-      });
-
-      if (datosVenta.detalles && datosVenta.detalles.length > 0) {
-        setDetalles(datosVenta.detalles);
-        setTimeout(() => calcularTotales(), 100);
-      } else {
-        setDetalles([]);
-      }
-
-      Swal.fire({
-        icon: "success",
-        title: "Éxito",
-        text: "Venta restaurada exitosamente",
-        confirmButtonColor: "#28a745",
-        timer: 2000,
-        showConfirmButton: false,
-      });
-
-      console.log("Venta restaurada exitosamente");
-    } catch (error) {
-      console.error("Error al restaurar venta:", error);
-      Swal.fire({
-        icon: "error",
-        title: "Error",
-        text: "Error al restaurar la venta: " + error.message,
-        confirmButtonColor: "#dc3545",
-      });
-    }
-  };
-
-  const obtenerDatosVentaActual = () => {
-    return {
-      formData: formData,
-      detalles: detalles,
-      totales: totales,
-    };
+  const formatearMoneda = (monto) => {
+    return new Intl.NumberFormat('es-PE', { style: 'currency', currency: 'PEN' }).format(monto || 0);
   };
 
   return (
-    <div className="formulario-venta-container">
-      <div className="">
-        {/* Header */}
-        <div className="header-principal">
-          <h1 className="titulo-principal">Gestión de Comprobantes</h1>
+    <div className="flex flex-col space-y-6 p-4 md:p-6 bg-slate-50/30 font-bold italic">
+      {/* Premium Header */}
+      <div className="flex flex-col gap-6 rounded-2xl bg-menta-petroleo p-6 text-white shadow-2xl font-bold italic relative overflow-hidden">
+        <div className="absolute top-0 right-0 p-8 opacity-10 pointer-events-none">
+          <ShoppingCart size={150} />
         </div>
 
-        {/* Encabezado con logo y datos empresa */}
-        <div className="encabezado-empresa">
-          <div className="logo-placeholder">
-            <Camera size={24} />
-            <span className="logo-text">Logo empresa</span>
-          </div>
-
-          <div className="datos-empresa">
-            <h1 className="">QUISPE NINA AMILCAR</h1>
-            <p className="direccion-empresa">
-              CAL. HUAYRANCAYLLE MZ. E. LT 1-B- LA KANTUTA
-            </p>
-          </div>
-
-          <div className="info-adicional">
-            <div className="info-item">
-              <label className="info-label">Vendedor</label>
-              <span className="info-value">Administrador</span>
-            </div>
-            <div className="info-item">
-              <label className="info-label">
-                <Calendar size={12} /> Fec. emisión
-              </label>
-              <span className="info-value">{formData.fechaVenta}</span>
-            </div>
-            <div className="info-item">
-              <label className="info-label">
-                <Calendar size={12} /> Fec. vencimiento
-              </label>
-              <span className="info-value">{formData.fechaVencimiento}</span>
-            </div>
-          </div>
-        </div>
-
-        {/* Placa de vehículo */}
-        <div className="seccion-placa">
-          <div className="placa-header">
-            <Truck size={14} />
-            <span className="placa-label">PLACA DE VEHICULO</span>
-            <HelpCircle
-              size={14}
-              className="placa-tooltip"
-              title="Formato: ABC-123 o ABC123"
-            />
-          </div>
-          <input
-            type="text"
-            name="placaVehiculo"
-            value={formData.placaVehiculo}
-            onChange={(e) => {
-              const valor = e.target.value.toUpperCase();
-              setFormData((prev) => ({ ...prev, placaVehiculo: valor }));
-            }}
-            placeholder="Ej: ABC-123"
-            maxLength="8"
-            className="input-placa"
-          />
-        </div> 
-
-        <br />   <br />  
-
-        {/* Campos del formulario */}
-        <div className="seccion-formulario">
-          <div className="campos-grid">
-            <div className="campo">
-              <label>Tipo comprobante</label>
-              <select
-                name="tipoComprobante"
-                value={formData.tipoComprobante}
-                onChange={handleInputChange}
-              >
-                <option value="FACTURA">FACTURA</option>
-                <option value="BOLETA">BOLETA</option>
-              </select>
-            </div>
-
-            <div className="campo">
-              <label>Serie</label>
-              <input
-                type="text"
-                name="serieComprobante"
-                value={formData.serieComprobante}
-                onChange={handleInputChange}
-                placeholder="F001"
-              />
-            </div>
-
-            <div className="campo">
-              <label>Número</label>
-              <input
-                type="text"
-                name="numeroComprobante"
-                value={formData.numeroComprobante}
-                readOnly
-                className="input-readonly"
-                placeholder="Automático"
-              />
-            </div>
-
-            <div className="campo">
-              <label>Tipo de operación</label>
-              <select
-                name="tipoOperacion"
-                value={formData.tipoOperacion}
-                onChange={handleInputChange}
-              >
-                <option value="Venta interna">Venta interna</option>
-                <option value="Exportación de Bienes">
-                  Exportación de Bienes
-                </option>
-                <option value="Ventas no domiciliados que no califican como exportación">
-                  Ventas no domiciliados que no califican como exportación
-                </option>
-                <option value="Operación Sujeta a Detracción">
-                  Operación Sujeta a Detracción
-                </option>
-                <option value="Operación Sujeta a Detracción - Servicios de Transporte Carga">
-                  Operación Sujeta a Detracción - Servicios de Transporte Carga
-                </option>
-                <option value="Operación Sujeta a Percepción">
-                  Operación Sujeta a Percepción
-                </option>
-                <option value="Compra interna">Compra interna</option>
-              </select>
-            </div>
-
-            <div className="campo">
-              <label>Moneda</label>
-              <select
-                name="moneda"
-                value={formData.moneda}
-                onChange={handleInputChange}
-              >
-                <option value="PEN">PEN</option>
-                <option value="USD">USD</option>
-              </select>
-            </div>
-
-            <div className="campo">
-              <label>Método de pago</label>
-              <select
-                name="metodoPago"
-                value={formData.metodoPago}
-                onChange={handleInputChange}
-              >
-                <option value="EFECTIVO">EFECTIVO</option>
-                <option value="TARJETA_DEBITO">TARJETA DÉBITO</option>
-                <option value="TARJETA_CREDITO">TARJETA CRÉDITO</option>
-                <option value="TRANSFERENCIA">TRANSFERENCIA</option>
-                <option value="YAPE">YAPE</option>
-                <option value="PLIN">PLIN</option>
-                <option value="CONTRAENTREGA">CONTRAENTREGA</option>
-              </select>
-            </div>
-
-            <div className="campo">
-              <label>
-                Tipo de cambio
-                <HelpCircle
-                  size={14}
-                  style={{ marginLeft: "5px", cursor: "help" }}
-                  title="Tipo de cambio actual del dólar"
-                />
-              </label>
-              <input
-                type="number"
-                name="tipoCambio"
-                value={formData.tipoCambio}
-                onChange={handleInputChange}
-                step="0.001"
-                placeholder="3.534"
-              />
-            </div>
-
-            <div className="campo">
-              <label>Forma de pago</label>
-              <select
-                name="formaPago"
-                value={formData.formaPago}
-                onChange={handleInputChange}
-              >
-                <option value="CONTADO">CONTADO</option>
-                <option value="CREDITO">CRÉDITO</option>
-              </select>
-            </div>
-          </div>
-        </div>
-
-        {/* Sección Cliente */}
-        <div className="seccion-cliente">
-          <div className="campo">
-            <label className="label-con-accion">
-              Cliente
-              <span onClick={handleNuevoCliente} className="link-nuevo">
-                <UserPlus size={12} /> Nuevo
-              </span>
-            </label>
-            <select
-              name="clienteId"
-              value={formData.clienteId}
-              onChange={handleInputChange}
+        <div className="flex flex-col gap-6 sm:flex-row sm:items-center sm:justify-between relative z-10">
+          <div className="flex items-center gap-5">
+            <button
+              onClick={onCancelar}
+              className="group flex h-12 w-12 items-center justify-center rounded-xl bg-white/10 text-white transition hover:bg-white/20 hover:scale-105 active:scale-95"
             >
-             
-              {clientes.map((cliente) => (
-                <option key={cliente.id} value={cliente.id}>
-                  {cliente.nombre} - {cliente.numeroDocumento}
-                </option>
-              ))}
-            </select>
+              <ArrowLeft size={24} className="group-hover:-translate-x-1 transition-transform" />
+            </button>
+            <div className="font-bold italic">
+              <h2 className="text-2xl font-black tracking-tight italic">Nueva Venta Electrónica</h2>
+              <div className="flex items-center gap-2 text-menta-claro/80 text-xs font-black uppercase tracking-[2px] italic">
+                <Building size={14} /> QUISPE NINA AMILCAR - RUC: 10444332211
+              </div>
+            </div>
           </div>
 
-          <div className="campo">
-            <label>Dirección</label>
-            <input
-              type="text"
-              name="direccion"
-              value={formData.direccion}
-              onChange={handleInputChange}
-            />
+          <div className="flex flex-wrap items-center gap-3 font-bold italic">
+            <button
+              onClick={() => { setModoModalAparcar("aparcar"); setMostrarModalAparcar(true); }}
+              className="flex h-11 items-center gap-2 rounded-xl bg-white/10 px-5 text-sm font-black transition hover:bg-white/20 italic"
+            >
+              <Archive size={18} /> APARCAR
+            </button>
+            <button
+              onClick={() => { setModoModalAparcar("ver"); setMostrarModalAparcar(true); }}
+              className="flex h-11 items-center gap-2 rounded-xl bg-white/10 px-5 text-sm font-black transition hover:bg-white/20 italic"
+            >
+              <Eye size={18} /> VER APARCADOS
+            </button>
+            <button
+              onClick={resetearFormulario}
+              className="flex h-11 items-center gap-2 rounded-xl bg-red-500/20 px-5 text-sm font-black text-red-200 transition hover:bg-red-500/30 italic"
+            >
+              <Trash2 size={18} /> LIMPIAR
+            </button>
           </div>
         </div>
 
-        {/* Botones de acciones */}
-        <div className="botones-acciones">
-          <button
-            type="button"
-            
-            onClick={() => setMostrarModalProducto(true)}
-          >
-            <Plus size={14} /> Agregar producto
-          </button> 
+        <div className="grid grid-cols-2 gap-4 border-t border-white/10 pt-6 sm:grid-cols-4 lg:grid-cols-5 font-bold italic">
+          <div className="flex flex-col gap-1">
+            <span className="text-[10px] font-black uppercase tracking-widest text-menta-claro/50 italic">Vendedor</span>
+            <span className="text-sm font-black italic">Administrador</span>
+          </div>
+          <div className="flex flex-col gap-1">
+            <span className="text-[10px] font-black uppercase tracking-widest text-menta-claro/50 italic">Fecha de Venta</span>
+            <span className="text-sm font-black italic flex items-center gap-2">
+              <Calendar size={14} className="text-menta-turquesa" /> {formData.fechaVenta}
+            </span>
+          </div>
+          <div className="flex flex-col gap-1">
+            <span className="text-[10px] font-black uppercase tracking-widest text-menta-claro/50 italic">Vencimiento</span>
+            <span className="text-sm font-black italic">{formData.fechaVencimiento}</span>
+          </div>
+          <div className="flex flex-col gap-1 col-span-2 lg:col-span-1">
+            <span className="text-[10px] font-black uppercase tracking-widest text-menta-claro/50 italic">Serie/Siguiente Correlativo</span>
+            <span className="text-sm font-black text-menta-turquesa italic">
+              {formData.serieComprobante} - {formData.numeroComprobante || 'Calculando...'}
+            </span>
+          </div>
+        </div>
+      </div>
 
-          <br />  <br /> 
-        
-          <button
-            type="button"
-            onClick={() => {
-              setModoModalAparcar("aparcar");
-              setMostrarModalAparcar(true);
-            }}
-            className=""
-          >
-            <Archive size={14} /> Aparcar
-          </button>
-          
-          <button
-            type="button"
-            onClick={() => {
-              setModoModalAparcar("ver");
-              setMostrarModalAparcar(true);
-            }}
-            className=""
-          >
-            <Eye size={14} /> Ver aparcados
-          </button>
+      <div className="grid grid-cols-1 gap-6 lg:grid-cols-12 font-bold italic">
+        {/* Left Side: Config & Client */}
+        <div className="lg:col-span-8 flex flex-col gap-6 font-bold italic">
+
+          {/* Main Attributes Card */}
+          <div className="rounded-2xl border border-slate-200 bg-white p-6 shadow-sm font-bold italic">
+            <div className="mb-6 flex items-center gap-3 border-b border-slate-50 pb-4 font-bold italic">
+              <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-menta-suave text-menta-petroleo font-bold italic">
+                <Settings size={18} />
+              </div>
+              <h3 className="text-sm font-black text-slate-800 uppercase tracking-widest italic">Atributos del Comprobante</h3>
+            </div>
+
+            <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3 font-bold italic">
+              <div className="space-y-1.5 font-bold italic">
+                <label className="text-[11px] font-black uppercase tracking-wider text-slate-400 font-bold italic">Tipo de Comprobante</label>
+                <select name="tipoComprobante" value={formData.tipoComprobante} onChange={handleInputChange} className="w-full rounded-xl border border-slate-200 px-4 py-2.5 text-sm font-bold focus:border-menta-turquesa italic">
+                  <option value="FACTURA">Factura Electrónica</option>
+                  <option value="BOLETA">Boleta Electrónica</option>
+                </select>
+              </div>
+              <div className="space-y-1.5 font-bold italic">
+                <label className="text-[11px] font-black uppercase tracking-wider text-slate-400 font-bold italic">Serie</label>
+                <div className="relative font-bold italic">
+                  <Hash className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-300 font-bold italic" size={16} />
+                  <input type="text" name="serieComprobante" value={formData.serieComprobante} onChange={handleInputChange} className="w-full rounded-xl border border-slate-200 pl-10 pr-4 py-2.5 text-sm font-bold focus:border-menta-turquesa italic" />
+                </div>
+              </div>
+              <div className="space-y-1.5 font-bold italic">
+                <label className="text-[11px] font-black uppercase tracking-wider text-slate-400 font-bold italic">Tipo Operación</label>
+                <select name="tipoOperacion" value={formData.tipoOperacion} onChange={handleInputChange} className="w-full rounded-xl border border-slate-200 px-4 py-2.5 text-sm font-bold focus:border-menta-turquesa italic">
+                  <option value="Venta interna">Venta interna</option>
+                  <option value="Exportación">Exportación</option>
+                </select>
+              </div>
+              <div className="space-y-1.5 font-bold italic">
+                <label className="text-[11px] font-black uppercase tracking-wider text-slate-400 font-bold italic">Método de Pago</label>
+                <select name="metodoPago" value={formData.metodoPago} onChange={handleInputChange} className="w-full rounded-xl border border-slate-200 px-4 py-2.5 text-sm font-bold focus:border-menta-turquesa italic">
+                  <option value="EFECTIVO">Efectivo Cash</option>
+                  <option value="TRANSFERENCIA">Transferencia Bancaria</option>
+                  <option value="TARJETA_CREDITO">Tarjeta Crédito</option>
+                  <option value="YAPE">Yape / Plin</option>
+                </select>
+              </div>
+              <div className="space-y-1.5 font-bold italic">
+                <label className="text-[11px] font-black uppercase tracking-wider text-slate-400 font-bold italic">Forma de Pago</label>
+                <select name="formaPago" value={formData.formaPago} onChange={handleInputChange} className="w-full rounded-xl border border-slate-200 px-4 py-2.5 text-sm font-bold focus:border-menta-turquesa italic">
+                  <option value="CONTADO">Contado</option>
+                  <option value="CREDITO">Venta al Crédito</option>
+                </select>
+              </div>
+              <div className="space-y-1.5 font-bold italic">
+                <label className="text-[11px] font-black uppercase tracking-wider text-slate-400 font-bold italic">Dólar / T.C.</label>
+                <div className="relative font-bold italic">
+                  <DollarSign className="absolute left-3 top-1/2 -translate-y-1/2 text-emerald-500 font-bold italic" size={16} />
+                  <input type="number" name="tipoCambio" value={formData.tipoCambio} onChange={handleInputChange} step="0.001" className="w-full rounded-xl border border-slate-200 pl-10 pr-4 py-2.5 text-sm font-black text-emerald-600 focus:border-menta-turquesa italic" />
+                </div>
+              </div>
+            </div>
+          </div>
+
+          {/* Client Selection Card */}
+          <div className="rounded-2xl border border-slate-200 bg-white p-6 shadow-sm font-bold italic relative overflow-hidden">
+            <div className="absolute top-0 right-0 p-6 opacity-5 pointer-events-none transform -rotate-12">
+              <User size={80} />
+            </div>
+            <div className="mb-6 flex items-center justify-between border-b border-slate-50 pb-4 font-bold italic">
+              <div className="flex items-center gap-3 font-bold italic">
+                <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-emerald-50 text-emerald-600 font-bold italic">
+                  <User size={18} />
+                </div>
+                <h3 className="text-sm font-black text-slate-800 uppercase tracking-widest italic">Información del Cliente</h3>
+              </div>
+              <button onClick={() => setMostrarModalCliente(true)} className="flex items-center gap-1.5 text-xs font-black text-menta-turquesa hover:text-menta-marino transition italic">
+                <UserPlus size={16} /> REGISTRAR NUEVO
+              </button>
+            </div>
+
+            <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 font-bold italic relative z-10">
+              <div className="space-y-1.5 font-bold italic">
+                <label className="text-[11px] font-black uppercase tracking-wider text-slate-400 font-bold italic">Seleccionar Cliente</label>
+                <select name="clienteId" value={formData.clienteId} onChange={handleInputChange} className="w-full rounded-xl border border-slate-200 px-4 py-2.5 text-sm font-bold focus:border-menta-turquesa italic">
+                  <option value="">-- Seleccione un cliente --</option>
+                  {clientes.map(c => <option key={c.id} value={c.id}>{c.nombre} ({c.numeroDocumento})</option>)}
+                </select>
+              </div>
+              <div className="space-y-1.5 font-bold italic">
+                <label className="text-[11px] font-black uppercase tracking-wider text-slate-400 font-bold italic">Dirección Fiscal / Entrega</label>
+                <div className="relative font-bold italic">
+                  <Building className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-300 font-bold italic" size={16} />
+                  <input type="text" name="direccion" value={formData.direccion} onChange={handleInputChange} className="w-full rounded-xl border border-slate-200 pl-10 pr-4 py-2.5 text-sm font-bold bg-slate-50 italic" />
+                </div>
+              </div>
+              <div className="space-y-1.5 sm:col-span-2 font-bold italic">
+                <label className="text-[11px] font-black uppercase tracking-wider text-slate-400 font-bold italic">Placa del Vehículo (Opcional)</label>
+                <div className="relative font-bold italic">
+                  <Truck className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-300 font-bold italic" size={16} />
+                  <input type="text" name="placaVehiculo" value={formData.placaVehiculo} onChange={(e) => setFormData(prev => ({ ...prev, placaVehiculo: e.target.value.toUpperCase() }))} placeholder="Ej: ABC-123" className="w-full rounded-xl border border-slate-200 pl-10 pr-4 py-2.5 text-sm font-bold italic" />
+                </div>
+              </div>
+            </div>
+          </div>
         </div>
 
-        {/* Tabla de productos */}
-        <div className="tabla-detalles">
-          <table>
-            <thead>
+        {/* Right Side: Quick Search & Products List */}
+        <div className="lg:col-span-4 flex flex-col gap-6 font-bold italic">
+          <div className="flex-1 rounded-2xl border border-slate-200 bg-white p-6 shadow-sm font-bold italic flex flex-col">
+            <div className="mb-6 flex items-center justify-between border-b border-slate-50 pb-4 font-bold italic">
+              <div className="flex items-center gap-3 font-bold italic">
+                <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-orange-50 text-orange-600 font-bold italic">
+                  <Search size={18} />
+                </div>
+                <h3 className="text-sm font-black text-slate-800 uppercase tracking-widest italic">Buscar Productos</h3>
+              </div>
+              <button
+                onClick={() => setMostrarModalProducto(true)}
+                className="flex h-8 w-8 items-center justify-center rounded-lg bg-menta-suave text-menta-petroleo hover:bg-menta-turquesa hover:text-white transition italic"
+              >
+                <Plus size={18} />
+              </button>
+            </div>
+
+            <div className="relative font-bold italic mb-6">
+              <Search className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-300 font-bold italic" size={20} />
+              <input
+                type="text"
+                placeholder="Código, Nombre o SKU..."
+                className="w-full rounded-2xl border border-slate-100 bg-slate-50 py-4 pl-12 pr-4 text-sm font-bold focus:bg-white focus:ring-4 focus:ring-menta-turquesa/10 transition italic font-bold"
+                value={busquedaProducto}
+                onChange={(e) => setBusquedaProducto(e.target.value)}
+              />
+              {mostrarSugerencias && productosFiltrados.length > 0 && (
+                <div className="absolute left-0 right-0 top-full z-20 mt-2 max-h-[400px] overflow-y-auto rounded-2xl border border-slate-100 bg-white p-2 shadow-2xl font-bold italic">
+                  {productosFiltrados.map(p => (
+                    <button
+                      key={p.id}
+                      onClick={() => agregarProducto(p)}
+                      className="flex w-full items-center gap-4 rounded-xl p-3 text-left hover:bg-slate-50 transition border-b border-slate-50 last:border-0 italic"
+                    >
+                      <div className="flex h-10 w-10 flex-shrink-0 items-center justify-center rounded-lg bg-slate-100 text-slate-400 italic">
+                        <Archive size={18} />
+                      </div>
+                      <div className="flex flex-1 flex-col truncate italic font-bold">
+                        <span className="truncate font-black text-slate-800 italic">{p.nombre}</span>
+                        <div className="flex items-center gap-2 text-[10px] font-black text-slate-400 uppercase tracking-wider italic">
+                          <span className="bg-slate-100 px-1.5 rounded">{p.codigo}</span>
+                          <span className="text-emerald-600">{formatearMoneda(p.precioVenta)}</span>
+                        </div>
+                      </div>
+                    </button>
+                  ))}
+                </div>
+              )}
+            </div>
+
+            <div className="flex flex-col gap-4 font-bold italic">
+              <p className="text-[11px] font-black text-slate-400 uppercase tracking-[2px] italic">Atajos Rápidos</p>
+              <div className="grid grid-cols-2 gap-3 font-bold italic">
+                <button onClick={() => setMostrarModalHistorialCliente(true)} className="flex flex-col items-center gap-2 rounded-2xl bg-slate-50 p-4 hover:bg-menta-suave transition group italic">
+                  <Clock size={24} className="text-slate-400 group-hover:text-menta-petroleo transition" />
+                  <span className="text-[10px] font-black uppercase text-slate-500 italic">Historial</span>
+                </button>
+                <button onClick={() => { setModoModalAparcar("ver"); setMostrarModalAparcar(true); }} className="flex flex-col items-center gap-2 rounded-2xl bg-slate-50 p-4 hover:bg-amber-50 transition group italic">
+                  <Archive size={24} className="text-slate-400 group-hover:text-amber-600 transition" />
+                  <span className="text-[10px] font-black uppercase text-slate-500 italic">Aparcados</span>
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      {/* Detalle Table Section */}
+      <div className="rounded-2xl border border-slate-200 bg-white shadow-xl shadow-slate-100 overflow-hidden font-bold italic">
+        <div className="flex items-center justify-between px-6 py-4 bg-slate-50/50 border-b border-slate-100 font-bold italic">
+          <h3 className="flex items-center gap-2 text-sm font-black text-slate-800 uppercase tracking-widest italic">
+            <Layers size={18} className="text-menta-petroleo" /> Items del Comprobante
+          </h3>
+          <span className="text-xs font-black text-slate-400 italic uppercase">Items: {detalles.length}</span>
+        </div>
+
+        <div className="overflow-x-auto font-bold italic">
+          <table className="w-full text-left text-sm whitespace-nowrap font-bold italic">
+            <thead className="text-[10px] font-black uppercase tracking-widest text-slate-400 italic">
               <tr>
-                <th>#</th>
-                <th>Productos o Servicios</th>
-                <th>Unidad</th>
-                <th>Cantidad</th>
-                <th>Valor U.</th>
-                <th>Precio U.</th>
-                <th>Subtotal</th>
-                <th>Total</th>
-                <th>Acción</th>
+                <th className="px-6 py-4 font-bold italic">#</th>
+                <th className="px-6 py-4 font-bold italic">Descripción del Item</th>
+                <th className="px-6 py-4 text-center font-bold italic">Unidad</th>
+                <th className="px-6 py-4 text-center font-bold italic">Cantidad</th>
+                <th className="px-6 py-4 text-right font-bold italic">Precio Unit.</th>
+                <th className="px-6 py-4 text-right font-bold italic">Total</th>
+                <th className="px-6 py-4"></th>
               </tr>
             </thead>
-            <tbody>
+            <tbody className="divide-y divide-slate-100 font-bold italic">
               {detalles.length === 0 ? (
                 <tr>
-                  <td colSpan="9" className="tabla-vacia">
-                    No hay productos agregados
+                  <td colSpan="7" className="py-20 text-center font-bold italic">
+                    <div className="flex flex-col items-center gap-3 text-slate-200 font-bold italic">
+                      <ShoppingCart size={64} strokeWidth={1} />
+                      <p className="text-lg font-black text-slate-300 uppercase italic tracking-widest">El carrito está vacío</p>
+                    </div>
                   </td>
                 </tr>
               ) : (
-                detalles.map((detalle, index) => (
-                  <tr key={index}>
-                    <td>{index + 1}</td>
-                    <td>{detalle.producto.nombre}</td>
-                    <td className="text-center">{detalle.unidad || "Servicio"}</td>
-                    <td className="text-center">
+                detalles.map((d, idx) => (
+                  <tr key={idx} className="group transition hover:bg-slate-50/50 font-bold italic">
+                    <td className="px-6 py-5 text-slate-300 font-black italic">{idx + 1}</td>
+                    <td className="px-6 py-5">
+                      <div className="flex flex-col font-bold italic">
+                        <span className="font-black text-slate-800 italic underline decoration-menta-turquesa/30 underline-offset-4">{d.producto?.nombre}</span>
+                        <span className="text-[10px] text-slate-400 italic">SKU: {d.producto?.codigo || 'S/C'}</span>
+                      </div>
+                    </td>
+                    <td className="px-6 py-5 text-center font-bold italic">
+                      <span className="inline-flex rounded-lg bg-slate-100 px-3 py-1 text-[10px] font-black text-slate-500 italic uppercase">{d.unidad}</span>
+                    </td>
+                    <td className="px-6 py-5 text-center font-bold italic">
                       <input
                         type="number"
-                        value={detalle.cantidad}
-                        onChange={(e) =>
-                          actualizarDetalle(index, "cantidad", e.target.value)
-                        }
-                        className="input-cantidad"
+                        className="w-20 rounded-xl border-none bg-slate-100 py-2 text-center font-black italic focus:ring-2 focus:ring-menta-turquesa transition italic"
+                        value={d.cantidad}
+                        onChange={(e) => actualizarDetalle(idx, "cantidad", e.target.value)}
                       />
                     </td>
-                    <td className="text-right">
-                      {detalle.precioUnitario.toFixed(2)}
+                    <td className="px-6 py-5 text-right font-bold italic">
+                      <div className="relative font-bold italic flex justify-end">
+                        <input
+                          type="number"
+                          className="w-28 rounded-xl border-none bg-slate-100 py-2 pr-2 text-right font-black italic focus:ring-2 focus:ring-menta-turquesa transition italic"
+                          value={d.precioUnitario}
+                          onChange={(e) => actualizarDetalle(idx, "precioUnitario", e.target.value)}
+                        />
+                      </div>
                     </td>
-                    <td className="text-right">
-                      <input
-                        type="number"
-                        value={detalle.precioUnitario}
-                        onChange={(e) =>
-                          actualizarDetalle(
-                            index,
-                            "precioUnitario",
-                            e.target.value
-                          )
-                        }
-                        className="input-precio"
-                      />
+                    <td className="px-6 py-5 text-right font-black text-slate-900 italic font-bold">
+                      {formatearMoneda(d.subtotal)}
                     </td>
-                    <td className="text-right">{detalle.subtotal.toFixed(2)}</td>
-                    <td className="text-right">{detalle.subtotal.toFixed(2)}</td>
-                    <td className="text-center">
+                    <td className="px-6 py-5 text-center font-bold italic">
                       <button
-                        onClick={() => eliminarDetalle(index)}
-                        className="btn-eliminar"
+                        onClick={() => eliminarDetalle(idx)}
+                        className="rounded-xl p-2.5 text-slate-300 hover:bg-red-50 hover:text-red-500 transition italic"
                       >
-                        <X size={12} />
+                        <Trash2 size={18} />
                       </button>
                     </td>
                   </tr>
@@ -800,215 +614,89 @@ function FormularioVenta({ onVentaCreada, onCancelar }) {
             </tbody>
           </table>
         </div>
+      </div>
 
-        {/* Totales */}
-        {detalles.length > 0 && (
-          <div className="seccion-totales">
-            <div className="totales-grid">
-              <div className="total-item">
-                <span>Subtotal:</span>
-                <span>S/ {totales.subtotal.toFixed(2)}</span>
+      {/* Totals & Footer Action */}
+      <div className="flex flex-col gap-6 lg:flex-row lg:items-end lg:justify-between font-bold italic">
+        <div className="flex flex-col gap-2 font-bold italic max-w-sm">
+          <div className="flex items-center gap-3 rounded-2xl bg-amber-50 p-4 border border-amber-100 font-bold italic">
+            <Info size={24} className="text-amber-600 flex-shrink-0" />
+            <p className="text-[11px] font-bold text-amber-900 leading-snug italic font-bold italic">
+              Asegúrese de que el tipo de comprobante coincida con la serie seleccionada para evitar rechazos en el envío a SUNAT.
+            </p>
+          </div>
+        </div>
+
+        <div className="flex flex-col gap-4 font-bold italic w-full lg:w-[400px]">
+          <div className="rounded-3xl bg-slate-900 p-8 text-white shadow-2xl font-bold italic relative overflow-hidden">
+            <div className="absolute top-0 left-0 p-10 opacity-5 pointer-events-none">
+              <DollarSign size={120} />
+            </div>
+
+            <div className="space-y-4 font-bold italic relative z-10">
+              <div className="flex justify-between text-xs font-black uppercase tracking-[3px] text-slate-400 italic font-bold italic">
+                <span>Subtotal</span>
+                <span>{formatearMoneda(totales.subtotal)}</span>
               </div>
-              <div className="total-item">
-                <span>IGV (18%):</span>
-                <span>S/ {totales.igv.toFixed(2)}</span>
+              <div className="flex justify-between text-xs font-black uppercase tracking-[3px] text-slate-400 italic font-bold italic">
+                <span>IGV (18%)</span>
+                <span>{formatearMoneda(totales.igv)}</span>
               </div>
-              <div className="total-item total-final">
-                <span>Total:</span>
-                <span>S/ {totales.total.toFixed(2)}</span>
+              <div className="pt-6 border-t border-slate-800 flex justify-between items-end font-bold italic">
+                <div className="flex flex-col font-bold italic">
+                  <span className="text-[10px] font-black uppercase tracking-[4px] text-menta-turquesa italic underline decoration-menta-turquesa/30 underline-offset-4">MONTO TOTAL</span>
+                  <span className="text-[10px] text-slate-500 italic font-bold">{formData.moneda}</span>
+                </div>
+                <span className="text-4xl font-black italic tracking-tight">{formatearMoneda(totales.total)}</span>
               </div>
             </div>
           </div>
-        )}
 
-        {/* Botones finales */}
-        <div className="botones-formulario">
           <button
-            type="button"
-            onClick={onCancelar}
-            className="btn-cancelar-form"
-          >
-            <X size={14} /> Cancelar
-          </button>
-          <button
-            type="submit"
             onClick={handleSubmit}
-            disabled={loading || detalles.length === 0}
-            className="btn-guardar"
+            disabled={loading}
+            className="flex w-full items-center justify-center gap-3 rounded-3xl bg-menta-turquesa py-6 text-sm font-black text-menta-petroleo shadow-xl shadow-menta-turquesa/20 transition hover:bg-menta-esmeralda hover:scale-[1.01] active:scale-95 disabled:opacity-50 italic uppercase tracking-[4px] font-bold"
           >
             {loading ? (
-              <>
-                <div className="spinner"></div>
-                Procesando...
-              </>
+              <RefreshCcw size={24} className="animate-spin" />
             ) : (
               <>
-                <Plus size={14} />
-                Crear Venta
+                <Save size={24} /> GENERAR VENTA
               </>
             )}
           </button>
         </div>
       </div>
 
-      {/* Modal de Productos */}
+      {/* Modals */}
       {mostrarModalProducto && (
-        <div className="modal-overlay">
-          <div >
-            <button
-              onClick={() => setMostrarModalProducto(false)}
-              className="modal-cerrar"
-            >
-              <X size={16} />
-            </button>
-            <FormularioVentaProductServicio
-              onProductoSeleccionado={handleProductoSeleccionado}
-              productos={productos}
-            />
-          </div>
-        </div>
+        <FormularioVentaProductServicio onClose={() => setMostrarModalProducto(false)} onProductoSeleccionado={handleProductoSeleccionado} />
       )}
-
-      {/* Modal de Cliente */}
       {mostrarModalCliente && (
-        <ModalCliente
-          onClose={() => setMostrarModalCliente(false)}
-          onClienteCreado={handleClienteCreado}
-        />
+        <ModalCliente onClose={() => setMostrarModalCliente(false)} onClienteCreado={handleClienteCreado} />
       )}
-
-      {/* Modal de WhatsApp eliminado: se muestra solo la vista previa PDF */}
-
-      {/* Modal de Historial del Cliente */}
-      <ModalHistorialCliente
-        isOpen={mostrarModalHistorialCliente && !!formData.clienteId}
-        clienteId={formData.clienteId}
-        clienteNombre={
-          clientes.find((c) => c.id === parseInt(formData.clienteId))?.nombre ||
-          ""
-        }
-        onClose={() => setMostrarModalHistorialCliente(false)}
-      />
-
-      {/* Modal de Aparcar */}
-      <ModalAparcar
-        isOpen={mostrarModalAparcar}
-        onClose={() => setMostrarModalAparcar(false)}
-        onAparcar={handleAparcarVenta}
-        onRestaurar={handleRestaurarVenta}
-        ventaActual={obtenerDatosVentaActual()}
-        modoInicial={modoModalAparcar}
-      />
-
-      {/* Vista previa de Venta con opciones de impresión */}
-      {showPreviewVenta && (
-        <div className="modal-overlay" style={{ zIndex: 1600 }}>
-          <div className="modal-content-large" style={{ width: "90%", maxWidth: "1100px" }}>
-            <div className="modal-header" style={{ backgroundColor: "#e74c3c", color: "white" }}>
-              <h3 style={{ margin: 0 }}>
-                {`Venta registrada: ${ventaGuardadaInfo?.serieComprobante || ""}-${ventaGuardadaInfo?.numeroComprobante || ""}`}
-              </h3>
-              <button
-                className="modal-close-btn"
-                onClick={() => {
-                  setShowPreviewVenta(false);
-                  if (previewVentaPdfUrl) {
-                    window.URL.revokeObjectURL(previewVentaPdfUrl);
-                    setPreviewVentaPdfUrl("");
-                  }
-                }}
-                style={{ color: "white", borderColor: "white" }}
-              >
-                ×
-              </button>
-            </div>
-
-            {/* Barra de acciones */}
-            <div style={{ display: "flex", gap: "12px", padding: "10px 12px" }}>
-              <button
-                onClick={async () => {
-                  const blob = await generarPdfVenta(ventaGuardadaInfo.id, "A4");
-                  const url = window.URL.createObjectURL(blob);
-                  setPreviewVentaPdfUrl((old) => { if (old) window.URL.revokeObjectURL(old); return url; });
-                }}
-                style={{ background: "transparent", color: "#e74c3c", border: "none", cursor: "pointer" }}
-              >
-                Imprimir A4
-              </button>
-              <button
-                onClick={async () => {
-                  const blob = await generarPdfVenta(ventaGuardadaInfo.id, "80mm");
-                  const url = window.URL.createObjectURL(blob);
-                  setPreviewVentaPdfUrl((old) => { if (old) window.URL.revokeObjectURL(old); return url; });
-                }}
-                style={{ background: "transparent", color: "#e74c3c", border: "none", cursor: "pointer" }}
-              >
-                Imprimir Ticket
-              </button>
-              <button
-                onClick={async () => {
-                  // A5 no está soportado explícitamente en el backend; usamos A4 como alternativa
-                  const blob = await generarPdfVenta(ventaGuardadaInfo.id, "A4");
-                  const url = window.URL.createObjectURL(blob);
-                  setPreviewVentaPdfUrl((old) => { if (old) window.URL.revokeObjectURL(old); return url; });
-                }}
-                style={{ background: "transparent", color: "#e74c3c", border: "none", cursor: "pointer" }}
-              >
-                Imprimir A5
-              </button>
-            </div>
-
-            {/* Visor PDF */}
-            <div style={{ height: "70vh", borderTop: "1px solid #eee" }}>
-              {previewVentaPdfUrl ? (
-                <iframe
-                  src={previewVentaPdfUrl}
-                  title="Vista previa de Venta"
-                  style={{ width: "100%", height: "100%", border: "none" }}
-                />
-              ) : (
-                <div style={{ padding: 20 }}>Generando vista previa...</div>
-              )}
-            </div>
-
-            {/* Acciones de descarga */}
-            <div style={{ display: "flex", gap: 16, padding: "12px" }}>
-              <button
-                onClick={async () => {
-                  const blob = await generarPdfVenta(ventaGuardadaInfo.id, "A4");
-                  const url = window.URL.createObjectURL(blob);
-                  const a = document.createElement("a");
-                  a.href = url;
-                  a.download = `${ventaGuardadaInfo?.serieComprobante || "VENTA"}-${ventaGuardadaInfo?.numeroComprobante || ""}.pdf`;
-                  a.click();
-                  window.URL.revokeObjectURL(url);
-                }}
-                className="nvf-btn-guardar"
-                style={{ backgroundColor: "#3498db", color: "white" }}
-              >
-                Descargar A4
-              </button>
-              <button
-                onClick={async () => {
-                  const blob = await generarPdfVenta(ventaGuardadaInfo.id, "80mm");
-                  const url = window.URL.createObjectURL(blob);
-                  const a = document.createElement("a");
-                  a.href = url;
-                  a.download = `${ventaGuardadaInfo?.serieComprobante || "VENTA"}-${ventaGuardadaInfo?.numeroComprobante || ""}-80mm.pdf`;
-                  a.click();
-                  window.URL.revokeObjectURL(url);
-                }}
-                className="nvf-btn-guardar"
-                style={{ backgroundColor: "#3498db", color: "white" }}
-              >
-                Descargar 80mm
-              </button>
-            </div>
-          </div>
-        </div>
+      {mostrarModalHistorialCliente && (
+        <ModalHistorialCliente client={clientes.find(c => c.id === parseInt(formData.clienteId))} onClose={() => setMostrarModalHistorialCliente(false)} />
+      )}
+      {mostrarModalAparcar && (
+        <ModalAparcar
+          mode={modoModalAparcar}
+          ventaActual={obtenerDatosVentaActual()}
+          onClose={() => setMostrarModalAparcar(false)}
+          onRestaurar={handleRestaurarVenta}
+          onAparcado={handleAparcarVenta}
+        />
       )}
     </div>
   );
-}
+
+  function obtenerDatosVentaActual() {
+    return {
+      formData: formData,
+      detalles: detalles,
+      totales: totales,
+    };
+  }
+};
 
 export default FormularioVenta;

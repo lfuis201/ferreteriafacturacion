@@ -1,52 +1,89 @@
 import React, { useState, useEffect } from 'react';
-import '../../styles/Pedidos.css';
+import {
+  ClipboardList,
+  Plus,
+  Search,
+  RefreshCcw,
+  Filter,
+  Settings,
+  Calendar,
+  User,
+  Building,
+  Truck,
+  DollarSign,
+  ChevronLeft,
+  ChevronRight,
+  ChevronFirst,
+  ChevronLast,
+  CheckCircle,
+  XCircle,
+  Clock,
+  MoreVertical,
+  X,
+  UserPlus,
+  ShoppingCart,
+  Hash,
+  Briefcase,
+  Eye,
+  Trash2,
+  FileText,
+  AlertTriangle,
+  LayoutGrid,
+  Save,
+  ChevronDown,
+  MapPin,
+  ArrowRight
+} from 'lucide-react';
 import ModalCliente from './ModalCliente';
-import { obtenerClientes } from '../../services/clienteService';
 import FormularioVentaProductServicio from './FormularioVentaProductServicio';
+import { obtenerClientes } from '../../services/clienteService';
 import { listarPedidos, crearPedido } from '../../services/pedidoService';
+import Swal from 'sweetalert2';
 
 const Pedidos = () => {
   const [showColumnModal, setShowColumnModal] = useState(false);
   const [showNewOrderModal, setShowNewOrderModal] = useState(false);
-  
+  const [loading, setLoading] = useState(false);
+
   const [visibleColumns, setVisibleColumns] = useState({
     fechaEmision: true,
     fechaEntrega: true,
     vendedor: true,
     cliente: true,
-    //estado: true,
     pedido: true,
-    comprobantes: true,
-    notasVenta: true,
-    cotizacion: true,
-    //guias: true,
-    pedidoMiTienda: true,
     moneda: true,
-    tExportacion: true,
-    tInafecto: true,
-    tExonerado: true,
-    tGravado: true,
-    tIgv: true,
     total: true,
-    //pdf: true,
-    //estadoFinal: true,
-    //acciones: true
+    acciones: true
   });
+
+  const columnLabels = {
+    fechaEmision: 'F. Emisión',
+    fechaEntrega: 'F. Entrega',
+    vendedor: 'Vendedor',
+    cliente: 'Cliente',
+    pedido: 'N° Pedido',
+    moneda: 'Moneda',
+    total: 'Total',
+    acciones: 'Acciones'
+  };
 
   const [pedidosData, setPedidosData] = useState([]);
 
   useEffect(() => {
-    const cargarPedidos = async () => {
-      try {
-        const resp = await listarPedidos();
-        const lista = resp.pedidos || [];
-        setPedidosData(lista);
-      } catch (err) {
-        console.error('Error cargando pedidos:', err.message || err);
-      }
-    };
     cargarPedidos();
   }, []);
+
+  const cargarPedidos = async () => {
+    try {
+      setLoading(true);
+      const resp = await listarPedidos();
+      setPedidosData(resp.pedidos || []);
+    } catch (err) {
+      console.error('Error cargando pedidos:', err);
+    } finally {
+      setLoading(false);
+    }
+  };
 
   const toggleColumn = (columnKey) => {
     setVisibleColumns(prev => ({
@@ -55,247 +92,231 @@ const Pedidos = () => {
     }));
   };
 
-  const handleNewOrder = () => {
-    setShowNewOrderModal(true);
+  const formatearFecha = (fecha) => {
+    if (!fecha) return '-';
+    return new Date(fecha).toLocaleDateString('es-PE');
+  };
+
+  const formatearMoneda = (monto) => {
+    return new Intl.NumberFormat('es-PE', {
+      style: 'currency',
+      currency: 'PEN'
+    }).format(monto || 0);
   };
 
   return (
-    <div className="pedidos-container">
-      <div className="pedidos-header">
-        <h1>Pedidos</h1>
-        <button className="btn-nuevo" onClick={handleNewOrder}>
-          Nuevo
-        </button>
+    <div className="flex flex-col space-y-6 p-4 md:p-6 bg-slate-50/40 animate-in fade-in duration-500">
+      {/* Header Section */}
+      <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
+        <div className="flex items-center gap-5">
+          <div className="flex h-16 w-16 items-center justify-center rounded-2xl bg-gradient-to-br from-orange-500 to-orange-600 text-white shadow-xl shadow-orange-200">
+            <ClipboardList size={32} />
+          </div>
+          <div>
+            <h2 className="text-2xl font-bold tracking-tight text-menta-petroleo uppercase">Gestión de Pedidos</h2>
+            <p className="text-sm font-medium text-slate-500">Control de preventas y órdenes de despacho</p>
+          </div>
+        </div>
+        <div className="flex items-center gap-3">
+          <button
+            onClick={() => cargarPedidos()}
+            disabled={loading}
+            className="group inline-flex h-11 items-center gap-2 rounded-xl border border-slate-200 bg-white px-5 py-2 text-sm font-semibold text-slate-600 transition hover:bg-slate-50 hover:text-menta-petroleo shadow-sm active:scale-95 disabled:opacity-50"
+          >
+            <RefreshCcw size={18} className={`${loading ? 'animate-spin' : 'group-hover:rotate-180 transition-transform duration-500'}`} />
+            Actualizar
+          </button>
+          <button
+            onClick={() => setShowNewOrderModal(true)}
+            className="group inline-flex h-11 items-center justify-center gap-2 rounded-xl bg-gradient-to-r from-menta-petroleo to-menta-marino px-6 text-sm font-bold text-white shadow-lg shadow-menta-petroleo/20 transition hover:translate-y-[-1px] active:scale-95 uppercase tracking-tighter"
+          >
+            <Plus size={20} className="group-hover:scale-110 transition-transform" />
+            NUEVO PEDIDO
+          </button>
+        </div>
       </div>
 
-      <div className="column-controls">
-        <button 
-          className="btn-toggle-columns"
-          onClick={() => setShowColumnModal(!showColumnModal)}
-        >
-          Mostrar/Ocultar columnas
-        </button>
+      {/* Summary Cards Row */}
+      <div className="grid grid-cols-4 gap-4 animate-in slide-in-from-top-4 duration-500">
+        <div className="relative group overflow-hidden rounded-2xl border border-slate-200 bg-white p-6 shadow-sm transition-all hover:shadow-md">
+          <div className="flex items-center justify-between">
+            <div className="flex h-11 w-11 items-center justify-center rounded-xl bg-slate-50 text-slate-400 group-hover:bg-orange-500 group-hover:text-white transition-colors">
+              <Hash size={22} />
+            </div>
+            <div className="text-right">
+              <p className="text-[10px] font-bold uppercase tracking-widest text-slate-400 mb-1">Total Pedidos</p>
+              <p className="text-2xl font-bold text-slate-800">{pedidosData.length}</p>
+            </div>
+          </div>
+          <div className="absolute bottom-0 left-0 h-1 w-full bg-slate-200" />
+        </div>
+
+        <div className="relative group overflow-hidden rounded-2xl border border-emerald-100 bg-white p-6 shadow-sm transition-all hover:shadow-md">
+          <div className="flex items-center justify-between">
+            <div className="flex h-11 w-11 items-center justify-center rounded-xl bg-emerald-50 text-emerald-600">
+              <DollarSign size={22} />
+            </div>
+            <div className="text-right">
+              <p className="text-[10px] font-bold uppercase tracking-widest text-emerald-500 mb-1">Monto Proyectado</p>
+              <p className="text-2xl font-bold text-emerald-600">
+                {formatearMoneda(pedidosData.reduce((s, p) => s + (parseFloat(p.total) || 0), 0))}
+              </p>
+            </div>
+          </div>
+          <div className="absolute bottom-0 left-0 h-1 w-full bg-emerald-500" />
+        </div>
+
+        <div className="relative group overflow-hidden rounded-2xl border border-menta-marino/10 bg-white p-6 shadow-sm transition-all hover:shadow-md col-span-2">
+          <div className="flex items-center justify-between">
+            <div className="flex h-11 w-11 items-center justify-center rounded-xl bg-slate-50 text-menta-marino">
+              <Briefcase size={22} />
+            </div>
+            <div className="text-right">
+              <p className="text-[10px] font-bold uppercase tracking-widest text-slate-400 mb-1">Promedio por Pedido</p>
+              <p className="text-2xl font-bold text-menta-marino">
+                {formatearMoneda(pedidosData.length > 0 ? (pedidosData.reduce((s, p) => s + (parseFloat(p.total) || 0), 0) / pedidosData.length) : 0)}
+              </p>
+            </div>
+          </div>
+          <div className="absolute bottom-0 left-0 h-1 w-full bg-menta-marino" />
+        </div>
+      </div>
+
+      {/* Filters & Config */}
+      <div className="rounded-2xl border border-slate-200 bg-white p-6 shadow-sm animate-in zoom-in-95 duration-300">
+        <div className="flex items-center justify-between border-b border-slate-100 pb-4 mb-4">
+          <div className="flex items-center gap-2">
+            <div className="h-8 w-8 rounded-lg bg-slate-50 flex items-center justify-center text-menta-turquesa">
+              <Filter size={18} />
+            </div>
+            <h3 className="text-sm font-bold text-menta-petroleo uppercase tracking-tight">Filtros y Configuración</h3>
+          </div>
+          <button
+            onClick={() => setShowColumnModal(!showColumnModal)}
+            className="group flex items-center gap-2 text-[10px] font-bold uppercase tracking-widest text-slate-400 hover:text-menta-petroleo transition-colors"
+          >
+            <Settings size={14} className="group-hover:rotate-90 transition-transform duration-500" />
+            Configurar Columnas
+          </button>
+        </div>
 
         {showColumnModal && (
-          <div className="columns-modal">
-            <div className="columns-modal-contenttt">
-              <h3>Mostrar/Ocultar columnas</h3>
-              <div className="columns-list">
-                <label>
-                  <input 
-                    type="checkbox" 
-                    checked={visibleColumns.tExportacion}
-                    onChange={() => toggleColumn('tExportacion')}
-                  />
-                  T. Exportación
-                </label>
-                <label>
-                  <input 
-                    type="checkbox" 
-                    checked={visibleColumns.tInafecto}
-                    onChange={() => toggleColumn('tInafecto')}
-                  />
-                  T. Inafecto
-                </label>
-                <label>
-                  <input 
-                    type="checkbox" 
-                    checked={visibleColumns.tExonerado}
-                    onChange={() => toggleColumn('tExonerado')}
-                  />
-                  T. Exonerado
-                </label>
-                <label>
-                  <input 
-                    type="checkbox" 
-                    checked={visibleColumns.tGravado}
-                    onChange={() => toggleColumn('tGravado')}
-                  />
-                  T. Gravado
-                </label>
-                <label>
-                  <input 
-                    type="checkbox" 
-                    checked={visibleColumns.tIgv}
-                    onChange={() => toggleColumn('tIgv')}
-                  />
-                  T. IGV
-                </label>
-                <label>
-                  <input 
-                    type="checkbox" 
-                    checked={visibleColumns.fechaEntrega}
-                    onChange={() => toggleColumn('fechaEntrega')}
-                  />
-                  F. Entrega
-                </label>
-                <label>
-                  <input 
-                    type="checkbox" 
-                    checked={visibleColumns.notasVenta}
-                    onChange={() => toggleColumn('notasVenta')}
-                  />
-                  Notas de venta
-                </label>
-                <label>
-                  <input 
-                    type="checkbox" 
-                    checked={visibleColumns.cotizacion}
-                    onChange={() => toggleColumn('cotizacion')}
-                  />
-                  Cotización
-                </label> 
-
-
-                {/*    <label>
-                  <input 
-                    type="checkbox" 
-                    checked={visibleColumns.guias}
-                    onChange={() => toggleColumn('guias')}
-                  />
-                  Guías de Remisión
-                </label>*/ }
-
-            
-
-
-
-              </div>
-              <button 
-                className="btn-close-modal"
-                onClick={() => setShowColumnModal(false)}
-              >
-                Cerrar
-              </button>
-            </div>
+          <div className="grid grid-cols-2 gap-3 rounded-xl bg-slate-50 p-4 sm:grid-cols-4 lg:grid-cols-6 animate-in fade-in slide-in-from-top-2 duration-200">
+            {Object.entries(columnLabels).map(([key, label]) => (
+              <label key={key} className="flex cursor-pointer items-center gap-2 text-xs font-semibold text-slate-600 hover:text-menta-petroleo transition-colors px-2 py-1.5 rounded-lg hover:bg-white">
+                <input
+                  type="checkbox"
+                  className="h-4 w-4 rounded border-slate-300 text-menta-petroleo focus:ring-menta-petroleo/20 transition-all font-bold"
+                  checked={visibleColumns[key]}
+                  onChange={() => toggleColumn(key)}
+                />
+                <span>{label}</span>
+              </label>
+            ))}
           </div>
         )}
       </div>
 
-      <div className="table-container">
-        <table className="pedidos-table">
-          <thead>
-            <tr>
-              {visibleColumns.fechaEmision && <th>Fecha Emisión</th>}
-              {visibleColumns.fechaEntrega && <th>Fecha Entrega</th>}
-              {visibleColumns.vendedor && <th>Vendedor</th>}
-              {visibleColumns.cliente && <th>Cliente</th>}
-              {/*   {visibleColumns.estado && <th>Estado</th>} */}
-            
-
-              {visibleColumns.pedido && <th>Pedido</th>}
-              {visibleColumns.comprobantes && <th>Comprobantes</th>}
-              {visibleColumns.notasVenta && <th>Notas de venta</th>}
-              {visibleColumns.cotizacion && <th>Cotización</th>} 
-
-
-               {/*   {visibleColumns.guias && <th>Guías</th>} */}
-             
-              {visibleColumns.moneda && <th>Moneda</th>}
-              {visibleColumns.tExportacion && <th>T.Exportación</th>}
-              {visibleColumns.tInafecto && <th>T.Inafecto</th>}
-              {visibleColumns.tExonerado && <th>T.Exonerado</th>}
-              {visibleColumns.tGravado && <th>T.Gravado</th>}
-              {visibleColumns.tIgv && <th>T.IGV</th>}
-              {visibleColumns.total && <th>Total</th>}
-             
-  {/*   {visibleColumns.pdf && <th>PDF</th>} */}
-              
-
-                  {/*  {visibleColumns.estadoFinal && <th>Estado</th>}*/}
-               {/*   {visibleColumns.acciones && <th>Acciones</th>}*/}
-             
-            </tr>
-          </thead>
-          <tbody>
-            {pedidosData.length === 0 ? (
+      {/* Main Table */}
+      <div className="overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-sm">
+        <div className="overflow-x-auto">
+          <table className="w-full text-left text-sm whitespace-nowrap">
+            <thead className="bg-slate-50 border-b border-slate-100">
               <tr>
-                <td colSpan="21" className="no-data">
-                  Total 0
-                </td>
+                <th className="px-6 py-4 text-center text-[10px] font-bold uppercase tracking-widest text-slate-400">#</th>
+                {visibleColumns.fechaEmision && <th className="px-6 py-4 text-[10px] font-bold uppercase tracking-widest text-menta-petroleo">Emisión</th>}
+                {visibleColumns.pedido && <th className="px-6 py-4 text-[10px] font-bold uppercase tracking-widest text-menta-petroleo">N° Pedido</th>}
+                {visibleColumns.cliente && <th className="px-6 py-4 text-[10px] font-bold uppercase tracking-widest text-menta-petroleo">Cliente</th>}
+                {visibleColumns.vendedor && <th className="px-6 py-4 text-[10px] font-bold uppercase tracking-widest text-menta-petroleo">Vendedor</th>}
+                {visibleColumns.moneda && <th className="px-6 py-4 text-[10px] font-bold uppercase tracking-widest text-menta-petroleo">Moneda</th>}
+                {visibleColumns.total && <th className="px-6 py-4 text-right text-[10px] font-bold uppercase tracking-widest text-menta-petroleo">Total</th>}
+                {visibleColumns.acciones && <th className="px-6 py-4 text-center text-[10px] font-bold uppercase tracking-widest text-menta-petroleo">Acciones</th>}
               </tr>
-            ) : (
-              pedidosData.map((pedido, index) => (
-                <tr key={pedido.id || index}>
-                  {visibleColumns.fechaEmision && (
-                    <td>{pedido.fechaEmision || ''}</td>
-                  )}
-                  {visibleColumns.fechaEntrega && (
-                    <td>{pedido.fechaEntrega || ''}</td>
-                  )}
-                  {visibleColumns.vendedor && (
-                    <td>{pedido.vendedor || ''}</td>
-                  )}
-                  {visibleColumns.cliente && (
-                    <td>{pedido.Cliente?.nombre || ''}</td>
-                  )}
-                  
-                  {visibleColumns.pedido && (
-                    <td>{pedido.numeroPedido || pedido.id}</td>
-                  )}
-                  {visibleColumns.comprobantes && (
-                    <td>{pedido.comprobantes || '0'}</td>
-                  )}
-                  {visibleColumns.notasVenta && (
-                    <td>{pedido.notasDeVenta || '0'}</td>
-                  )}
-                  {visibleColumns.cotizacion && (
-                    <td>{pedido.cotizacion || ''}</td>
-                  )}
-                 
-                  {visibleColumns.moneda && (
-                    <td>{pedido.moneda || ''}</td>
-                  )}
-                  {visibleColumns.tExportacion && (
-                    <td>{pedido.tExportacion ?? 0}</td>
-                  )}
-                  {visibleColumns.tInafecto && (
-                    <td>{pedido.tInafecto ?? 0}</td>
-                  )}
-                  {visibleColumns.tExonerado && (
-                    <td>{pedido.tExonerado ?? 0}</td>
-                  )}
-                  {visibleColumns.tGravado && (
-                    <td>{pedido.tGravado ?? 0}</td>
-                  )}
-                  {visibleColumns.tIgv && (
-                    <td>{pedido.tIgv ?? 0}</td>
-                  )}
-                  {visibleColumns.total && (
-                    <td>{pedido.total ?? 0}</td>
-                  )}
-
-
-                   {/* Acciones futuras 
-                  {visibleColumns.pdf && (
-                    <td>
-                      {pedido.pdfUrl ? (
-                        <a href={pedido.pdfUrl} target="_blank" rel="noreferrer">PDF</a>
-                      ) : (
-                        ''
-                      )}
-                    </td>
-                  )}*/}
-                  
-                  {visibleColumns.acciones && (
-                    <td>
-                      {/* Acciones futuras */}
-                    </td>
-                  )}
+            </thead>
+            <tbody className="divide-y divide-slate-50">
+              {loading ? (
+                <tr>
+                  <td colSpan="20" className="py-24 text-center">
+                    <div className="flex flex-col items-center gap-4">
+                      <div className="h-12 w-12 animate-spin rounded-full border-4 border-slate-100 border-t-orange-500" />
+                      <p className="text-sm font-semibold text-slate-400 uppercase tracking-widest">Cargando pedidos...</p>
+                    </div>
+                  </td>
                 </tr>
-              ))
-            )}
-          </tbody>
-        </table>
+              ) : pedidosData.length === 0 ? (
+                <tr>
+                  <td colSpan="20" className="py-32 text-center text-slate-400">
+                    <div className="flex flex-col items-center gap-4">
+                      <ClipboardList size={48} className="text-slate-200" />
+                      <div className="space-y-1">
+                        <p className="text-lg font-bold uppercase tracking-tighter">Sin pedidos</p>
+                        <p className="text-xs">No se encontraron registros de preventa</p>
+                      </div>
+                    </div>
+                  </td>
+                </tr>
+              ) : (
+                pedidosData.map((pedido, index) => (
+                  <tr key={pedido.id || index} className="group transition hover:bg-slate-50/50">
+                    <td className="px-6 py-4 text-center text-xs font-bold text-slate-300">{index + 1}</td>
+                    {visibleColumns.fechaEmision && (
+                      <td className="px-6 py-4 font-semibold text-slate-700">{formatearFecha(pedido.fechaEmision)}</td>
+                    )}
+                    {visibleColumns.pedido && (
+                      <td className="px-6 py-4 font-bold text-menta-petroleo tracking-tighter uppercase font-bold">
+                        {pedido.numeroPedido || `PED-${pedido.id}`}
+                      </td>
+                    )}
+                    {visibleColumns.cliente && (
+                      <td className="px-6 py-4">
+                        <div className="flex items-center gap-3">
+                          <div className="flex h-8 w-8 items-center justify-center rounded-full bg-slate-50 text-slate-400 group-hover:bg-orange-50 group-hover:text-orange-500 transition-colors">
+                            <User size={14} />
+                          </div>
+                          <span className="max-w-[180px] truncate font-bold text-slate-700 uppercase">{pedido.Cliente?.nombre || pedido.clienteNombre || 'SIN CLIENTE'}</span>
+                        </div>
+                      </td>
+                    )}
+                    {visibleColumns.vendedor && <td className="px-6 py-4 text-[10px] font-bold text-slate-400 uppercase tracking-tight">{pedido.vendedor || '-'}</td>}
+                    {visibleColumns.moneda && <td className="px-6 py-4 text-[10px] font-bold text-slate-400 uppercase tracking-tighter">{pedido.moneda}</td>}
+                    {visibleColumns.total && (
+                      <td className="px-6 py-4 text-right font-bold text-slate-900 tracking-tighter">
+                        {formatearMoneda(pedido.total)}
+                      </td>
+                    )}
+                    {visibleColumns.acciones && (
+                      <td className="px-6 py-4 text-center">
+                        <div className="flex justify-center gap-2">
+                          <button className="flex h-9 w-9 items-center justify-center rounded-xl bg-slate-50 text-slate-400 hover:bg-slate-900 hover:text-white transition-all active:scale-90">
+                            <Eye size={18} />
+                          </button>
+                          <button className="flex h-9 w-9 items-center justify-center rounded-xl bg-slate-50 text-slate-400 hover:bg-red-600 hover:text-white transition-all active:scale-90">
+                            <Trash2 size={18} />
+                          </button>
+                        </div>
+                      </td>
+                    )}
+                  </tr>
+                ))
+              )}
+            </tbody>
+          </table>
+        </div>
       </div>
 
       {showNewOrderModal && (
-        <NewOrderModal 
-          onClose={() => setShowNewOrderModal(false)} 
+        <NewOrderModal
+          onClose={() => setShowNewOrderModal(false)}
           onSaved={(pedidoCreado) => {
             setShowNewOrderModal(false);
             if (pedidoCreado) {
               setPedidosData(prev => [pedidoCreado, ...prev]);
+              Swal.fire({
+                title: '¡Éxito!',
+                text: 'Pedido registrado correctamente.',
+                icon: 'success',
+                confirmButtonColor: '#126171'
+              });
             }
           }}
         />
@@ -310,31 +331,26 @@ const NewOrderModal = ({ onClose, onSaved }) => {
   const [clientesFiltrados, setClientesFiltrados] = useState([]);
   const [mostrarSugerencias, setMostrarSugerencias] = useState(false);
   const [clienteSeleccionado, setClienteSeleccionado] = useState(null);
+  const [loading, setLoading] = useState(false);
+
   const [formData, setFormData] = useState({
     cliente: '',
     direccionEnvio: '',
-    vendedor: '',
-    condicionPago: '',
+    vendedor: 'Administrador',
+    condicionPago: 'Contado',
     observacion: '',
-    fechaEmision: '2025-10-01',
+    fechaEmision: new Date().toISOString().split('T')[0],
     fechaVencimiento: '',
     fechaEntrega: '',
     terminoPago: 'Contado',
     moneda: 'Soles',
-    tipoCambio: '3.476',
+    tipoCambio: '3.848',
     empresaTransporte: ''
   });
 
-  const [datosAdicionales, setDatosAdicionales] = useState([
-    { titulo: '', descripcion: '' },
-    { titulo: '', descripcion: '' },
-    { titulo: '', descripcion: '' },
-    { titulo: '', descripcion: '' }
-  ]);
-
   const [productos, setProductos] = useState([]);
+  const [mostrarFormularioProducto, setMostrarFormularioProducto] = useState(false);
 
-  // Cargar clientes al montar el componente
   useEffect(() => {
     cargarClientes();
   }, []);
@@ -342,22 +358,15 @@ const NewOrderModal = ({ onClose, onSaved }) => {
   const cargarClientes = async () => {
     try {
       const response = await obtenerClientes();
-      const clientesData = response.clientes || [];
-      setClientes(clientesData);
+      setClientes(response.clientes || []);
     } catch (error) {
       console.error('Error al cargar clientes:', error);
     }
   };
 
   const handleInputChange = (field, value) => {
-    setFormData(prev => ({
-      ...prev,
-      [field]: value
-    }));
-
-    if (field === 'cliente') {
-      filtrarClientes(value);
-    }
+    setFormData(prev => ({ ...prev, [field]: value }));
+    if (field === 'cliente') filtrarClientes(value);
   };
 
   const filtrarClientes = (termino) => {
@@ -366,12 +375,10 @@ const NewOrderModal = ({ onClose, onSaved }) => {
       setMostrarSugerencias(false);
       return;
     }
-
-    const filtrados = clientes.filter(cliente => 
-      cliente.nombre?.toLowerCase().includes(termino.toLowerCase()) ||
-      cliente.numeroDocumento?.includes(termino)
+    const filtrados = clientes.filter(c =>
+      c.nombre?.toLowerCase().includes(termino.toLowerCase()) ||
+      c.numeroDocumento?.includes(termino)
     );
-
     setClientesFiltrados(filtrados);
     setMostrarSugerencias(filtrados.length > 0);
   };
@@ -386,466 +393,307 @@ const NewOrderModal = ({ onClose, onSaved }) => {
     setMostrarSugerencias(false);
   };
 
-  const handleDatoAdicionalChange = (index, field, value) => {
-    const newDatos = [...datosAdicionales];
-    newDatos[index][field] = value;
-    setDatosAdicionales(newDatos);
-  };
-
-  const agregarDatoAdicional = () => {
-    setDatosAdicionales([...datosAdicionales, { titulo: '', descripcion: '' }]);
-  };
-
-  const eliminarDatoAdicional = (index) => {
-    const newDatos = datosAdicionales.filter((_, i) => i !== index);
-    setDatosAdicionales(newDatos);
-  };
-
-  const [mostrarFormularioProducto, setMostrarFormularioProducto] = useState(false);
-
-  const cerrarFormularioProducto = () => {
-    setMostrarFormularioProducto(false);
-  };
-
   const onProductoSeleccionado = (producto) => {
-    const descripcion = producto.nombre || producto.descripcion || 'Sin descripción';
-    const unidad = producto.unidadMedida || 'NIU';
-    const cantidad = 1;
-    const precioUnitario = Number(producto.precioVenta || 0);
-    const subtotal = Number((cantidad * precioUnitario).toFixed(2));
-    const total = subtotal;
-
+    const precio = Number(producto.precio_venta || producto.precio || 0);
     setProductos(prev => ([
       ...prev,
-      { descripcion, unidad, cantidad, precioUnitario, subtotal, total }
+      {
+        id: Date.now(),
+        productoId: producto.id,
+        descripcion: producto.nombre || producto.descripcion || 'S/N',
+        unidad: producto.unidad_medida || 'UND',
+        cantidad: 1,
+        precioUnitario: precio,
+        subtotal: precio,
+        total: precio
+      }
     ]));
-
     setMostrarFormularioProducto(false);
-  };
-
-  const agregarProducto = () => {
-    setMostrarFormularioProducto(true);
   };
 
   const handleGuardar = async () => {
+    if (!clienteSeleccionado) {
+      Swal.fire({ title: 'Atención', text: 'Por favor seleccione un cliente.', icon: 'warning', confirmButtonColor: '#126171' });
+      return;
+    }
+    if (productos.length === 0) {
+      Swal.fire({ title: 'Atención', text: 'Debe agregar al menos un producto.', icon: 'warning', confirmButtonColor: '#126171' });
+      return;
+    }
+
     try {
+      setLoading(true);
       const payload = {
-        clienteId: clienteSeleccionado?.id || null,
-        fechaEmision: formData.fechaEmision || null,
-        fechaVencimiento: formData.fechaVencimiento || null,
-        fechaEntrega: formData.fechaEntrega || null,
-        direccionEnvio: formData.direccionEnvio || null,
-        vendedor: formData.vendedor || null,
-        condicionPago: formData.condicionPago || null,
-        observacion: formData.observacion || null,
-        terminoPago: formData.terminoPago || null,
-        moneda: formData.moneda || null,
-        tipoCambio: formData.tipoCambio || null,
-        empresaTransporte: formData.empresaTransporte || null,
+        ...formData,
+        clienteId: clienteSeleccionado.id,
         productos: productos.map(p => ({
-          productoId: p.productoId || null,
-          descripcion: p.descripcion,
-          unidad: p.unidad,
-          cantidad: Number(p.cantidad || 1),
-          precioUnitario: Number(p.precioUnitario || 0),
-          subtotal: Number(p.subtotal || (Number(p.cantidad || 1) * Number(p.precioUnitario || 0))),
-          total: Number(p.total || p.subtotal || (Number(p.cantidad || 1) * Number(p.precioUnitario || 0)))
+          ...p,
+          cantidad: Number(p.cantidad),
+          precioUnitario: Number(p.precioUnitario),
+          subtotal: Number(p.cantidad) * Number(p.precioUnitario),
+          total: Number(p.cantidad) * Number(p.precioUnitario)
         }))
       };
-
       const resp = await crearPedido(payload);
-      const nuevo = resp.pedido;
-      if (nuevo) {
-        onSaved && onSaved(nuevo);
-      }
+      if (resp.pedido) onSaved(resp.pedido);
     } catch (error) {
-      console.error('Error al guardar pedido:', error.message || error);
+      Swal.fire({ title: 'Error', text: 'No se pudo registrar el pedido.', icon: 'error', confirmButtonColor: '#126171' });
+    } finally {
+      setLoading(false);
     }
   };
 
-  const handleOpenModalCliente = () => {
-    setShowModalCliente(true);
+  const formatearMoneda = (monto) => {
+    return new Intl.NumberFormat('es-PE', {
+      style: 'currency',
+      currency: 'PEN'
+    }).format(monto || 0);
   };
 
-  const handleCloseModalCliente = () => {
+  const handleClienteCreado = (nuevoCliente) => {
+    setClientes(prev => [...prev, nuevoCliente]);
+    seleccionarCliente(nuevoCliente);
     setShowModalCliente(false);
-  };
-
-  const handleClienteCreado = (cliente) => {
-    setFormData(prev => ({
-      ...prev,
-      cliente: `${cliente.nombre} - ${cliente.numeroDocumento}`,
-      direccionEnvio: cliente.direccion || ''
-    }));
-    setClienteSeleccionado(cliente);
-    setShowModalCliente(false);
-    cargarClientes();
   };
 
   return (
-    <div className="modal-overlay" onClick={onClose}>
-      <div className="modal-contenttt" onClick={(e) => e.stopPropagation()}>
-        <div className="modal-body-pedido">
-          {/* Cliente */}
-          <div className="form-section-pedido" style={{position: 'relative'}}>
-            <label>Cliente <span className="nuevo-tag" onClick={handleOpenModalCliente} style={{cursor: 'pointer'}}>[+ Nuevo]</span></label>
-            <input 
-              type="text" 
-              placeholder="Escriba el nombre o número de documento del cliente"
-              value={formData.cliente}
-              onChange={(e) => handleInputChange('cliente', e.target.value)}
-              onFocus={() => {
-                if (formData.cliente && clientesFiltrados.length > 0) {
-                  setMostrarSugerencias(true);
-                }
-              }}
-              onBlur={() => {
-                setTimeout(() => setMostrarSugerencias(false), 200);
-              }}
-            />
-            
-            {mostrarSugerencias && clientesFiltrados.length > 0 && (
-              <div className="sugerencias-clientes" style={{
-                position: 'absolute',
-                top: '100%',
-                left: 0,
-                right: 0,
-                backgroundColor: 'white',
-                border: '1px solid #ddd',
-                borderRadius: '4px',
-                maxHeight: '200px',
-                overflowY: 'auto',
-                zIndex: 1000,
-                boxShadow: '0 2px 8px rgba(0,0,0,0.1)'
-              }}>
-                {clientesFiltrados.map((cliente) => (
-                  <div
-                    key={cliente.id}
-                    className="sugerencia-cliente"
-                    onClick={() => seleccionarCliente(cliente)}
-                    style={{
-                      padding: '10px',
-                      borderBottom: '1px solid #eee',
-                      cursor: 'pointer'
-                    }}
-                    onMouseEnter={(e) => e.target.style.backgroundColor = '#f5f5f5'}
-                    onMouseLeave={(e) => e.target.style.backgroundColor = 'white'}
-                  >
-                    <div style={{fontWeight: 'bold'}}>{cliente.nombre}</div>
-                    <div style={{fontSize: '12px', color: '#666'}}>
-                      {cliente.tipoDocumento}: {cliente.numeroDocumento}
+    <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-900/40 backdrop-blur-sm animate-in fade-in duration-200">
+      <div className="w-full max-w-5xl max-h-[90vh] overflow-hidden bg-white rounded-2xl shadow-2xl flex flex-col animate-in zoom-in-95 duration-200">
+
+        {/* Modal Header */}
+        <div className="flex items-center justify-between px-6 py-4 border-b border-slate-100 bg-slate-50/50">
+          <div className="flex items-center gap-3">
+            <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-orange-500 text-white">
+              <Plus size={20} />
+            </div>
+            <div>
+              <h3 className="text-lg font-bold text-slate-800 uppercase tracking-tight">Nuevo Pedido Preventa</h3>
+              <p className="text-[10px] text-slate-400 font-bold uppercase tracking-widest">Registro de orden comercial</p>
+            </div>
+          </div>
+          <button onClick={onClose} className="p-2 text-slate-400 hover:text-red-500 transition-colors">
+            <X size={24} />
+          </button>
+        </div>
+
+        {/* Modal Body */}
+        <div className="flex-1 overflow-y-auto p-6 space-y-8">
+
+          {/* Section 1: Client & Logistics */}
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+            <div className="space-y-4">
+              <div className="space-y-2 relative">
+                <label className="flex items-center justify-between text-[11px] font-bold uppercase tracking-wider text-slate-500">
+                  IDENTIFICACIÓN CLIENTE
+                  <button onClick={() => setShowModalCliente(true)} className="text-menta-turquesa flex items-center gap-1 hover:underline">
+                    <UserPlus size={14} /> NUEVO
+                  </button>
+                </label>
+                <div className="relative">
+                  <Search className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-400" size={16} />
+                  <input
+                    type="text"
+                    className="w-full rounded-xl border border-slate-200 bg-slate-50/30 py-3 pl-10 pr-4 text-sm font-semibold text-slate-700 focus:border-menta-turquesa outline-none transition"
+                    placeholder="Documento o Nombre..."
+                    value={formData.cliente}
+                    onChange={(e) => handleInputChange('cliente', e.target.value)}
+                    onFocus={() => { if (clientesFiltrados.length > 0) setMostrarSugerencias(true); }}
+                    onBlur={() => setTimeout(() => setMostrarSugerencias(false), 200)}
+                  />
+                  {mostrarSugerencias && (
+                    <div className="absolute top-full left-0 right-0 z-10 mt-1 rounded-xl border border-slate-100 bg-white shadow-xl max-h-48 overflow-y-auto">
+                      {clientesFiltrados.map(c => (
+                        <button
+                          key={c.id}
+                          className="w-full p-3 text-left hover:bg-slate-50 flex flex-col transition border-b last:border-0"
+                          onClick={() => seleccionarCliente(c)}
+                        >
+                          <span className="font-bold text-slate-800">{c.nombre}</span>
+                          <span className="text-[10px] text-slate-400">{c.numeroDocumento}</span>
+                        </button>
+                      ))}
                     </div>
-                    {cliente.direccion && (
-                      <div style={{fontSize: '12px', color: '#888'}}>
-                        {cliente.direccion}
-                      </div>
-                    )}
-                  </div>
-                ))}
+                  )}
+                </div>
               </div>
-            )}
-          </div>
-
-          {/* Dirección de envío */}
-          <div className="form-section-pedido">
-            <label>Dirección de envio</label>
-            <input 
-              type="text" 
-              value={formData.direccionEnvio}
-              onChange={(e) => handleInputChange('direccionEnvio', e.target.value)}
-            />
-          </div>
-
-          {/* Fila 1: Vendedor y Condición de pago */}
-          <div className="form-row-pedido">
-            <div className="form-section-pedido">
-              <label>Vendedor</label>
-              <select 
-                value={formData.vendedor}
-                onChange={(e) => handleInputChange('vendedor', e.target.value)}
-              >
-                <option value="Administrador">Administrador</option> 
-                 <option value="Taller">Taller</option> 
-              </select>
+              <div className="space-y-2">
+                <label className="text-[11px] font-bold uppercase tracking-wider text-slate-500">DIRECCIÓN DE ENTREGA</label>
+                <div className="relative">
+                  <Building className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-400" size={16} />
+                  <input
+                    type="text"
+                    className="w-full rounded-xl border border-slate-200 py-3 pl-10 pr-4 text-sm font-semibold text-slate-700 focus:border-menta-turquesa outline-none transition"
+                    value={formData.direccionEnvio}
+                    onChange={(e) => handleInputChange('direccionEnvio', e.target.value)}
+                  />
+                </div>
+              </div>
             </div>
-            <div className="form-section-pedido">
-              <label>Condicion de pago CPE</label>
-              <select 
-                value={formData.condicionPago}
-                onChange={(e) => handleInputChange('condicionPago', e.target.value)}
-              >
-                <option value="Contado">Contado</option>
-                 <option value="Credito">Credito</option>
-              </select>
+
+            <div className="grid grid-cols-2 gap-4">
+              <div className="space-y-2">
+                <label className="text-[11px] font-bold uppercase tracking-wider text-slate-500">FECHA EMISIÓN</label>
+                <input
+                  type="date"
+                  className="w-full rounded-xl border border-slate-200 py-3 px-4 text-sm font-semibold text-slate-700 focus:border-menta-turquesa outline-none transition"
+                  value={formData.fechaEmision}
+                  onChange={(e) => handleInputChange('fechaEmision', e.target.value)}
+                />
+              </div>
+              <div className="space-y-2">
+                <label className="text-[11px] font-bold uppercase tracking-wider text-slate-500">FECHA ENTREGA</label>
+                <input
+                  type="date"
+                  className="w-full rounded-xl border border-slate-200 py-3 px-4 text-sm font-semibold text-slate-700 focus:border-menta-turquesa outline-none transition"
+                  value={formData.fechaEntrega}
+                  onChange={(e) => handleInputChange('fechaEntrega', e.target.value)}
+                />
+              </div>
+              <div className="space-y-2">
+                <label className="text-[11px] font-bold uppercase tracking-wider text-slate-500">VENDEDOR</label>
+                <div className="relative">
+                  <select
+                    className="w-full appearance-none rounded-xl border border-slate-200 py-3 px-4 text-sm font-semibold text-slate-700 focus:border-menta-turquesa outline-none transition h-11"
+                    value={formData.vendedor}
+                    onChange={(e) => handleInputChange('vendedor', e.target.value)}
+                  >
+                    <option value="Administrador">Administrador</option>
+                    <option value="Ventas 1">Ventas 1</option>
+                  </select>
+                  <ChevronDown className="absolute right-3 top-3 text-slate-400" size={18} />
+                </div>
+              </div>
+              <div className="space-y-2">
+                <label className="text-[11px] font-bold uppercase tracking-wider text-slate-500">MONEDA</label>
+                <div className="relative">
+                  <select
+                    className="w-full appearance-none rounded-xl border border-slate-200 py-3 px-4 text-sm font-semibold text-slate-700 focus:border-menta-turquesa outline-none transition h-11"
+                    value={formData.moneda}
+                    onChange={(e) => handleInputChange('moneda', e.target.value)}
+                  >
+                    <option value="Soles">Soles (S/.)</option>
+                    <option value="Dolares">Dólares ($)</option>
+                  </select>
+                  <ChevronDown className="absolute right-3 top-3 text-slate-400" size={18} />
+                </div>
+              </div>
             </div>
           </div>
 
-          {/* Observación */}
-          <div className="form-section-pedido">
-            <label>Observación</label>
-            <textarea 
+          <div className="space-y-2">
+            <label className="text-[11px] font-bold uppercase tracking-wider text-slate-500">OBSERVACIONES INTERNAS</label>
+            <textarea
+              className="w-full rounded-xl border border-slate-200 p-4 text-sm font-semibold text-slate-700 focus:border-menta-turquesa outline-none transition"
+              rows="2"
+              placeholder="Detalles sobre el transporte o condiciones especiales..."
               value={formData.observacion}
               onChange={(e) => handleInputChange('observacion', e.target.value)}
             />
           </div>
 
-          {/* Fila 2: Fechas */}
-          <div className="form-row-pedido-triple">
-            <div className="form-section-pedido">
-              <label>Fec. Emisión</label>
-              <input 
-                type="date" 
-                value={formData.fechaEmision}
-                onChange={(e) => handleInputChange('fechaEmision', e.target.value)}
-              />
-            </div>
-            <div className="form-section-pedido">
-              <label>Fec. Vencimiento</label>
-              <input 
-                type="date" 
-                value={formData.fechaVencimiento}
-                onChange={(e) => handleInputChange('fechaVencimiento', e.target.value)}
-              />
-            </div>
-            <div className="form-section-pedido">
-              <label>Fec. Entrega</label>
-              <input 
-                type="date" 
-                value={formData.fechaEntrega}
-                onChange={(e) => handleInputChange('fechaEntrega', e.target.value)}
-              />
-            </div>
-          </div>
-
-          {/* Fila 3: Término, Moneda, Tipo cambio */}
-          <div className="form-row-pedido-triple">
-            <div className="form-section-pedido">
-              <label>Termino de pago</label>
-              <select 
-                value={formData.terminoPago}
-                onChange={(e) => handleInputChange('terminoPago', e.target.value)}
+          {/* Table Items */}
+          <div className="space-y-4">
+            <div className="flex items-center justify-between border-b border-slate-100 pb-2">
+              <h4 className="flex items-center gap-2 text-sm font-bold text-menta-petroleo uppercase tracking-tight">
+                <ShoppingCart size={18} /> DETALLE DEL PEDIDO
+              </h4>
+              <button
+                onClick={() => setMostrarFormularioProducto(true)}
+                className="inline-flex items-center gap-2 rounded-lg bg-orange-500 px-4 py-2 text-xs font-bold text-white hover:bg-orange-600 shadow-md shadow-orange-200 transition-all font-bold"
               >
-                <option value="Contado">Contado</option>
-                <option value="Credito">Crédito</option>  
-                  <option value=" A 30 días"> A 30 días</option>  
-           <option value="Contado contraentrega"> Contado contraentrega </option>  
-           <option value="Tarjeta credito visa"> Tarjeta credito visa </option>  
-           <option value="Factura a 30 días"> Factura a 30 días </option>  
-           <option value="Transferencia"> Transferencia </option>  
-           <option value="Tarjeta de débito"> Tarjeta de débito </option>  
-           <option value="Tarjeta de crédito"> Tarjeta de crédito </option>  
-           <option value="Efectivo"> Efectivo </option>  
-             <option value="Plin"> Plin </option> 
-
-
-           <option value="Yape"> Yape </option> 
-            <option value="Factura a 60 días"> Factura a 60 días </option> 
-            <option value="Factura a 45 días"> Factura a 45 días </option> 
-            <option value="Factura a 15 dias"> Factura a 15 dias </option> 
-
-
-
-             
-
-
-
-
-
-
-
-
-
-
-              </select>
+                <Plus size={14} /> AGREGAR PRODUCTO
+              </button>
             </div>
-            <div className="form-section-pedido">
-              <label>Moneda</label>
-              <select 
-                value={formData.moneda}
-                onChange={(e) => handleInputChange('moneda', e.target.value)}
-              >
-                <option value="Soles">Soles</option>
-                <option value="Dolares">Dólares</option>
-              </select>
-            </div>
-            <div className="form-section-pedido">
-              <label>Tipo de cambio ⓘ</label>
-              <input 
-                type="text" 
-                value={formData.tipoCambio}
-                onChange={(e) => handleInputChange('tipoCambio', e.target.value)}
-              />
-            </div>
-          </div>
 
-          {/* Empresa transporte */}
-          <div className="form-section-pedido">
-            <label>Nombre empresa transporte</label>
-            <input 
-              type="text" 
-              value={formData.empresaTransporte}
-              onChange={(e) => handleInputChange('empresaTransporte', e.target.value)}
-            />
-          </div>
-
-          {/* Tabla de productos */}
-          <div className="productos-section">
-            <table className="productos-table">
-              <thead>
-                <tr>
-                  <th>#</th>
-                  <th>Descripción</th>
-                  <th>Unidad</th>
-                  <th>Cantidad</th>
-                  <th>Precio Unitario</th>
-                  <th>Subtotal</th>
-                  <th>Total</th>
-                </tr>
-              </thead>
-              <tbody>
-                {productos.length === 0 ? (
+            <div className="overflow-hidden rounded-xl border border-slate-100">
+              <table className="w-full text-left text-[13px]">
+                <thead className="bg-slate-50">
                   <tr>
-                    <td colSpan="7" className="no-productos">
-                      No hay productos agregados
-                    </td>
+                    <th className="px-4 py-3 text-[10px] font-bold uppercase tracking-widest text-slate-400">Producto</th>
+                    <th className="px-4 py-3 text-[10px] font-bold uppercase tracking-widest text-slate-400 text-center">Cant.</th>
+                    <th className="px-4 py-3 text-[10px] font-bold uppercase tracking-widest text-slate-400 text-right">Precio Unit.</th>
+                    <th className="px-4 py-3 text-[10px] font-bold uppercase tracking-widest text-slate-400 text-right">Total</th>
+                    <th className="px-4 py-3 w-10"></th>
                   </tr>
-                ) : (
-                  productos.map((producto, index) => (
-                    <tr key={index}>
-                      <td>{index + 1}</td>
-                      <td>{producto.descripcion}</td>
-                      <td>{producto.unidad}</td>
-                      <td>{producto.cantidad}</td>
-                      <td>{producto.precioUnitario}</td>
-                      <td>{producto.subtotal}</td>
-                      <td>{producto.total}</td>
+                </thead>
+                <tbody className="divide-y divide-slate-100">
+                  {productos.length === 0 ? (
+                    <tr>
+                      <td colSpan="5" className="py-12 text-center text-slate-300 font-semibold uppercase tracking-widest text-xs">Sin items agregados</td>
                     </tr>
-                  ))
-                )}
-              </tbody>
-            </table>
+                  ) : (
+                    productos.map((p, idx) => (
+                      <tr key={p.id} className="group hover:bg-slate-50">
+                        <td className="px-4 py-3 font-bold text-slate-700 uppercase">{p.descripcion}</td>
+                        <td className="px-4 py-3 text-center">
+                          <input
+                            type="number"
+                            className="w-16 rounded-lg border-none bg-slate-100/50 py-1 text-center font-bold text-slate-700 outline-none"
+                            value={p.cantidad}
+                            onChange={(e) => {
+                              const newArr = [...productos];
+                              newArr[idx].cantidad = e.target.value;
+                              newArr[idx].total = Number(e.target.value) * Number(newArr[idx].precioUnitario);
+                              setProductos(newArr);
+                            }}
+                          />
+                        </td>
+                        <td className="px-4 py-3 text-right font-semibold text-slate-600">{formatearMoneda(p.precioUnitario)}</td>
+                        <td className="px-4 py-3 text-right font-bold text-slate-900">{formatearMoneda(p.total)}</td>
+                        <td className="px-4 py-3 text-center">
+                          <button
+                            onClick={() => setProductos(prev => prev.filter(x => x.id !== p.id))}
+                            className="p-1.5 text-slate-300 hover:text-red-500 transition-colors"
+                          >
+                            <Trash2 size={16} />
+                          </button>
+                        </td>
+                      </tr>
+                    ))
+                  )}
+                </tbody>
+              </table>
+            </div>
+
+            {/* Totals Section */}
+            <div className="flex flex-col items-end gap-2">
+              <div className="w-full max-w-[320px] space-y-3 rounded-2xl bg-slate-900 p-6 text-white shadow-xl shadow-slate-200">
+                <div className="flex justify-between text-[10px] font-bold uppercase tracking-widest text-slate-400">
+                  <span>Subtotal Gravado</span>
+                  <span className="text-white">{formatearMoneda(productos.reduce((s, p) => s + (Number(p.total) || 0), 0) / 1.18)}</span>
+                </div>
+                <div className="flex justify-between text-[10px] font-bold uppercase tracking-widest text-slate-400">
+                  <span>Impuesto (18%)</span>
+                  <span className="text-white">{formatearMoneda(productos.reduce((s, p) => s + (Number(p.total) || 0), 0) - (productos.reduce((s, p) => s + (Number(p.total) || 0), 0) / 1.18))}</span>
+                </div>
+                <div className="pt-4 border-t border-slate-800 flex justify-between items-end">
+                  <span className="text-[10px] font-bold uppercase tracking-[2px] text-menta-turquesa underline underline-offset-8 decoration-menta-turquesa/30">TOTAL PEDIDO</span>
+                  <span className="text-3xl font-bold tracking-tighter">{formatearMoneda(productos.reduce((s, p) => s + (Number(p.total) || 0), 0))}</span>
+                </div>
+              </div>
+            </div>
           </div>
         </div>
 
-        <div className="modal-footer-pedido">
-          <button className="btn-cancelar" onClick={onClose}>
-            Cancelar
-          </button> 
-          <button 
-            type="button" 
-            className="btn-agregar-producto"
+        {/* Modal Footer */}
+        <div className="flex items-center justify-end gap-3 px-6 py-4 border-t border-slate-100 bg-slate-50/50">
+          <button onClick={onClose} className="px-6 py-2 text-xs font-bold text-slate-400 hover:text-slate-600 transition-colors uppercase tracking-widest">DESCARTAR</button>
+          <button
             onClick={handleGuardar}
+            disabled={loading}
+            className="group inline-flex items-center gap-2 rounded-xl bg-menta-petroleo px-8 py-3 text-sm font-bold text-white shadow-xl shadow-menta-petroleo/20 hover:bg-menta-marino transition-all hover:translate-y-[-1px] active:scale-95 disabled:opacity-50 uppercase tracking-tighter"
           >
-            Guardar
-          </button>
-          <button 
-            type="button" 
-            className="btn-agregar-producto"
-            onClick={agregarProducto}
-          >
-            + Agregar Producto
+            {loading ? <div className="h-5 w-5 animate-spin rounded-full border-2 border-white/20 border-t-white" /> : <><Save size={18} className="group-hover:scale-110 transition-transform" /> GENERAR PEDIDO</>}
           </button>
         </div>
+
       </div>
 
-      {/* Modal Cliente */}
       {showModalCliente && (
-        <ModalCliente 
-          onClose={handleCloseModalCliente}
-          onClienteCreado={handleClienteCreado}
-        />
+        <ModalCliente onClose={() => setShowModalCliente(false)} onClienteCreado={handleClienteCreado} />
       )}
-
-      {/* Modal Producto - CORREGIDO */}
       {mostrarFormularioProducto && (
-        <div 
-          className="modal-producto-overlay"
-          onClick={cerrarFormularioProducto}
-          style={{
-            position: 'fixed',
-            top: 0,
-            left: 0,
-            right: 0,
-            bottom: 0,
-            background: 'rgba(0,0,0,0.45)',
-            display: 'flex',
-            alignItems: 'center',
-            justifyContent: 'center',
-            zIndex: 9999
-          }}
-        >
-          <div 
-            className="modal-producto-content"
-            onClick={(e) => e.stopPropagation()}
-            style={{
-              width: '85vw',
-              maxWidth: '1100px',
-              maxHeight: '85vh',
-              background: '#fff',
-              borderRadius: '8px',
-              boxShadow: '0 10px 30px rgba(0,0,0,0.25)',
-              display: 'flex',
-              flexDirection: 'column'
-            }}
-          >
-            <div 
-              style={{
-                display: 'flex',
-                alignItems: 'center',
-                justifyContent: 'space-between',
-                padding: '10px 14px',
-                background: '#c9302c',
-                color: '#fff',
-                borderTopLeftRadius: '8px',
-                borderTopRightRadius: '8px',
-                flexShrink: 0
-              }}
-            >
-              <span style={{ fontWeight: 600 }}>Agregue Productos / Servicios</span>
-              <button 
-                type="button" 
-                onClick={cerrarFormularioProducto}
-                style={{
-                  background: 'transparent',
-                  border: 'none',
-                  color: '#fff',
-                  fontSize: '24px',
-                  cursor: 'pointer',
-                  lineHeight: 1
-                }}
-                aria-label="Cerrar"
-              >
-                ×
-              </button>
-            </div>
-            <div style={{ 
-              padding: '12px', 
-              overflowY: 'auto',
-              flex: 1
-            }}>
-              <FormularioVentaProductServicio 
-                onProductoSeleccionado={onProductoSeleccionado}
-                productos={productos}
-              />
-            </div>
-            <div style={{ 
-              display: 'flex', 
-              justifyContent: 'flex-end', 
-              gap: 8, 
-              padding: '10px 14px',
-              borderTop: '1px solid #ddd',
-              flexShrink: 0
-            }}>
-              <button 
-                type="button" 
-                className="btn-cancelar" 
-                onClick={cerrarFormularioProducto}
-              >
-                Cerrar
-              </button>
-            </div>
-          </div>
-        </div>
+        <FormularioVentaProductServicio onClose={() => setMostrarFormularioProducto(false)} onProductoSeleccionado={onProductoSeleccionado} />
       )}
     </div>
   );

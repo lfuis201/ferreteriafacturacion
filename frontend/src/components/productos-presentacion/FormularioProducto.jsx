@@ -8,9 +8,12 @@ import { obtenerSucursales } from "../../services/sucursalService";
 import { obtenerPresentaciones } from "../../services/presentacionService";
 import ModalAgregarPresentaciones from "./ModalAgregarPresentaciones";
 import { obtenerValorConfiguracion } from "../../services/configuracionService";
-
+import { ClipboardList, DollarSign, Package, Info, Tags, BarChart3, FileText, Image as ImageIcon, X, Check } from "lucide-react";
 import Swal from "sweetalert2";
-import "../../styles/FormularioProducto.css";
+
+const inputBase =
+  "w-full rounded-lg border border-slate-300 px-3 py-2.5 text-sm text-slate-900 shadow-sm transition placeholder:text-slate-400 focus:border-menta-turquesa focus:outline-none focus:ring-2 focus:ring-menta-turquesa";
+const inputError = "border-red-500 focus:border-red-500 focus:ring-red-500/30";
 
 function FormularioProducto({ producto, onGuardar, onCancelar }) {
   const [formData, setFormData] = useState({
@@ -551,148 +554,135 @@ function FormularioProducto({ producto, onGuardar, onCancelar }) {
   };
 
   return (
-    <div className="formulario-producto-container">
-      {/* Header del formulario */}
-      <div className="form-header">
-        <div className="header-content">
-          <h1 className="form-title">
-            {esEdicion ? "Editar Producto" : "Nuevo Producto"}
-          </h1>
-          <button className="btn-close-form" onClick={onCancelar} type="button">
-            ✕ Cerrar
-          </button>
-        </div>
+    <div className="mx-auto max-w-5xl space-y-6">
+      <div className="flex flex-wrap items-center justify-between gap-4 rounded-xl border border-slate-200 bg-white px-5 py-4 shadow-sm">
+        <h1 className="text-xl font-semibold text-fondo">
+          {esEdicion ? "Editar Producto" : "Nuevo Producto"}
+        </h1>
+        <button
+          type="button"
+          onClick={onCancelar}
+          className="inline-flex items-center gap-2 rounded-lg border border-slate-200 bg-white px-3 py-2 text-sm font-medium text-menta-petroleo transition hover:bg-slate-50"
+        >
+          <X size={18} /> Cerrar
+        </button>
       </div>
 
-      {/* Contenido del formulario */}
-      <div className="form-wrapper">
-        <form onSubmit={handleSubmit} className="form-content">
-          <div className="form-grid">
-            {/* Información básica */}
-            <div className="form-section">
-              <h3>📋 Información Básica</h3>
+      <div className="rounded-xl border border-slate-200 bg-white shadow-sm">
+        <form onSubmit={handleSubmit} className="p-5">
+          <div className="space-y-8">
+            <div className="rounded-xl border border-slate-200 bg-slate-50/50 p-5">
+              <h3 className="mb-4 flex items-center gap-2 text-base font-semibold text-fondo">
+                <ClipboardList size={20} className="text-menta-petroleo" />
+                Información Básica
+              </h3>
 
-              <div className="form-row">
-                <div className="form-group">
-                  <label htmlFor="nombre">Nombre del Producto *</label>
+              <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
+                <div>
+                  <label htmlFor="nombre" className="mb-1 block text-sm font-medium text-menta-petroleo">Nombre del Producto *</label>
                   <input
                     type="text"
                     id="nombre"
                     name="nombre"
                     value={formData.nombre}
                     onChange={handleInputChange}
-                    className={errors.nombre ? "error" : ""}
+                    className={`${inputBase} ${errors.nombre ? inputError : ""}`}
                     placeholder="Nombre del producto"
                   />
-                  {errors.nombre && (
-                    <span className="error-message">{errors.nombre}</span>
-                  )}
+                  {errors.nombre && <span className="mt-1 block text-xs text-red-600">{errors.nombre}</span>}
                 </div>
-
-                <div className="form-group">
-                  <label htmlFor="codigo">Código del Producto *</label>
+                <div>
+                  <label htmlFor="codigo" className="mb-1 block text-sm font-medium text-menta-petroleo">Código del Producto *</label>
                   <input
                     type="text"
                     id="codigo"
                     name="codigo"
                     value={formData.codigo}
                     onChange={handleInputChange}
-                    className={errors.codigo ? "error" : ""}
+                    className={`${inputBase} ${errors.codigo ? inputError : ""}`}
                     placeholder="Código único del producto"
                   />
-                  {errors.codigo && (
-                    <span className="error-message">{errors.codigo}</span>
-                  )}
+                  {errors.codigo && <span className="mt-1 block text-xs text-red-600">{errors.codigo}</span>}
                 </div>
               </div>
 
-              <div className="form-group full-width">
-                <label htmlFor="descripcion">Descripción</label>
+              <div className="mt-4">
+                <label htmlFor="descripcion" className="mb-1 block text-sm font-medium text-menta-petroleo">Descripción</label>
                 <textarea
                   id="descripcion"
                   name="descripcion"
                   value={formData.descripcion}
                   onChange={handleInputChange}
-                  rows="3"
+                  rows={3}
+                  className={inputBase}
                   placeholder="Descripción detallada del producto"
                 />
               </div>
 
-              <div className="form-row">
-                <div className="form-group">
-                  <label htmlFor="categoriaId">Categoría *</label>
+              <div className="mt-4 grid grid-cols-1 gap-4 sm:grid-cols-2">
+                <div>
+                  <label htmlFor="categoriaId" className="mb-1 block text-sm font-medium text-menta-petroleo">Categoría *</label>
                   <select
                     id="categoriaId"
                     name="categoriaId"
                     value={formData.categoriaId}
                     onChange={handleInputChange}
-                    className={errors.categoriaId ? "error" : ""}
+                    className={`${inputBase} ${errors.categoriaId ? inputError : ""}`}
                   >
                     <option value="">Seleccionar categoría</option>
                     {categorias.map((categoria) => (
-                      <option key={categoria.id} value={categoria.id}>
-                        {categoria.nombre}
-                      </option>
+                      <option key={categoria.id} value={categoria.id}>{categoria.nombre}</option>
                     ))}
                   </select>
-                  {errors.categoriaId && (
-                    <span className="error-message">{errors.categoriaId}</span>
-                  )}
+                  {errors.categoriaId && <span className="mt-1 block text-xs text-red-600">{errors.categoriaId}</span>}
                 </div>
-
-                <div className="form-group">
-                  <label htmlFor="sucursalId">Almacen *</label>
+                <div>
+                  <label htmlFor="sucursalId" className="mb-1 block text-sm font-medium text-menta-petroleo">Almacen *</label>
                   <select
                     id="sucursalId"
                     name="sucursalId"
                     value={formData.sucursalId}
                     onChange={handleInputChange}
-                    className={errors.sucursalId ? "error" : ""}
+                    className={`${inputBase} ${errors.sucursalId ? inputError : ""}`}
                   >
                     <option value="">Seleccionar Almacen</option>
                     {sucursales.map((sucursal) => (
-                      <option key={sucursal.id} value={sucursal.id}>
-                        {sucursal.nombre}
-                      </option>
+                      <option key={sucursal.id} value={sucursal.id}>{sucursal.nombre}</option>
                     ))}
                   </select>
-                  {errors.sucursalId && (
-                    <span className="error-message">{errors.sucursalId}</span>
-                  )}
+                  {errors.sucursalId && <span className="mt-1 block text-xs text-red-600">{errors.sucursalId}</span>}
                 </div>
               </div>
 
-              <div className="form-row">
-                <div className="form-group">
-                  <label htmlFor="unidadMedida">Unidad de Medida *</label>
-                  <select
-                    id="unidadMedida"
-                    name="unidadMedida"
-                    value={formData.unidadMedida}
-                    onChange={handleInputChange}
-                    className={errors.unidadMedida ? "error" : ""}
-                  >
-                    <option value="NIU">Unidad</option>
-                    <option value="KGM">Kilogramo</option>
-                    <option value="MTR">Metro</option>
-                    <option value="LTR">Litro</option>
-                    <option value="CJA">Caja</option>
-                    <option value="PQT">Paquete</option>
-                  </select>
-                  {errors.unidadMedida && (
-                    <span className="error-message">{errors.unidadMedida}</span>
-                  )}
-                </div>
+              <div className="mt-4">
+                <label htmlFor="unidadMedida" className="mb-1 block text-sm font-medium text-menta-petroleo">Unidad de Medida *</label>
+                <select
+                  id="unidadMedida"
+                  name="unidadMedida"
+                  value={formData.unidadMedida}
+                  onChange={handleInputChange}
+                  className={`${inputBase} max-w-xs ${errors.unidadMedida ? inputError : ""}`}
+                >
+                  <option value="NIU">Unidad</option>
+                  <option value="KGM">Kilogramo</option>
+                  <option value="MTR">Metro</option>
+                  <option value="LTR">Litro</option>
+                  <option value="CJA">Caja</option>
+                  <option value="PQT">Paquete</option>
+                </select>
+                {errors.unidadMedida && <span className="mt-1 block text-xs text-red-600">{errors.unidadMedida}</span>}
               </div>
             </div>
 
-            {/* Precios */}
-            <div className="form-section">
-              <h3>💰 Precios</h3>
+            <div className="rounded-xl border border-slate-200 bg-slate-50/50 p-5">
+              <h3 className="mb-4 flex items-center gap-2 text-base font-semibold text-fondo">
+                <DollarSign size={20} className="text-menta-petroleo" />
+                Precios
+              </h3>
 
-              <div className="form-row">
-                <div className="form-group">
-                  <label htmlFor="precioCompra">Precio de Compra (S/.) *</label>
+              <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
+                <div>
+                  <label htmlFor="precioCompra" className="mb-1 block text-sm font-medium text-menta-petroleo">Precio de Compra (S/.) *</label>
                   <input
                     type="number"
                     id="precioCompra"
@@ -701,16 +691,13 @@ function FormularioProducto({ producto, onGuardar, onCancelar }) {
                     onChange={handleInputChange}
                     step="0.01"
                     min="0"
-                    className={errors.precioCompra ? "error" : ""}
+                    className={`${inputBase} ${errors.precioCompra ? inputError : ""}`}
                     placeholder="0.00"
                   />
-                  {errors.precioCompra && (
-                    <span className="error-message">{errors.precioCompra}</span>
-                  )}
+                  {errors.precioCompra && <span className="mt-1 block text-xs text-red-600">{errors.precioCompra}</span>}
                 </div>
-
-                <div className="form-group">
-                  <label htmlFor="precioVenta">Precio de Venta (S/.) *</label>
+                <div>
+                  <label htmlFor="precioVenta" className="mb-1 block text-sm font-medium text-menta-petroleo">Precio de Venta (S/.) *</label>
                   <input
                     type="number"
                     id="precioVenta"
@@ -719,18 +706,16 @@ function FormularioProducto({ producto, onGuardar, onCancelar }) {
                     onChange={handleInputChange}
                     step="0.01"
                     min="0"
-                    className={errors.precioVenta ? "error" : ""}
+                    className={`${inputBase} ${errors.precioVenta ? inputError : ""}`}
                     placeholder="0.00"
                   />
-                  {errors.precioVenta && (
-                    <span className="error-message">{errors.precioVenta}</span>
-                  )}
+                  {errors.precioVenta && <span className="mt-1 block text-xs text-red-600">{errors.precioVenta}</span>}
                 </div>
               </div>
 
-              <div className="form-row">
-                <div className="form-group">
-                  <label htmlFor="stock">Stock Actual</label>
+              <div className="mt-4 grid grid-cols-1 gap-4 sm:grid-cols-2">
+                <div>
+                  <label htmlFor="stock" className="mb-1 block text-sm font-medium text-menta-petroleo">Stock Actual</label>
                   <input
                     type="number"
                     id="stock"
@@ -738,12 +723,12 @@ function FormularioProducto({ producto, onGuardar, onCancelar }) {
                     value={formData.stock}
                     onChange={handleInputChange}
                     min="0"
+                    className={inputBase}
                     placeholder="0"
                   />
                 </div>
-
-                <div className="form-group">
-                  <label htmlFor="stockMinimo">Stock Mínimo</label>
+                <div>
+                  <label htmlFor="stockMinimo" className="mb-1 block text-sm font-medium text-menta-petroleo">Stock Mínimo</label>
                   <input
                     type="number"
                     id="stockMinimo"
@@ -751,41 +736,35 @@ function FormularioProducto({ producto, onGuardar, onCancelar }) {
                     value={formData.stockMinimo}
                     onChange={handleInputChange}
                     min="0"
+                    className={inputBase}
                     placeholder="0"
                   />
                 </div>
               </div>
             </div>
 
-            {/* Información Adicional */}
-            <div className="form-section">
-              <h3>📋 Información Adicional</h3>
+            <div className="rounded-xl border border-slate-200 bg-slate-50/50 p-5">
+              <h3 className="mb-4 flex items-center gap-2 text-base font-semibold text-fondo">
+                <Info size={20} className="text-menta-petroleo" />
+                Información Adicional
+              </h3>
 
-              <div className="form-row">
-                <div className="form-group">
-                  <label htmlFor="productosRelacionados">
-                    Productos Relacionados
-                  </label>
+              <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
+                <div>
+                  <label htmlFor="productosRelacionados" className="mb-1 block text-sm font-medium text-menta-petroleo">Productos Relacionados</label>
                   <input
                     type="text"
                     id="productosRelacionados"
                     name="productosRelacionados"
                     value={formData.productosRelacionados}
                     onChange={handleInputChange}
-                    placeholder="Códigos de productos relacionados separados por comas"
+                    className={inputBase}
+                    placeholder="Códigos separados por comas"
                   />
                 </div>
-
-                <div className="form-group">
-                  <label htmlFor="codigoTipoMoneda">
-                    Código Tipo de Moneda
-                  </label>
-                  <select
-                    id="codigoTipoMoneda"
-                    name="codigoTipoMoneda"
-                    value={formData.codigoTipoMoneda}
-                    onChange={handleInputChange}
-                  >
+                <div>
+                  <label htmlFor="codigoTipoMoneda" className="mb-1 block text-sm font-medium text-menta-petroleo">Código Tipo de Moneda</label>
+                  <select id="codigoTipoMoneda" name="codigoTipoMoneda" value={formData.codigoTipoMoneda} onChange={handleInputChange} className={inputBase}>
                     <option value="PEN">PEN - Soles</option>
                     <option value="USD">USD - Dólares</option>
                     <option value="EUR">EUR - Euros</option>
@@ -793,508 +772,285 @@ function FormularioProducto({ producto, onGuardar, onCancelar }) {
                 </div>
               </div>
 
-              <div className="form-row">
-                <div className="form-group">
-                  <label htmlFor="codigoTipoAfectacionIgvVenta">
-                    Código Tipo Afectación IGV Venta
-                  </label>
-                  <select
-                    id="codigoTipoAfectacionIgvVenta"
-                    name="codigoTipoAfectacionIgvVenta"
-                    value={formData.codigoTipoAfectacionIgvVenta}
-                    onChange={handleInputChange}
-                  >
+              <div className="mt-4 grid grid-cols-1 gap-4 sm:grid-cols-2">
+                <div>
+                  <label htmlFor="codigoTipoAfectacionIgvVenta" className="mb-1 block text-sm font-medium text-menta-petroleo">Código Tipo Afectación IGV Venta</label>
+                  <select id="codigoTipoAfectacionIgvVenta" name="codigoTipoAfectacionIgvVenta" value={formData.codigoTipoAfectacionIgvVenta} onChange={handleInputChange} className={inputBase}>
                     <option value="10">10 - Gravado - Operación Onerosa</option>
-                    <option value="20">
-                      20 - Exonerado - Operación Onerosa
-                    </option>
-                    <option value="30">
-                      30 - Inafecto - Operación Onerosa
-                    </option>
+                    <option value="20">20 - Exonerado - Operación Onerosa</option>
+                    <option value="30">30 - Inafecto - Operación Onerosa</option>
                   </select>
                 </div>
-
-                <div className="form-group">
-                  <label htmlFor="tieneIgv">Tiene IGV</label>
-                  <select
-                    id="tieneIgv"
-                    name="tieneIgv"
-                    value={formData.tieneIgv}
-                    onChange={handleInputChange}
-                  >
+                <div>
+                  <label htmlFor="tieneIgv" className="mb-1 block text-sm font-medium text-menta-petroleo">Tiene IGV</label>
+                  <select id="tieneIgv" name="tieneIgv" value={formData.tieneIgv} onChange={handleInputChange} className={inputBase}>
                     <option value={true}>Sí</option>
                     <option value={false}>No</option>
                   </select>
                 </div>
               </div>
 
-              <div className="form-row">
-                <div className="form-group">
-                  <label htmlFor="codigoTipoAfectacionIgvCompra">
-                    Código Tipo Afectación IGV Compra
-                  </label>
-                  <select
-                    id="codigoTipoAfectacionIgvCompra"
-                    name="codigoTipoAfectacionIgvCompra"
-                    value={formData.codigoTipoAfectacionIgvCompra}
-                    onChange={handleInputChange}
-                  >
-                    <option value="10">10 - Gravado - Operación Onerosa</option>
-                    <option value="20">
-                      20 - Exonerado - Operación Onerosa
-                    </option>
-                    <option value="30">
-                      30 - Inafecto - Operación Onerosa
-                    </option>
-                  </select>
-                </div>
+              <div className="mt-4">
+                <label htmlFor="codigoTipoAfectacionIgvCompra" className="mb-1 block text-sm font-medium text-menta-petroleo">Código Tipo Afectación IGV Compra</label>
+                <select id="codigoTipoAfectacionIgvCompra" name="codigoTipoAfectacionIgvCompra" value={formData.codigoTipoAfectacionIgvCompra} onChange={handleInputChange} className={`${inputBase} max-w-md`}>
+                  <option value="10">10 - Gravado - Operación Onerosa</option>
+                  <option value="20">20 - Exonerado - Operación Onerosa</option>
+                  <option value="30">30 - Inafecto - Operación Onerosa</option>
+                </select>
               </div>
             </div>
 
-            {/* Presentaciones */}
-            <div className="form-section">
-              <h3>📦 Presentaciones del Producto</h3>
+            <div className="rounded-xl border border-slate-200 bg-slate-50/50 p-5">
+              <h3 className="mb-4 flex items-center gap-2 text-base font-semibold text-fondo">
+                <Package size={20} className="text-menta-petroleo" />
+                Presentaciones del Producto
+              </h3>
 
               {esEdicion ? (
                 <>
-                  <div className="presentaciones-info">
-                    {cantidadPresentaciones > 0 ? (
-                      <p className="presentaciones-count">
-                        Este producto tiene{" "}
-                        <strong>{cantidadPresentaciones}</strong> presentación
-                        {cantidadPresentaciones !== 1 ? "es" : ""} configurada
-                        {cantidadPresentaciones !== 1 ? "s" : ""}.
-                      </p>
-                    ) : (
-                      <p className="no-presentaciones">
-                        presentaciones configuradas.
-                      </p>
-                    )}
-                  </div>
-
-                  <div className="presentaciones-buttons">
-                    <button
-                      type="button"
-                      className="btn btn-primary btn-gestionar-presentaciones"
-                      onClick={abrirModalAgregarPresentaciones}
-                    >
-                      📦 Gestionar Presentaciones
-                    </button>
-                  </div>
+                  <p className="mb-4 text-sm text-menta-petroleo">
+                    {cantidadPresentaciones > 0
+                      ? `Este producto tiene ${cantidadPresentaciones} presentación${cantidadPresentaciones !== 1 ? "es" : ""} configurada${cantidadPresentaciones !== 1 ? "s" : ""}.`
+                      : "Sin presentaciones configuradas."}
+                  </p>
+                  <button
+                    type="button"
+                    className="inline-flex items-center gap-2 rounded-xl bg-menta-petroleo px-4 py-2.5 text-sm font-medium text-white transition hover:bg-menta-marino"
+                    onClick={abrirModalAgregarPresentaciones}
+                  >
+                    <Package size={18} /> Gestionar Presentaciones
+                  </button>
                 </>
               ) : (
-                <div className="presentaciones-creacion">
-                  <div className="presentaciones-info">
-                    <h4>📦 Configurar Presentaciones</h4>
-                    <p>
-                      Configure las presentaciones del producto antes de
-                      crearlo.
-                    </p>
-                    {cantidadPresentaciones > 0 ? (
-                      <p className="presentaciones-count">
-                        {cantidadPresentaciones} presentaciones configuradas.
-                      </p>
-                    ) : (
-                      <p className="no-presentaciones">
-                        No hay presentaciones configuradas.
-                      </p>
-                    )}
-                  </div>
-
-                  <div className="presentaciones-buttons">
-                    <button
-                      type="button"
-                      className="btn btn-primary btn-gestionar-presentaciones"
-                      onClick={abrirModalAgregarPresentaciones}
-                    >
-                      📦 Gestionar Presentaciones
-                    </button>
-                  </div>
-
-                  {errors.presentaciones && (
-                    <div className="error-message">{errors.presentaciones}</div>
-                  )}
+                <div>
+                  <p className="mb-2 text-sm text-menta-petroleo">Configure las presentaciones del producto antes de crearlo.</p>
+                  <p className="mb-4 text-sm text-menta-marino">
+                    {cantidadPresentaciones > 0 ? `${cantidadPresentaciones} presentaciones configuradas.` : "No hay presentaciones configuradas."}
+                  </p>
+                  <button
+                    type="button"
+                    className="inline-flex items-center gap-2 rounded-xl bg-menta-petroleo px-4 py-2.5 text-sm font-medium text-white transition hover:bg-menta-marino"
+                    onClick={abrirModalAgregarPresentaciones}
+                  >
+                    <Package size={18} /> Gestionar Presentaciones
+                  </button>
+                  {errors.presentaciones && <p className="mt-2 text-xs text-red-600">{errors.presentaciones}</p>}
                 </div>
               )}
             </div>
 
-            {/* Información adicional */}
-            <div className="form-section">
-              <h3>ℹ️ Información Adicional</h3>
+            <div className="rounded-xl border border-slate-200 bg-slate-50/50 p-5">
+              <h3 className="mb-4 flex items-center gap-2 text-base font-semibold text-fondo">
+                <Info size={20} className="text-menta-petroleo" />
+                Información Adicional
+              </h3>
 
-              <div className="form-row">
-                <div className="form-group">
-                  <label htmlFor="codigoBarras">Código de Barras</label>
-                  <input
-                    type="text"
-                    id="codigoBarras"
-                    name="codigoBarras"
-                    value={formData.codigoBarras}
-                    onChange={handleInputChange}
-                    placeholder="Código de barras"
-                  />
+              <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
+                <div>
+                  <label htmlFor="codigoBarras" className="mb-1 block text-sm font-medium text-menta-petroleo">Código de Barras</label>
+                  <input type="text" id="codigoBarras" name="codigoBarras" value={formData.codigoBarras} onChange={handleInputChange} className={inputBase} placeholder="Código de barras" />
                 </div>
-
-                <div className="form-group">
-                  <label htmlFor="modelo">Modelo</label>
-                  <input
-                    type="text"
-                    id="modelo"
-                    name="modelo"
-                    value={formData.modelo}
-                    onChange={handleInputChange}
-                    placeholder="Modelo del producto"
-                  />
+                <div>
+                  <label htmlFor="modelo" className="mb-1 block text-sm font-medium text-menta-petroleo">Modelo</label>
+                  <input type="text" id="modelo" name="modelo" value={formData.modelo} onChange={handleInputChange} className={inputBase} placeholder="Modelo del producto" />
                 </div>
               </div>
 
-              <div className="form-row">
-                <div className="form-group">
-                  <label htmlFor="marca">Marca</label>
-                  <input
-                    type="text"
-                    id="marca"
-                    name="marca"
-                    value={formData.marca}
-                    onChange={handleInputChange}
-                    placeholder="Marca del producto"
-                  />
+              <div className="mt-4 grid grid-cols-1 gap-4 sm:grid-cols-2">
+                <div>
+                  <label htmlFor="marca" className="mb-1 block text-sm font-medium text-menta-petroleo">Marca</label>
+                  <input type="text" id="marca" name="marca" value={formData.marca} onChange={handleInputChange} className={inputBase} placeholder="Marca del producto" />
                 </div>
-
-                <div className="form-group">
-                  <label htmlFor="codigosunat">Código SUNAT</label>
-                  <input
-                    type="text"
-                    id="codigosunat"
-                    name="codigosunat"
-                    value={formData.codigosunat}
-                    onChange={handleInputChange}
-                    placeholder="Código SUNAT"
-                  />
+                <div>
+                  <label htmlFor="codigosunat" className="mb-1 block text-sm font-medium text-menta-petroleo">Código SUNAT</label>
+                  <input type="text" id="codigosunat" name="codigosunat" value={formData.codigosunat} onChange={handleInputChange} className={inputBase} placeholder="Código SUNAT" />
                 </div>
               </div>
             </div>
 
-            {/* Códigos: visible solo si está habilitado en Configuración */}
             {tallerMecanicoHabilitado && (
-              <div className="form-section">
-                <h3>🏷️ Códigos</h3>
+              <div className="rounded-xl border border-slate-200 bg-slate-50/50 p-5">
+                <h3 className="mb-4 flex items-center gap-2 text-base font-semibold text-fondo">
+                  <Tags size={20} className="text-menta-petroleo" />
+                  Códigos
+                </h3>
 
-                <div className="form-row">
-                  <div className="form-group">
-                    <label htmlFor="origen">Origen</label>
-                    <input
-                      type="text"
-                      id="origen"
-                      name="origen"
-                      value={formData.origen}
-                      onChange={handleInputChange}
-                      placeholder="País de origen"
-                    />
+                <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
+                  <div>
+                    <label htmlFor="origen" className="mb-1 block text-sm font-medium text-menta-petroleo">Origen</label>
+                    <input type="text" id="origen" name="origen" value={formData.origen} onChange={handleInputChange} className={inputBase} placeholder="País de origen" />
                   </div>
-
-                  <div className="form-group">
-                    <label htmlFor="codigoprovedorOEM">
-                      Código Proveedor OEM
-                    </label>
-                    <input
-                      type="text"
-                      id="codigoprovedorOEM"
-                      name="codigoprovedorOEM"
-                      value={formData.codigoprovedorOEM}
-                      onChange={handleInputChange}
-                      placeholder="Código del proveedor OEM"
-                    />
+                  <div>
+                    <label htmlFor="codigoprovedorOEM" className="mb-1 block text-sm font-medium text-menta-petroleo">Código Proveedor OEM</label>
+                    <input type="text" id="codigoprovedorOEM" name="codigoprovedorOEM" value={formData.codigoprovedorOEM} onChange={handleInputChange} className={inputBase} placeholder="Código del proveedor OEM" />
                   </div>
                 </div>
 
-                <div className="form-row">
-                  <div className="form-group">
-                    <label htmlFor="codigoCompetencia">
-                      Código Competencia
-                    </label>
-                    <input
-                      type="text"
-                      id="codigoCompetencia"
-                      name="codigoCompetencia"
-                      value={formData.codigoCompetencia}
-                      onChange={handleInputChange}
-                      placeholder="Código de competencia"
-                    />
+                <div className="mt-4 grid grid-cols-1 gap-4 sm:grid-cols-2">
+                  <div>
+                    <label htmlFor="codigoCompetencia" className="mb-1 block text-sm font-medium text-menta-petroleo">Código Competencia</label>
+                    <input type="text" id="codigoCompetencia" name="codigoCompetencia" value={formData.codigoCompetencia} onChange={handleInputChange} className={inputBase} placeholder="Código de competencia" />
                   </div>
-
-                  <div className="form-group">
-                    <label htmlFor="rangoAnos">Rango de Años</label>
-                    <input
-                      type="text"
-                      id="rangoAnos"
-                      name="rangoAnos"
-                      value={formData.rangoAnos}
-                      onChange={handleInputChange}
-                      placeholder="Ej: 2020-2025"
-                      className={errors.rangoAnos ? "error" : ""}
-                    />
-                    {errors.rangoAnos && (
-                      <span className="error-message">{errors.rangoAnos}</span>
-                    )}
+                  <div>
+                    <label htmlFor="rangoAnos" className="mb-1 block text-sm font-medium text-menta-petroleo">Rango de Años</label>
+                    <input type="text" id="rangoAnos" name="rangoAnos" value={formData.rangoAnos} onChange={handleInputChange} placeholder="Ej: 2020-2025" className={`${inputBase} ${errors.rangoAnos ? inputError : ""}`} />
+                    {errors.rangoAnos && <span className="mt-1 block text-xs text-red-600">{errors.rangoAnos}</span>}
                   </div>
                 </div>
               </div>
             )}
 
-            {/* Elementos de farmacia */}
             {farmaciaElementosHabilitado && (
-              <div className="form-section">
-                <h3>ℹ️ Elementos de farmacia</h3>
+              <div className="rounded-xl border border-slate-200 bg-slate-50/50 p-5">
+                <h3 className="mb-4 flex items-center gap-2 text-base font-semibold text-fondo">
+                  <Info size={20} className="text-menta-petroleo" />
+                  Elementos de farmacia
+                </h3>
 
-                <div className="form-row">
-                  <div className="form-group">
-                    <label htmlFor="codigoBarras">Código DIGEMID</label>
-                    <input
-                      type="text"
-                      id="codigoBarras"
-                      name="codigoBarras"
-                      value={formData.codigoBarras}
-                      onChange={handleInputChange}
-                      placeholder="Código DIGEMID"
-                    />
+                <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
+                  <div>
+                    <label htmlFor="codigoBarras" className="mb-1 block text-sm font-medium text-menta-petroleo">Código DIGEMID</label>
+                    <input type="text" id="codigoBarras" name="codigoBarras" value={formData.codigoBarras} onChange={handleInputChange} className={inputBase} placeholder="Código DIGEMID" />
                   </div>
-
-                  <div className="form-group">
-                    <label htmlFor="modelo">Nombre DIGEMID </label>
-                    <input
-                      type="text"
-                      id="modelo"
-                      name="modelo"
-                      value={formData.modelo}
-                      onChange={handleInputChange}
-                      placeholder="Nombre DIGEMID"
-                    />
+                  <div>
+                    <label htmlFor="modelo" className="mb-1 block text-sm font-medium text-menta-petroleo">Nombre DIGEMID</label>
+                    <input type="text" id="modelo" name="modelo" value={formData.modelo} onChange={handleInputChange} className={inputBase} placeholder="Nombre DIGEMID" />
                   </div>
                 </div>
 
-                <div className="form-row">
-                  <div className="form-group">
-                    <label htmlFor="marca">Registro Sanitario</label>
-                    <input
-                      type="text"
-                      id="marca"
-                      name="marca"
-                      value={formData.marca}
-                      onChange={handleInputChange}
-                      placeholder="Registro Sanitario"
-                    />
+                <div className="mt-4 grid grid-cols-1 gap-4 sm:grid-cols-2">
+                  <div>
+                    <label htmlFor="marca" className="mb-1 block text-sm font-medium text-menta-petroleo">Registro Sanitario</label>
+                    <input type="text" id="marca" name="marca" value={formData.marca} onChange={handleInputChange} className={inputBase} placeholder="Registro Sanitario" />
                   </div>
-
-                  <div className="form-group">
-                    <label htmlFor="codigosunat">Laboratorio</label>
-                    <input
-                      type="text"
-                      id="codigosunat"
-                      name="codigosunat"
-                      value={formData.codigosunat}
-                      onChange={handleInputChange}
-                      placeholder="Laboratorio"
-                    />
+                  <div>
+                    <label htmlFor="codigosunat" className="mb-1 block text-sm font-medium text-menta-petroleo">Laboratorio</label>
+                    <input type="text" id="codigosunat" name="codigosunat" value={formData.codigosunat} onChange={handleInputChange} className={inputBase} placeholder="Laboratorio" />
                   </div>
                 </div>
               </div>
             )}
 
-            {/* Configuración fiscal */}
-            <div className="form-section">
-              <h3>📊 Configuración Fiscal</h3>
+            <div className="rounded-xl border border-slate-200 bg-slate-50/50 p-5">
+              <h3 className="mb-4 flex items-center gap-2 text-base font-semibold text-fondo">
+                <BarChart3 size={20} className="text-menta-petroleo" />
+                Configuración Fiscal
+              </h3>
 
-              <div className="form-group">
-                <label htmlFor="tipodeAfectacion">Tipo de Afectación</label>
-                <select
-                  id="tipodeAfectacion"
-                  name="tipodeAfectacion"
-                  value={formData.tipodeAfectacion}
-                  onChange={handleInputChange}
-                >
-                  <option value="Gravado_Operación_Onerosa">
-                    Gravado - Operación Onerosa
-                  </option>
-                  <option value="Gravado_Retiro_por_premio">
-                    Gravado - Retiro por Premio
-                  </option>
-                  <option value="Gravado_Retiro_por_donación">
-                    Gravado - Retiro por Donación
-                  </option>
+              <div>
+                <label htmlFor="tipodeAfectacion" className="mb-1 block text-sm font-medium text-menta-petroleo">Tipo de Afectación</label>
+                <select id="tipodeAfectacion" name="tipodeAfectacion" value={formData.tipodeAfectacion} onChange={handleInputChange} className={`${inputBase} max-w-md`}>
+                  <option value="Gravado_Operación_Onerosa">Gravado - Operación Onerosa</option>
+                  <option value="Gravado_Retiro_por_premio">Gravado - Retiro por Premio</option>
+                  <option value="Gravado_Retiro_por_donación">Gravado - Retiro por Donación</option>
                   <option value="Gravado_Retiro">Gravado - Retiro</option>
-                  <option value="Gravado_Retiro_por_publicidad">
-                    Gravado - Retiro por Publicidad
-                  </option>
-                  <option value="Gravado_Bonificaciones">
-                    Gravado - Bonificaciones
-                  </option>
-                  <option value="Gravado_Retiro_por_entrega_a_trabajadores">
-                    Gravado - Retiro por Entrega a Trabajadores
-                  </option>
-                  <option value="Exonerado_Operación_Onerosa">
-                    Exonerado - Operación Onerosa
-                  </option>
+                  <option value="Gravado_Retiro_por_publicidad">Gravado - Retiro por Publicidad</option>
+                  <option value="Gravado_Bonificaciones">Gravado - Bonificaciones</option>
+                  <option value="Gravado_Retiro_por_entrega_a_trabajadores">Gravado - Retiro por Entrega a Trabajadores</option>
+                  <option value="Exonerado_Operación_Onerosa">Exonerado - Operación Onerosa</option>
                   <option value="Exonerado_Retiro">Exonerado - Retiro</option>
-                  <option value="Inafecto_Operación_Onerosa">
-                    Inafecto - Operación Onerosa
-                  </option>
-                  <option value="Inafecto_Retiro_por_Bonificación">
-                    Inafecto - Retiro por Bonificación
-                  </option>
+                  <option value="Inafecto_Operación_Onerosa">Inafecto - Operación Onerosa</option>
+                  <option value="Inafecto_Retiro_por_Bonificación">Inafecto - Retiro por Bonificación</option>
                   <option value="Inafecto_Retiro">Inafecto - Retiro</option>
-                  <option value="Exonerado_Transferencia_Gratuita">
-                    Exonerado - Transferencia Gratuita
-                  </option>
+                  <option value="Exonerado_Transferencia_Gratuita">Exonerado - Transferencia Gratuita</option>
                 </select>
               </div>
 
-              <div className="checkbox-group">
-                <label>
-                  <input
-                    type="checkbox"
-                    name="iscActivo"
-                    checked={formData.iscActivo}
-                    onChange={handleInputChange}
-                  />
-                  ISC Activo
-                </label>
+              <div className="mt-4 flex items-center gap-2">
+                <input type="checkbox" id="iscActivo" name="iscActivo" checked={formData.iscActivo} onChange={handleInputChange} className="h-4 w-4 rounded border-slate-300 text-menta-petroleo focus:ring-menta-turquesa" />
+                <label htmlFor="iscActivo" className="text-sm font-medium text-menta-petroleo">ISC Activo</label>
               </div>
 
               {formData.iscActivo && (
-                <div className="form-group">
-                  <label htmlFor="tipoAplicacionISC">
-                    Tipo de Aplicación ISC *
-                  </label>
-                  <select
-                    id="tipoAplicacionISC"
-                    name="tipoAplicacionISC"
-                    value={formData.tipoAplicacionISC}
-                    onChange={handleInputChange}
-                    className={errors.tipoAplicacionISC ? "error" : ""}
-                  >
+                <div className="mt-4">
+                  <label htmlFor="tipoAplicacionISC" className="mb-1 block text-sm font-medium text-menta-petroleo">Tipo de Aplicación ISC *</label>
+                  <select id="tipoAplicacionISC" name="tipoAplicacionISC" value={formData.tipoAplicacionISC} onChange={handleInputChange} className={`${inputBase} max-w-md ${errors.tipoAplicacionISC ? inputError : ""}`}>
                     <option value="">Seleccionar tipo</option>
-                    <option value="Aplicación del Monto Fijo">
-                      Aplicación del Monto Fijo
-                    </option>
+                    <option value="Aplicación del Monto Fijo">Aplicación del Monto Fijo</option>
                     <option value="Sistema al valor">Sistema al valor</option>
-                    <option value="Sistema de Precios de Venta al Público">
-                      Sistema de Precios de Venta al Público
-                    </option>
+                    <option value="Sistema de Precios de Venta al Público">Sistema de Precios de Venta al Público</option>
                   </select>
-                  {errors.tipoAplicacionISC && (
-                    <span className="error-message">
-                      {errors.tipoAplicacionISC}
-                    </span>
-                  )}
+                  {errors.tipoAplicacionISC && <span className="mt-1 block text-xs text-red-600">{errors.tipoAplicacionISC}</span>}
                 </div>
               )}
 
-              <div className="checkbox-group">
-                <label>
-                  <input
-                    type="checkbox"
-                    name="sujetoDetraccion"
-                    checked={formData.sujetoDetraccion}
-                    onChange={handleInputChange}
-                  />
-                  Sujeto a Detracción
-                </label>
+              <div className="mt-4 flex items-center gap-2">
+                <input type="checkbox" id="sujetoDetraccion" name="sujetoDetraccion" checked={formData.sujetoDetraccion} onChange={handleInputChange} className="h-4 w-4 rounded border-slate-300 text-menta-petroleo focus:ring-menta-turquesa" />
+                <label htmlFor="sujetoDetraccion" className="text-sm font-medium text-menta-petroleo">Sujeto a Detracción</label>
               </div>
             </div>
 
-            {/* Observaciones */}
-            <div className="form-section">
-              <h3>📝 Observaciones</h3>
-
-              <div className="form-group full-width">
-                <label htmlFor="observaciones">Observaciones</label>
-                <textarea
-                  id="observaciones"
-                  name="observaciones"
-                  value={formData.observaciones}
-                  onChange={handleInputChange}
-                  rows="3"
-                  placeholder="Observaciones adicionales"
-                />
-              </div>
+            <div className="rounded-xl border border-slate-200 bg-slate-50/50 p-5">
+              <h3 className="mb-4 flex items-center gap-2 text-base font-semibold text-fondo">
+                <FileText size={20} className="text-menta-petroleo" />
+                Observaciones
+              </h3>
+              <label htmlFor="observaciones" className="mb-1 block text-sm font-medium text-menta-petroleo">Observaciones</label>
+              <textarea id="observaciones" name="observaciones" value={formData.observaciones} onChange={handleInputChange} rows={3} className={inputBase} placeholder="Observaciones adicionales" />
             </div>
 
-            {/* Imágenes */}
-            <div className="form-section">
-              <h3>🖼️ Imágenes del Producto</h3>
+            <div className="rounded-xl border border-slate-200 bg-slate-50/50 p-5">
+              <h3 className="mb-4 flex items-center gap-2 text-base font-semibold text-fondo">
+                <ImageIcon size={20} className="text-menta-petroleo" />
+                Imágenes del Producto
+              </h3>
 
-              <div className="image-upload-grid">
+              <div className="grid grid-cols-3 gap-4">
                 {[1, 2, 3].map((num) => (
-                  <div key={num} className="image-upload-item">
-                    <div className="image-upload-box">
+                  <div key={num} className="min-w-0">
+                    <div className="aspect-square w-full rounded-lg border-2 border-dashed border-slate-200 bg-slate-50/50 overflow-hidden">
                       {previewImagenes[`imagen${num}`] ? (
-                        <div className="image-preview">
-                          <img
-                            src={previewImagenes[`imagen${num}`]}
-                            alt={`Preview ${num}`}
-                          />
+                        <div className="relative h-full w-full">
+                          <img src={previewImagenes[`imagen${num}`]} alt={`Preview ${num}`} className="h-full w-full object-cover" />
                           <button
                             type="button"
-                            className="remove-image"
+                            className="absolute right-1 top-1 rounded-full bg-red-500 p-1.5 text-white transition hover:bg-red-600"
                             onClick={() => removeImagen(`imagen${num}`)}
                           >
-                            ✕
+                            <X size={12} />
                           </button>
                         </div>
                       ) : (
-                        <label className="upload-label">
-                          <span className="upload-icon">+</span>
-                          <span className="upload-text">Imagen {num}</span>
-                          <input
-                            type="file"
-                            accept="image/*"
-                            onChange={(e) =>
-                              handleImagenChange(e, `imagen${num}`)
-                            }
-                            style={{ display: "none" }}
-                          />
+                        <label className="flex h-full cursor-pointer flex-col items-center justify-center gap-1 text-menta-petroleo transition hover:bg-menta-claro/30">
+                          <span className="text-2xl font-bold leading-none">+</span>
+                          <span className="text-xs font-medium">Imagen {num}</span>
+                          <input type="file" accept="image/*" onChange={(e) => handleImagenChange(e, `imagen${num}`)} className="hidden" />
                         </label>
                       )}
                     </div>
                   </div>
                 ))}
               </div>
-              <p className="upload-note">
-                Se recomienda resoluciones Full HD 1024x720. Máximo 5MB por
-                imagen.
-              </p>
+              <p className="mt-3 text-xs text-slate-500">Resoluciones Full HD 1024x720. Máximo 5MB por imagen.</p>
             </div>
           </div>
 
-          {/* Botones de acción fijos */}
-          <div>
-            <div className="actions-container">
-              <button
-                type="button"
-                className="btn btn-secondary"
-                onClick={onCancelar}
-                disabled={loading}
-              >
-                ← Cancelar
-              </button>
-              <button
-                type="submit"
-                className="btn btn-primary"
-                disabled={loading}
-              >
-                {loading ? (
-                  <>
-                    <span className="spinner-small"></span>
-                    {esEdicion ? "Actualizando..." : "Creando producto..."}
-                  </>
-                ) : (
-                  <>
-                    {esEdicion ? "✓ Actualizar Producto" : "✓ Crear Producto"}
-                  </>
-                )}
-              </button>
-            </div>
+          <div className="mt-8 flex flex-wrap items-center justify-end gap-3 border-t border-slate-200 pt-6">
+            <button
+              type="button"
+              className="inline-flex items-center gap-2 rounded-xl border border-slate-300 bg-white px-4 py-2.5 text-sm font-semibold text-slate-700 shadow-sm transition hover:bg-slate-50 disabled:opacity-50"
+              onClick={onCancelar}
+              disabled={loading}
+            >
+              ← Cancelar
+            </button>
+            <button
+              type="submit"
+              className="inline-flex items-center gap-2 rounded-xl bg-menta-petroleo px-4 py-2.5 text-sm font-semibold text-white shadow-sm transition hover:bg-menta-marino disabled:opacity-50"
+              disabled={loading}
+            >
+              {loading ? (
+                <>
+                  <span className="h-4 w-4 animate-spin rounded-full border-2 border-white border-t-transparent" />
+                  {esEdicion ? "Actualizando..." : "Creando producto..."}
+                </>
+              ) : (
+                <>
+                  <Check size={18} />
+                  {esEdicion ? "Actualizar Producto" : "Crear Producto"}
+                </>
+              )}
+            </button>
           </div>
         </form>
       </div>

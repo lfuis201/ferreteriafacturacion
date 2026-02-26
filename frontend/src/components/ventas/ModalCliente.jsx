@@ -4,6 +4,20 @@ import {
   consultarRENIEC,
   actualizarCliente,
 } from "../../services/clienteService";
+import {
+  User,
+  Building,
+  Mail,
+  Phone,
+  MapPin,
+  Hash,
+  Plus,
+  X,
+  Search,
+  CheckCircle,
+  Info,
+  ArrowRight
+} from "lucide-react";
 
 // Simulación de datos de ubigeo - en tu aplicación real vendrían de una API
 const ubigeosIniciales = [
@@ -16032,8 +16046,7 @@ function ModalCliente({ onClose, onClienteCreado, clienteEditando }) {
             ...prev,
             nombre:
               tipoDoc === "DNI"
-                ? `${datosRENIEC.nombres || ""} ${
-                    datosRENIEC.apellidoPaterno || ""
+                ? `${datosRENIEC.nombres || ""} ${datosRENIEC.apellidoPaterno || ""
                   } ${datosRENIEC.apellidoMaterno || ""}`.trim()
                 : datosRENIEC.nombre || "",
             direccion: datosRENIEC.direccion || "",
@@ -16051,8 +16064,7 @@ function ModalCliente({ onClose, onClienteCreado, clienteEditando }) {
             setDistritoSeleccionado(datosRENIEC.distrito);
 
           setMensajeRENIEC(
-            `✅ Datos obtenidos automáticamente de ${
-              tipoDoc === "DNI" ? "RENIEC" : "SUNAT"
+            `✅ Datos obtenidos automáticamente de ${tipoDoc === "DNI" ? "RENIEC" : "SUNAT"
             }`
           );
         }
@@ -16199,8 +16211,7 @@ function ModalCliente({ onClose, onClienteCreado, clienteEditando }) {
           nombre:
             prev.nombre ||
             (clienteData.tipoDocumento === "DNI"
-              ? `${datosRENIEC.nombres || ""} ${
-                  datosRENIEC.apellidoPaterno || ""
+              ? `${datosRENIEC.nombres || ""} ${datosRENIEC.apellidoPaterno || ""
                 } ${datosRENIEC.apellidoMaterno || ""}`.trim()
               : datosRENIEC.nombre || ""),
           direccion: prev.direccion || datosRENIEC.direccion || "",
@@ -16208,8 +16219,7 @@ function ModalCliente({ onClose, onClienteCreado, clienteEditando }) {
         }));
 
         setMensajeRENIEC(
-          `✅ Datos obtenidos de ${
-            clienteData.tipoDocumento === "DNI" ? "RENIEC" : "SUNAT"
+          `✅ Datos obtenidos de ${clienteData.tipoDocumento === "DNI" ? "RENIEC" : "SUNAT"
           } exitosamente`
         );
       } else {
@@ -16218,8 +16228,7 @@ function ModalCliente({ onClose, onClienteCreado, clienteEditando }) {
     } catch (error) {
       console.error("Error al consultar RENIEC:", error);
       setMensajeRENIEC(
-        `❌ Error al consultar ${
-          clienteData.tipoDocumento === "DNI" ? "RENIEC" : "SUNAT"
+        `❌ Error al consultar ${clienteData.tipoDocumento === "DNI" ? "RENIEC" : "SUNAT"
         }: ${error.message}`
       );
     } finally {
@@ -16497,8 +16506,8 @@ function ModalCliente({ onClose, onClienteCreado, clienteEditando }) {
                     clienteData.tipoDocumento === "DNI"
                       ? "Se completará automáticamente con RENIEC"
                       : clienteData.tipoDocumento === "RUC"
-                      ? "Se completará automáticamente con SUNAT"
-                      : "Nombre completo / Nombre comercial"
+                        ? "Se completará automáticamente con SUNAT"
+                        : "Nombre completo / Nombre comercial"
                   }
                   style={{
                     width: "85%",
@@ -16509,7 +16518,7 @@ function ModalCliente({ onClose, onClienteCreado, clienteEditando }) {
                     backgroundColor:
                       (clienteData.tipoDocumento === "DNI" ||
                         clienteData.tipoDocumento === "RUC") &&
-                      !clienteData.nombre
+                        !clienteData.nombre
                         ? "#f8f9fa"
                         : "white",
                   }}
@@ -16613,11 +16622,11 @@ function ModalCliente({ onClose, onClienteCreado, clienteEditando }) {
                       fontWeight: "600",
                       color:
                         clienteData.numeroDocumento.length ===
-                        getMaxLength(clienteData.tipoDocumento)
+                          getMaxLength(clienteData.tipoDocumento)
                           ? "#28a745"
                           : clienteData.numeroDocumento.length > 0
-                          ? "#17a2b8"
-                          : "#6c757d",
+                            ? "#17a2b8"
+                            : "#6c757d",
                       minWidth: "60px",
                     }}
                   >
@@ -16627,8 +16636,8 @@ function ModalCliente({ onClose, onClienteCreado, clienteEditando }) {
                     </span>
                     {clienteData.numeroDocumento.length ===
                       getMaxLength(clienteData.tipoDocumento) && (
-                      <span style={{ fontSize: "14px" }}>✓</span>
-                    )}
+                        <span style={{ fontSize: "14px" }}>✓</span>
+                      )}
                   </div>
                 </div>
 
@@ -16647,16 +16656,15 @@ function ModalCliente({ onClose, onClienteCreado, clienteEditando }) {
                       height: "90%",
                       backgroundColor:
                         clienteData.numeroDocumento.length ===
-                        getMaxLength(clienteData.tipoDocumento)
+                          getMaxLength(clienteData.tipoDocumento)
                           ? "#28a745"
                           : clienteData.numeroDocumento.length > 0
-                          ? "#17a2b8"
-                          : "#e9ecef",
-                      width: `${
-                        (clienteData.numeroDocumento.length /
+                            ? "#17a2b8"
+                            : "#e9ecef",
+                      width: `${(clienteData.numeroDocumento.length /
                           getMaxLength(clienteData.tipoDocumento)) *
                         100
-                      }%`,
+                        }%`,
                       transition:
                         "width 0.2s ease-in-out, background-color 0.2s ease-in-out",
                     }}
@@ -16968,18 +16976,18 @@ function ModalCliente({ onClose, onClienteCreado, clienteEditando }) {
                     {(() => {
                       const filteredUbigeos = busquedaUbigeo
                         ? ubigeos.filter(
-                            (ubigeo) =>
-                              ubigeo.departamento
-                                .toLowerCase()
-                                .includes(busquedaUbigeo.toLowerCase()) ||
-                              ubigeo.provincia
-                                .toLowerCase()
-                                .includes(busquedaUbigeo.toLowerCase()) ||
-                              ubigeo.distrito
-                                .toLowerCase()
-                                .includes(busquedaUbigeo.toLowerCase()) ||
-                              ubigeo.codigo.includes(busquedaUbigeo)
-                          )
+                          (ubigeo) =>
+                            ubigeo.departamento
+                              .toLowerCase()
+                              .includes(busquedaUbigeo.toLowerCase()) ||
+                            ubigeo.provincia
+                              .toLowerCase()
+                              .includes(busquedaUbigeo.toLowerCase()) ||
+                            ubigeo.distrito
+                              .toLowerCase()
+                              .includes(busquedaUbigeo.toLowerCase()) ||
+                            ubigeo.codigo.includes(busquedaUbigeo)
+                        )
                         : ubigeos.slice(0, 10);
 
                       if (filteredUbigeos.length === 0) {
@@ -17257,20 +17265,19 @@ function ModalCliente({ onClose, onClienteCreado, clienteEditando }) {
                       backgroundColor: mensajeRENIEC.includes("✅")
                         ? "#d4edda"
                         : mensajeRENIEC.includes("❌")
-                        ? "#f8d7da"
-                        : "#fff3cd",
+                          ? "#f8d7da"
+                          : "#fff3cd",
                       color: mensajeRENIEC.includes("✅")
                         ? "#155724"
                         : mensajeRENIEC.includes("❌")
-                        ? "#721c24"
-                        : "#856404",
-                      border: `1px solid ${
-                        mensajeRENIEC.includes("✅")
+                          ? "#721c24"
+                          : "#856404",
+                      border: `1px solid ${mensajeRENIEC.includes("✅")
                           ? "#c3e6cb"
                           : mensajeRENIEC.includes("❌")
-                          ? "#f5c6cb"
-                          : "#ffeaa7"
-                      }`,
+                            ? "#f5c6cb"
+                            : "#ffeaa7"
+                        }`,
                     }}
                   >
                     {mensajeRENIEC}
@@ -17302,11 +17309,10 @@ function ModalCliente({ onClose, onClienteCreado, clienteEditando }) {
                     >
                       {consultandoRENIEC
                         ? "🔄 Consultando..."
-                        : `🔍 Consultar ${
-                            clienteData.tipoDocumento === "DNI"
-                              ? "RENIEC"
-                              : "SUNAT"
-                          }`}
+                        : `🔍 Consultar ${clienteData.tipoDocumento === "DNI"
+                          ? "RENIEC"
+                          : "SUNAT"
+                        }`}
                     </button>
                     <small
                       style={{

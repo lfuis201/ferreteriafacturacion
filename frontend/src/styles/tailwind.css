@@ -1,0 +1,41 @@
+/* Tailwind CSS v4 - utilidades disponibles en todo el proyecto */
+@import "tailwindcss";
+
+/*
+  Tema: paleta Menta / Petróleo (nombres semánticos, sin números)
+  Fondo principal: fondo (#0e0146)
+*/
+@theme {
+  --color-fondo: #0e0146;
+  --color-menta-claro: #C5FDD3;
+  --color-menta-suave: #94E1B4;
+  --color-menta-medio: #69C5A0;
+  --color-menta-esmeralda: #45A994;
+  --color-menta-turquesa: #288D8A;
+  --color-menta-petroleo: #126171;
+  --color-menta-marino: #033B51;
+}
+
+/* Scrollbar del sidebar - tema menta */
+.sidebar-scroll::-webkit-scrollbar {
+  width: 6px;
+}
+
+.sidebar-scroll::-webkit-scrollbar-track {
+  background: rgba(3, 59, 81, 0.2); /* menta-600 */
+  border-radius: 9999px;
+}
+
+.sidebar-scroll::-webkit-scrollbar-thumb {
+  background: #45A994; /* menta-300 */
+  border-radius: 9999px;
+}
+
+.sidebar-scroll::-webkit-scrollbar-thumb:hover {
+  background: #69C5A0; /* menta-200 */
+}
+
+.sidebar-scroll {
+  scrollbar-width: thin;
+  scrollbar-color: #45A994 rgba(3, 59, 81, 0.2);
+}

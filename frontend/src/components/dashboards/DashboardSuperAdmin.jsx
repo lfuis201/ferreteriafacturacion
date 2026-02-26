@@ -1,24 +1,24 @@
 import React, { useState, useEffect } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useLocation } from 'react-router-dom';
 import { cerrarSesion } from '../../services/authService';
 import Swal from 'sweetalert2';
-import { 
-  Home, 
-  Users, 
-  Building2, 
-  FolderOpen, 
-  Package, 
-  DollarSign, 
+import {
+  Home,
+  Users,
+  Building2,
+  FolderOpen,
+  Package,
+  DollarSign,
   Truck,
   Settings,
-  LogOut,
   BarChart3,
-  ChevronDown,
-  ChevronRight,
   ShoppingCart,
   TrendingUp,
   ServerCrash,
+  Menu,
+  X,
 } from 'lucide-react';
+import { Sidebar } from '../ui';
 import ListaGuiasRemision from '../guiaRemision/ListaGuiasRemision';
 import FormularioGuiaRemisionTrans from '../guiaRemisionTransportista/FormularioGuiaRemuionTrans';
 import ReferenciaInventario from '../inventario/referenciaInventario';
@@ -99,6 +99,7 @@ import TransportistaLista from '../guiaRemisionTransportista/TransportitaLista';
 import ConductoresLista from '../guiaRemisionTransportista/ConductoresLista'; 
 import VehiculoLista from '../guiaRemisionTransportista/VehiculoLista';   
 import DirecciónPartidaLista from '../guiaRemision/DirecciónPartidaLista'; 
+import InicioOverview from './InicioOverview';
 
 // Servicios para métricas del dashboard
 import { obtenerUsuarios } from '../../services/usuarioService';
@@ -118,6 +119,7 @@ import '../../styles/Dashboard.css';
 
 function DashboardSuperAdmin() {
   const navigate = useNavigate();
+  const location = useLocation();
   const [usuario, setUsuario] = useState(null);
   const [activeSection, setActiveSection] = useState('inicio');
   const [guiaRemisionExpanded, setGuiaRemisionExpanded] = useState(false);
@@ -137,7 +139,8 @@ function DashboardSuperAdmin() {
 
 
   const [productosExpanded, setProductosExpanded] = useState(false);
-  const [productosSubsection, setProductosSubsection] = useState(''); 
+  const [productosSubsection, setProductosSubsection] = useState('');
+  const [sidebarOpen, setSidebarOpen] = useState(false); 
 
   // Estados para modales de importar/exportar en Productos
   const [modalImportarAbierto, setModalImportarAbierto] = useState(false);
@@ -170,6 +173,28 @@ function DashboardSuperAdmin() {
       navigate('/');
     }
   }, [navigate]);
+
+  // Al llegar desde DashboardLayout con state (ej. clic en Ventas en otra página)
+  useEffect(() => {
+    const state = location.state;
+    if (!state?.activeSection) return;
+    setActiveSection(state.activeSection);
+    if (state.subsection) {
+      if (state.activeSection === 'guiaRemision') setGuiaRemisionSubsection(state.subsection);
+      if (state.activeSection === 'ventas') setVentasSubsection(state.subsection);
+      if (state.activeSection === 'productos, presentaciones') setProductosSubsection(state.subsection);
+      if (state.activeSection === 'inventario') setInventarioSubsection(state.subsection);
+      if (state.activeSection === 'compras') setComprasSubsection(state.subsection);
+      if (state.activeSection === 'proveedores') setProveedoresSubsection(state.subsection);
+    }
+    setGuiaRemisionExpanded(state.activeSection === 'guiaRemision');
+    setVentasExpanded(state.activeSection === 'ventas');
+    setProductosExpanded(state.activeSection === 'productos, presentaciones');
+    setInventarioExpanded(state.activeSection === 'inventario');
+    setComprasExpanded(state.activeSection === 'compras');
+    setProveedoresExpanded(state.activeSection === 'proveedores');
+    window.history.replaceState({}, document.title, location.pathname);
+  }, [location.state, location.pathname]);
 
   // Estados para métricas del dashboard de Inicio
   const [stats, setStats] = useState({
@@ -311,7 +336,63 @@ function DashboardSuperAdmin() {
 
   const visibleMenuItems = filtrarMenuItemsPorRol(usuario?.rol, menuItems);
 
+  // Submenús para el Sidebar reutilizable
+  const SIDEBAR_SUBMENUS = {
+    'guiaRemision': [
+      { id: 'remitente', label: 'G.R. Remitente' },
+      { id: 'transportista', label: 'G.R. Transportista' },
+      { id: 'transportistas', label: 'Transportistas' },
+      { id: 'conductores', label: 'Conductores' },
+      { id: 'vehiculos', label: 'Vehículos' },
+      { id: 'direccion-partida', label: 'Dirección Partida' },
+    ],
+    'ventas': [
+      { id: 'nueva-venta', label: 'Nueva Comprobante' },
+      { id: 'lista-ventas', label: 'Lista de Comprobantes' },
+      { id: 'Nota de venta', label: 'Nota de venta' },
+      { id: 'Comprobantes no enviados', label: 'Comprobantes no enviados' },
+      { id: 'cpe-rectificar', label: 'CPE Rectificar' },
+      { id: 'documento-recurrencia', label: 'Listado Recurrencia' },
+      { id: 'comprobante-contingencia', label: 'Comprobante Contingencia' },
+      { id: 'resumenes', label: 'Resumenes' },
+      { id: 'anulaciones', label: 'Anulaciones' },
+      { id: 'pedidos', label: 'Pedidos' },
+    ],
+    'productos, presentaciones': [
+      { id: 'lista-productos', label: 'Lista de Productos' },
+      { id: 'nuevo-producto', label: 'Nuevo Producto' },
+      { id: 'packs-promociones', label: 'Packs y Promociones' },
+      { id: 'marcas', label: 'Marcas' },
+      { id: 'series', label: 'Series' },
+      { id: 'lotes', label: 'Lotes' },
+    ],
+    'inventario': [
+      { id: 'referencias', label: 'Referencias' },
+      { id: 'movimientos', label: 'Movimientos' },
+      { id: 'traslados', label: 'Traslados' },
+      { id: 'validar-inventario', label: 'Validar inventario' },
+      { id: 'revision-inventario', label: 'Revisión de inventario' },
+      { id: 'stock-historico', label: 'Stock histórico' },
+      { id: 'kardex-costo-promedio', label: 'Kardex costo promedio' },
+    ],
+    'compras': [
+      { id: 'ordenes-compra', label: 'Nueva Compra' },
+      { id: 'lista-compras', label: 'Lista de Compras' },
+      { id: 'liquidacion-compras', label: 'Liquidación de Compras' },
+      { id: 'solicitar-cotizacion', label: 'Solicitar Cotización' },
+      { id: 'ordenes-compras', label: 'Órdenes de Compra' },
+      { id: 'gastos-diversos', label: 'Gastos Diversos' },
+    ],
+    'proveedores': [
+      { id: 'nuevo-proveedor', label: 'Nuevo Proveedor' },
+      { id: 'lista-proveedores', label: 'Lista de Proveedores' },
+    ],
+  };
+
+  const closeSidebar = () => setSidebarOpen(false);
+
   const handleModuleNavigation = (moduleId) => {
+    closeSidebar();
     switch (moduleId) {
       case 'usuarios':
         navigate('/usuarios/gestion');
@@ -570,6 +651,16 @@ function DashboardSuperAdmin() {
     setActiveSection('productos, presentaciones');
   };
 
+  const handleSubItemClick = (parentId, subId) => {
+    closeSidebar();
+    if (parentId === 'guiaRemision') handleGuiaRemisionSubsection(subId);
+    else if (parentId === 'ventas') handleVentasSubsection(subId);
+    else if (parentId === 'productos, presentaciones') handleProductosSubsection(subId);
+    else if (parentId === 'inventario') handleInventarioSubsection(subId);
+    else if (parentId === 'compras') handleComprasSubsection(subId);
+    else if (parentId === 'proveedores') handleProveedoresSubsection(subId);
+  };
+
 
 
 
@@ -580,87 +671,18 @@ function DashboardSuperAdmin() {
     switch (activeSection) {
       case 'inicio':
         return (
-          <div className="dashboard-content">
-            <h2>Panel de Control - SuperAdmin</h2> 
-            <div className="stats-grid">
-              <div className="stat-card">
-                <h3>Usuarios Totales</h3>
-                <p className="stat-number">{cargandoStats ? '...' : stats.usuarios}</p>
-              </div>
-              <div className="stat-card">
-                <h3>Sucursales</h3>
-                <p className="stat-number">{cargandoStats ? '...' : stats.sucursales}</p>
-              </div>
-              <div className="stat-card">
-                <h3>Productos y Presentaciones</h3>
-                <p className="stat-number">{cargandoStats ? '...' : stats.productosYPresentaciones}</p>
-              </div>
-              <div className="stat-card">
-                <h3>Ventas del Mes</h3>
-                <p className="stat-number">{cargandoStats ? '...' : stats.ventasMes}</p>
-              </div>
-            </div>
-
-            {errorStats && (
-              <div className="error-message" style={{ marginTop: '8px' }}>
-                {errorStats}
-              </div>
-            )}
-
-            <div className="quick-actions">
-              <h3>Acciones Rápidas</h3>
-              <div className="action-buttons">
-                <button 
-                  className="action-btn"
-                  onClick={() => navigate('/usuarios/gestion')}
-                >
-                  <Users size={20} /> Gestionar Usuarios
-                </button>
-                <button 
-                  className="action-btn"
-                  onClick={() => navigate('/sucursales/gestion')}
-                >
-                  <Building2 size={20} /> Gestionar Sucursales
-                </button>
-                <button 
-                  className="action-btn"
-                  onClick={() => navigate('/categorias/gestion')}
-                >
-                  <FolderOpen size={20} /> Gestionar Categorías
-                </button>
-                <button 
-                  className="action-btn"
-                  onClick={() => navigate('/productos/gestion')}
-                >
-                  <Package size={20} /> Gestionar Productos y Presentaciones
-                </button>
-                <button 
-                  className="action-btn"
-                  onClick={() => navigate('/inventario/gestion')}
-                >
-                  <BarChart3 size={20} /> Gestionar Inventario
-                </button>
-                <button 
-                  className="action-btn"
-                  onClick={() => navigate('/ventas/lista')}
-                >
-                  <DollarSign size={20} /> Ver Ventas
-                </button>
-                <button 
-                  className="action-btn"
-                  onClick={() => navigate('/configuraciones')}
-                >
-                  <Settings size={20} /> Configuraciones
-                </button>
-              </div>
-            </div>
-          </div>
+          <InicioOverview
+            cargandoStats={cargandoStats}
+            stats={stats}
+            errorStats={errorStats}
+            onNavigate={navigate}
+          />
         );
 
       case 'categorias':
         return (
-          <div className="dashboard-content">
-            <h2>Gestión de Categorías</h2>
+          <div className="rounded-xl border border-slate-200 bg-white p-6 shadow-sm">
+            <h2 className="mb-4 text-xl font-semibold text-fondo">Gestión de Categorías</h2>
             <div className="module-actions">
               <button 
                 className="primary-btn"
@@ -680,8 +702,8 @@ function DashboardSuperAdmin() {
 
       case 'productos, presentaciones':
         return (
-          <div className="dashboard-content">
-            <h2>Gestión de Productos y Servicios</h2>
+          <div className="rounded-xl border border-slate-200 bg-white p-6 shadow-sm">
+            <h2 className="mb-4 text-xl font-semibold text-fondo">Gestión de Productos y Servicios</h2>
             {productosSubsection === 'lista-productos' && (
               <>
                 <ListaProductos
@@ -717,21 +739,26 @@ function DashboardSuperAdmin() {
                 )}
               </>
             )}
-            {productosSubsection === 'nuevo-producto' && <FormularioProducto />} 
-            {productosSubsection === 'packs-promociones' && <PacksPromociones />} 
-            {productosSubsection === 'servicios' && <Servicios />} 
-            {productosSubsection === 'marcas' && <Marcas />}  
-            {productosSubsection === 'series' && <Series />} 
-            {productosSubsection === 'lotes' && <Lotes />} 
-
+            {productosSubsection === 'nuevo-producto' && <FormularioProducto />}
+            {productosSubsection === 'packs-promociones' && <PacksPromociones />}
+            {productosSubsection === 'servicios' && <Servicios />}
+            {productosSubsection === 'marcas' && <Marcas />}
+            {productosSubsection === 'series' && <Series />}
+            {productosSubsection === 'lotes' && <Lotes />}
 
             {!productosSubsection && (
-              <div>
-                <p>Selecciona una opción del submenú de Productos.</p>
+              <div className="flex min-h-[200px] flex-col items-center justify-center rounded-xl border border-slate-200 bg-slate-50/50 py-12">
+                <span className="mb-3 flex h-14 w-14 items-center justify-center rounded-full bg-menta-suave text-menta-petroleo">
+                  <Package size={28} />
+                </span>
+                <p className="text-center text-sm font-medium text-menta-petroleo">
+                  Selecciona una opción del submenú de Productos.
+                </p>
+                <p className="mt-1 text-center text-xs text-slate-500">
+                  Lista de productos, nuevo producto, servicios, marcas, series o lotes.
+                </p>
               </div>
             )}
-         
-         
           </div>
         );
 
@@ -744,8 +771,8 @@ function DashboardSuperAdmin() {
 
       case 'usuarios':
         return (
-          <div className="dashboard-content">
-            <h2>Gestión de Usuarios</h2>
+          <div className="rounded-xl border border-slate-200 bg-white p-6 shadow-sm">
+            <h2 className="mb-4 text-xl font-semibold text-fondo">Gestión de Usuarios</h2>
             <div className="module-actions">
               <button 
                 className="primary-btn"
@@ -759,8 +786,8 @@ function DashboardSuperAdmin() {
 
       case 'caja':
         return (
-          <div className="dashboard-content">
-            <h2>Gestión de Caja</h2>
+          <div className="rounded-xl border border-slate-200 bg-white p-6 shadow-sm">
+            <h2 className="mb-4 text-xl font-semibold text-fondo">Gestión de Caja</h2>
             <ListaCaja />
           </div>
         );  
@@ -771,8 +798,8 @@ function DashboardSuperAdmin() {
 
         case 'servicios':
         return (
-         <div className="dashboard-content">
-            <h2>Gestión de Caja</h2>
+         <div className="rounded-xl border border-slate-200 bg-white p-6 shadow-sm">
+            <h2 className="mb-4 text-xl font-semibold text-fondo">Gestión de Caja</h2>
             <Servicios />
           </div>
         )
@@ -784,8 +811,8 @@ function DashboardSuperAdmin() {
 
       case 'guiaRemision':
         return (
-          <div className="dashboard-content">
-            <h2>Gestión de Guías de Remisión</h2>
+          <div className="rounded-xl border border-slate-200 bg-white p-6 shadow-sm">
+            <h2 className="mb-4 text-xl font-semibold text-fondo">Gestión de Guías de Remisión</h2>
             {guiaRemisionSubsection === '' && (
               <div className="module-actions">
                 <p>Selecciona una opción del menú lateral para comenzar.</p>
@@ -804,8 +831,8 @@ function DashboardSuperAdmin() {
 
       case 'inventario':
         return (
-          <div className="dashboard-content">
-            <h2>Gestión de Inventario</h2>
+          <div className="rounded-xl border border-slate-200 bg-white p-6 shadow-sm">
+            <h2 className="mb-4 text-xl font-semibold text-fondo">Gestión de Inventario</h2>
             {inventarioSubsection === 'referencias' && <ReferenciaInventario />}
             {inventarioSubsection === 'movimientos' && <MovimientoInventario />}
             {inventarioSubsection === 'traslados' && <TrasladoInventario />}
@@ -828,8 +855,8 @@ function DashboardSuperAdmin() {
         
       case 'ventas':
         return (
-          <div className="dashboard-content">
-            <h2>Gestión de Comprobantes</h2>
+          <div className="rounded-xl border border-slate-200 bg-white p-6 shadow-sm">
+            <h2 className="mb-4 text-xl font-semibold text-fondo">Gestión de Comprobantes</h2>
             {ventasSubsection === 'nueva-venta' && <FormularioVenta />}
             {ventasSubsection === 'lista-ventas' &&  <ListaVentas />}
 
@@ -936,8 +963,8 @@ function DashboardSuperAdmin() {
 
       case 'compras':
         return (
-          <div className="dashboard-content">
-            <h2>Gestión de Compras</h2>
+          <div className="rounded-xl border border-slate-200 bg-white p-6 shadow-sm">
+            <h2 className="mb-4 text-xl font-semibold text-fondo">Gestión de Compras</h2>
             {comprasSubsection === 'ordenes-compra' && <FormularioCompras />}
             {comprasSubsection === 'lista-compras' && <ListaCompras />} 
             {comprasSubsection === 'liquidacion-compras' && <LiquidacionCompras />} 
@@ -956,8 +983,8 @@ function DashboardSuperAdmin() {
 
       case 'proveedores':
         return (
-          <div className="dashboard-content">
-            <h2>Gestión de Proveedores</h2>
+          <div className="rounded-xl border border-slate-200 bg-white p-6 shadow-sm">
+            <h2 className="mb-4 text-xl font-semibold text-fondo">Gestión de Proveedores</h2>
             {proveedoresSubsection === '' && (
               <div className="module-actions">
                 <p>Selecciona una opción del menú lateral para comenzar.</p>
@@ -1006,404 +1033,93 @@ function DashboardSuperAdmin() {
 
       default:
         return (
-          <div className="dashboard-content">
-            <h2>{menuItems.find(item => item.id === activeSection)?.label}</h2>
-            <p>Funcionalidad en desarrollo...</p>
+          <div className="rounded-xl border border-slate-200 bg-white p-6 shadow-sm">
+            <h2 className="text-xl font-semibold text-fondo">{menuItems.find(item => item.id === activeSection)?.label}</h2>
+            <p className="mt-2 text-menta-petroleo">Funcionalidad en desarrollo...</p>
           </div>
         );
     }
   };
 
   if (!usuario) {
-    return <div>Cargando...</div>;
+    return (
+      <div className="flex h-screen items-center justify-center bg-white">
+        <p className="font-medium text-menta-marino">Cargando...</p>
+      </div>
+    );
   }
 
   return (
-    <div className="dashboard-container">
-      <nav className="sidebar">
-        <div className="sidebar-header">
-          <h3>Ferretería</h3>
-          <p>SuperAdmin</p>
-        </div>
-        <ul className="sidebar-menu">
-          {visibleMenuItems.map(item => {
-            const IconComponent = item.icon;
-            return (
-              <li key={item.id}>
-                <button
-                  className={`menu-item ${activeSection === item.id ? 'active' : ''}`}
-                  onClick={() => handleModuleNavigation(item.id)}
-                >
-                  <span className="menu-icon">
-                    <IconComponent size={20} />
-                  </span>
-                  {item.label}
-                  {(item.id === 'guiaRemision' || item.id === 'inventario' || item.id === 'compras' || item.id === 'proveedores' || item.id === 'ventas' || item.id === 'productos, presentaciones') && (
-                    <span className="expand-icon">
-                      {(item.id === 'guiaRemision' && guiaRemisionExpanded) || 
-                       (item.id === 'inventario' && inventarioExpanded) ||
-                       (item.id === 'compras' && comprasExpanded) ||
-                       (item.id === 'proveedores' && proveedoresExpanded) ||
-                       (item.id === 'ventas' && ventasExpanded) ||
-                       (item.id === 'productos, presentaciones' && productosExpanded) ? 
-                        <ChevronDown size={16} /> : <ChevronRight size={16} />}
-                    </span>
-                  )}
-                </button>
-
-                {item.id === 'guiaRemision' && guiaRemisionExpanded && (
-                  <ul className="submenu">
-                    <li 
-                      className={`submenu-item ${guiaRemisionSubsection === 'remitente' ? 'active' : ''}`}
-                      onClick={() => handleGuiaRemisionSubsection('remitente')}
-                    >
-                      <span>G.R. Remitente</span>
-                    </li>
-
-                    <li 
-                      className={`submenu-item ${guiaRemisionSubsection === 'transportista' ? 'active' : ''}`}
-                      onClick={() => handleGuiaRemisionSubsection('transportista')}
-                    >
-                      <span>G.R. Transportista</span>
-                    </li>
-
-                    <li 
-                      className={`submenu-item ${guiaRemisionSubsection === 'transportistas' ? 'active' : ''}`}
-                      onClick={() => handleGuiaRemisionSubsection('transportistas')}
-                    >
-                      <span>Transportistas</span>
-                    </li> 
-                    
-                    <li 
-                      className={`submenu-item ${guiaRemisionSubsection === 'conductores' ? 'active' : ''}`}
-                      onClick={() => handleGuiaRemisionSubsection('conductores')}
-                    >
-                      <span>Conductores</span>
-                    </li>  
-
-                    <li 
-                      className={`submenu-item ${guiaRemisionSubsection === 'vehiculos' ? 'active' : ''}`}
-                      onClick={() => handleGuiaRemisionSubsection('vehiculos')}
-                    >
-                      <span>Vehículos</span>
-                    </li>   
-
-                    <li 
-                      className={`submenu-item ${guiaRemisionSubsection === 'direccion-partida' ? 'active' : ''}`}
-                      onClick={() => handleGuiaRemisionSubsection('direccion-partida')}
-                    >
-                      <span>Dirección Partida</span>
-                    </li>   
-                    
-
-
-
-                  </ul>
-                )}
-
-
-
-
-
-                {/*menu desplegable de ventas*/ }
-                {item.id === 'ventas' && ventasExpanded && (
-                  <ul className="submenu">
-                    <li 
-                      className={`submenu-item ${ventasSubsection === 'nueva-venta' ? 'active' : ''}`}
-                      onClick={() => handleVentasSubsection('nueva-venta')}
-                    >
-                      <span>Nueva Comprobante</span>
-                    </li>
-
-
-                    <li 
-                      className={`submenu-item ${ventasSubsection === 'lista-ventas' ? 'active' : ''}`}
-                      onClick={() => handleVentasSubsection('lista-ventas')}
-                    >
-                      <span>Lista de Comprobantes</span>
-                    </li>
-
-                   
-
-
-                    <li 
-                      className={`submenu-item ${ventasSubsection === 'Nota de venta' ? 'active' : ''}`}
-                      onClick={() => handleVentasSubsection('Nota de venta')}
-                    >
-                      <span>Nota de venta</span>
-                    </li>
-
-
-
-
-                    <li 
-                      className={`submenu-item ${ventasSubsection === 'Comprobantes no enviados' ? 'active' : ''}`}
-                      onClick={() => handleVentasSubsection('Comprobantes no enviados')}
-                    >
-                      <span>Comprobantes no enviados</span>
-                    </li>
-
-
-
-                  
-                    <li 
-                      className={`submenu-item ${ventasSubsection === 'cpe-rectificar' ? 'active' : ''}`}
-                      onClick={() => handleVentasSubsection('cpe-rectificar')}
-                    >
-                      <span>CPE Rectificar</span>
-                    </li> 
-
-
-                    <li 
-                      className={`submenu-item ${ventasSubsection === 'documento-recurrencia' ? 'active' : ''}`}
-                      onClick={() => handleVentasSubsection('documento-recurrencia')}
-                    >
-                      <span>Listado Recurrencia</span>
-                    </li> 
-
-                    <li 
-                      className={`submenu-item ${ventasSubsection === 'comprobante-contingencia' ? 'active' : ''}`}
-                      onClick={() => handleVentasSubsection('comprobante-contingencia')}
-                    >
-                      <span>Comprobante Contingencia</span>
-                    </li>  
-
-                    <li 
-                      className={`submenu-item ${ventasSubsection === 'resumenes' ? 'active' : ''}`}
-                      onClick={() => handleVentasSubsection('resumenes')}
-                    >
-                      <span>Resumenes</span>
-                    </li>   
-
-                    <li 
-                      className={`submenu-item ${ventasSubsection === 'anulaciones' ? 'active' : ''}`}
-                      onClick={() => handleVentasSubsection('anulaciones')}
-                    >
-                      <span>Anulaciones</span>
-                    </li>    
-
-                    <li 
-                      className={`submenu-item ${ventasSubsection === 'pedidos' ? 'active' : ''}`}
-                      onClick={() => handleVentasSubsection('pedidos')}
-                    >
-                      <span>Pedidos</span>
-                    </li>    
-
-
-
-
-
-
-
-                    
-                  </ul>
-                )}
-
-
-
-
-
-
-
-
-
-                {/* menú desplegable de productos y presentaciones */}
-                {item.id === 'productos, presentaciones' && productosExpanded && (
-                  <ul className="submenu">
-                    <li 
-                      className={`submenu-item ${productosSubsection === 'lista-productos' ? 'active' : ''}`}
-                      onClick={() => handleProductosSubsection('lista-productos')}
-                    >
-                      <span>Lista de Productos</span>
-                    </li>
-                    <li 
-                      className={`submenu-item ${productosSubsection === 'nuevo-producto' ? 'active' : ''}`}
-                      onClick={() => handleProductosSubsection('nuevo-producto')}
-                    >
-                      <span>Nuevo Producto</span>
-                    </li>  
-
-                    <li 
-                      className={`submenu-item ${productosSubsection === 'packs-promociones' ? 'active' : ''}`}
-                      onClick={() => handleProductosSubsection('packs-promociones')}
-                    >
-                      <span>Packs y Promociones</span>
-                    </li> 
-
-                   
-
-                    <li 
-                      className={`submenu-item ${productosSubsection === 'marcas' ? 'active' : ''}`}
-                      onClick={() => handleProductosSubsection('marcas')}
-                    >
-                      <span>Marcas</span>
-                    </li>   
-
-                    <li 
-                      className={`submenu-item ${productosSubsection === 'series' ? 'active' : ''}`}
-                      onClick={() => handleProductosSubsection('series')}
-                    >
-                      <span>Series</span>
-                    </li>   
-                    <li 
-                      className={`submenu-item ${productosSubsection === 'lotes' ? 'active' : ''}`}
-                      onClick={() => handleProductosSubsection('lotes')}
-                    >
-                      <span>Lotes</span>
-                    </li>  
-
-
-
-
-
-
-
-
-
-
-
-                  </ul>
-                )}
-
-
-
-
-
-
-
-
-
-                
-                {item.id === 'inventario' && inventarioExpanded && (
-                  <ul className="submenu">
-                    <li 
-                      className={`submenu-item ${inventarioSubsection === 'referencias' ? 'active' : ''}`}
-                      onClick={() => handleInventarioSubsection('referencias')}
-                    >
-                      <span>Referencias</span>
-                    </li>
-                    <li 
-                      className={`submenu-item ${inventarioSubsection === 'movimientos' ? 'active' : ''}`}
-                      onClick={() => handleInventarioSubsection('movimientos')}
-                    >
-                      <span>Movimientos</span>
-                    </li>
-                    <li 
-                      className={`submenu-item ${inventarioSubsection === 'traslados' ? 'active' : ''}`}
-                      onClick={() => handleInventarioSubsection('traslados')}
-                    >
-                      <span>Traslados</span>
-                    </li>
-                    <li 
-                      className={`submenu-item ${inventarioSubsection === 'validar-inventario' ? 'active' : ''}`}
-                      onClick={() => handleInventarioSubsection('validar-inventario')}
-                    >
-                      <span>Validar inventario</span>
-                    </li>
-                    <li 
-                      className={`submenu-item ${inventarioSubsection === 'revision-inventario' ? 'active' : ''}`}
-                      onClick={() => handleInventarioSubsection('revision-inventario')}
-                    >
-                      <span>Revisión de inventario</span>
-                    </li>
-                    <li 
-                      className={`submenu-item ${inventarioSubsection === 'stock-historico' ? 'active' : ''}`}
-                      onClick={() => handleInventarioSubsection('stock-historico')}
-                    >
-                      <span>Stock histórico</span>
-                    </li>
-                    <li 
-                      className={`submenu-item ${inventarioSubsection === 'kardex-costo-promedio' ? 'active' : ''}`}
-                      onClick={() => handleInventarioSubsection('kardex-costo-promedio')}
-                    >
-                      <span>Kardex costo promedio</span>
-                    </li>
-                  </ul>
-                )}
-
-                {item.id === 'compras' && comprasExpanded && (
-                  <ul className="submenu">
-                    <li 
-                      className={`submenu-item ${comprasSubsection === 'ordenes-compra' ? 'active' : ''}`}
-                      onClick={() => handleComprasSubsection('ordenes-compra')}
-                    >
-                      <span>Nueva Compra</span>
-                    </li>
-                    <li 
-                      className={`submenu-item ${comprasSubsection === 'lista-compras' ? 'active' : ''}`}
-                      onClick={() => handleComprasSubsection('lista-compras')}
-                    >
-                      <span>Lista de Compras</span>
-                    </li> 
-
-                    <li 
-                      className={`submenu-item ${comprasSubsection === 'liquidacion-compras' ? 'active' : ''}`}
-                      onClick={() => handleComprasSubsection('liquidacion-compras')}
-                    >
-                      <span>Liquidación de Compras</span>
-                    </li>   
-
-                    <li 
-                      className={`submenu-item ${comprasSubsection === 'solicitar-cotizacion' ? 'active' : ''}`}
-                      onClick={() => handleComprasSubsection('solicitar-cotizacion')}
-                    >
-                      <span>Solicitar Cotización</span>
-                    </li>    
-
-                    <li 
-                      className={`submenu-item ${comprasSubsection === 'ordenes-compras' ? 'active' : ''}`}
-                      onClick={() => handleComprasSubsection('ordenes-compras')}
-                    >
-                      <span>Órdenes de Compra</span>
-                    </li>  
-
-                    <li 
-                      className={`submenu-item ${comprasSubsection === 'gastos-diversos' ? 'active' : ''}`}
-                      onClick={() => handleComprasSubsection('gastos-diversos')}
-                    >
-                      <span>Gastos Diversos</span>
-                    </li>   
-
-
-
-                    
-                  </ul>
-                )}
-
-                {item.id === 'proveedores' && proveedoresExpanded && (
-                  <ul className="submenu">
-                    <li 
-                      className={`submenu-item ${proveedoresSubsection === 'nuevo-proveedor' ? 'active' : ''}`}
-                      onClick={() => handleProveedoresSubsection('nuevo-proveedor')}
-                    >
-                      <span>Nuevo Proveedor</span>
-                    </li>
-                    <li 
-                      className={`submenu-item ${proveedoresSubsection === 'lista-proveedores' ? 'active' : ''}`}
-                      onClick={() => handleProveedoresSubsection('lista-proveedores')}
-                    >
-                      <span>Lista de Proveedores</span>
-                    </li>
-                  </ul>
-                )}
-              </li>
-            );
-          })}
-        </ul> 
-
-        <div className="sidebar-footer">
-          <div className="user-info">
-            <p>{usuario.nombre} {usuario.apellido}</p>
-            <small>{usuario.correo}</small>
-          </div>
-          <button className="logout-btn" onClick={handleLogout}>
-            <LogOut size={20} /> Cerrar Sesión
+    <div className="flex h-screen max-h-screen overflow-hidden bg-white">
+      {/* Overlay en móvil cuando el sidebar está abierto */}
+      <button
+        type="button"
+        aria-label="Cerrar menú"
+        onClick={closeSidebar}
+        className={`fixed inset-0 z-40 bg-black/50 transition-opacity md:hidden ${sidebarOpen ? 'opacity-100' : 'pointer-events-none opacity-0'}`}
+      />
+
+      {/* Sidebar: drawer en móvil, fijo en md+ */}
+      <div
+        className={`
+          fixed inset-y-0 left-0 z-50 w-72 transform transition-transform duration-200 ease-out
+          md:relative md:translate-x-0 md:shrink-0
+          ${sidebarOpen ? 'translate-x-0' : '-translate-x-full'}
+        `}
+      >
+        <Sidebar
+          title="Ferretería"
+          roleLabel={usuario?.rol || 'SuperAdmin'}
+          items={visibleMenuItems}
+          submenus={SIDEBAR_SUBMENUS}
+          activeSection={activeSection}
+          expanded={{
+            'guiaRemision': guiaRemisionExpanded,
+            'ventas': ventasExpanded,
+            'productos, presentaciones': productosExpanded,
+            'inventario': inventarioExpanded,
+            'compras': comprasExpanded,
+            'proveedores': proveedoresExpanded,
+          }}
+          subsection={{
+            'guiaRemision': guiaRemisionSubsection,
+            'ventas': ventasSubsection,
+            'productos, presentaciones': productosSubsection,
+            'inventario': inventarioSubsection,
+            'compras': comprasSubsection,
+            'proveedores': proveedoresSubsection,
+          }}
+          onItemClick={handleModuleNavigation}
+          onSubItemClick={handleSubItemClick}
+          user={usuario || {}}
+          onLogout={handleLogout}
+        />
+        <button
+          type="button"
+          aria-label="Cerrar menú"
+          onClick={closeSidebar}
+          className="absolute right-3 top-4 rounded-lg p-1.5 text-white hover:bg-white/20 md:hidden"
+        >
+          <X size={20} />
+        </button>
+      </div>
+
+      <div className="flex flex-1 flex-col min-w-0">
+        <header className="flex items-center gap-3 border-b border-slate-200 bg-white px-4 py-3 shadow-sm md:hidden">
+          <button
+            type="button"
+            onClick={() => setSidebarOpen(true)}
+            aria-label="Abrir menú"
+            className="rounded-lg p-2 text-menta-marino hover:bg-slate-100"
+          >
+            <Menu size={24} />
           </button>
-        </div>
-      </nav>
-      <main className="main-content">
-        {renderContent()}
-      </main>
+          <span className="font-semibold text-fondo">Ferretería</span>
+        </header>
+        <main className="flex-1 min-h-0 overflow-y-auto overflow-x-hidden bg-white p-8">
+          {renderContent()}
+        </main>
+      </div>
     </div>
   );
 }

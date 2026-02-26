@@ -1,7 +1,7 @@
 // src/components/usuarios/GestionUsuarios.jsx
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { Edit, Trash2, Plus } from 'lucide-react';
+import { Edit, Trash2, Plus, Search, Users } from 'lucide-react';
 import Swal from 'sweetalert2';
 import {
   obtenerUsuarios,
@@ -9,7 +9,6 @@ import {
   validarPermisos
 } from '../../services/usuarioService';
 import { obtenerSucursales } from '../../services/sucursalService';
-import '../../styles/GestionUsuarios.css';
 
 const GestionUsuarios = () => {
   const [usuarios, setUsuarios] = useState([]);
@@ -25,12 +24,10 @@ const GestionUsuarios = () => {
   const navigate = useNavigate();
 
   useEffect(() => {
-    // Obtener usuario actual del localStorage
     const usuarioGuardado = localStorage.getItem('usuario');
     if (usuarioGuardado) {
       setUsuarioActual(JSON.parse(usuarioGuardado));
     }
-    
     cargarDatos();
   }, []);
 
@@ -41,11 +38,10 @@ const GestionUsuarios = () => {
         obtenerUsuarios(),
         obtenerSucursales()
       ]);
-      
       setUsuarios(usuariosData.usuarios || []);
       setSucursales(sucursalesData.sucursales || []);
-    } catch (error) {
-      setError('Error al cargar los datos: ' + error.message);
+    } catch (err) {
+      setError('Error al cargar los datos: ' + err.message);
     } finally {
       setCargando(false);
     }
@@ -53,7 +49,6 @@ const GestionUsuarios = () => {
 
   const manejarEliminar = async (id, usuario) => {
     const tienePermisos = validarPermisos(usuarioActual, 'eliminar_usuario', usuario);
-    
     if (!usuarioActual || !tienePermisos) {
       Swal.fire({
         icon: 'error',
@@ -63,7 +58,6 @@ const GestionUsuarios = () => {
       });
       return;
     }
-
     const result = await Swal.fire({
       title: '¿Estás seguro?',
       text: `¿Deseas eliminar al usuario ${usuario.nombre} ${usuario.apellido}?`,
@@ -74,24 +68,22 @@ const GestionUsuarios = () => {
       confirmButtonText: 'Sí, eliminar',
       cancelButtonText: 'Cancelar'
     });
-
     if (result.isConfirmed) {
       try {
         await eliminarUsuario(id);
         setUsuarios(usuarios.filter(u => u.id !== id));
         setError('');
-        
         Swal.fire({
           icon: 'success',
           title: 'Usuario eliminado',
           text: 'El usuario ha sido eliminado exitosamente',
           confirmButtonColor: '#3085d6'
         });
-      } catch (error) {
+      } catch (err) {
         Swal.fire({
           icon: 'error',
           title: 'Error',
-          text: 'Error al eliminar usuario: ' + error.message,
+          text: 'Error al eliminar usuario: ' + err.message,
           confirmButtonColor: '#d33'
         });
       }
@@ -100,7 +92,6 @@ const GestionUsuarios = () => {
 
   const manejarEditar = (usuario) => {
     const tienePermisos = validarPermisos(usuarioActual, 'editar_usuario', usuario);
-    
     if (!usuarioActual || !tienePermisos) {
       Swal.fire({
         icon: 'error',
@@ -114,15 +105,12 @@ const GestionUsuarios = () => {
   };
 
   const usuariosFiltrados = usuarios.filter(usuario => {
-    const coincideBusqueda = !filtros.busqueda || 
+    const coincideBusqueda = !filtros.busqueda ||
       `${usuario.nombre} ${usuario.apellido} ${usuario.correo}`.toLowerCase()
         .includes(filtros.busqueda.toLowerCase());
-    
     const coincidenRol = !filtros.rol || usuario.rol === filtros.rol;
-    
-    const coincideSucursal = !filtros.sucursal || 
+    const coincideSucursal = !filtros.sucursal ||
       usuario.sucursalId?.toString() === filtros.sucursal;
-    
     return coincideBusqueda && coincidenRol && coincideSucursal;
   });
 
@@ -136,65 +124,63 @@ const GestionUsuarios = () => {
 
   if (cargando) {
     return (
-      <div className="gestion-usuarios">
-        <div className="cargando">Cargando usuarios...</div>
+      <div className="flex min-h-[200px] items-center justify-center">
+        <div className="flex items-center gap-2 rounded-xl border border-slate-200 bg-white px-4 py-3 shadow-sm">
+          <div className="h-5 w-5 animate-spin rounded-full border-2 border-menta-petroleo border-t-transparent" />
+          <span className="text-sm text-menta-petroleo">Cargando usuarios...</span>
+        </div>
       </div>
     );
   }
 
   return (
-    <div className="gestion-usuarios">
-      <div className="header">
-        <div className="header-left">
-          <button 
-            className="btn-volver"
-            onClick={() => {
-              if (usuarioActual?.rol === 'SuperAdmin') {
-                navigate('/dashboard-superadmin');
-              } else if (usuarioActual?.rol === 'Admin') {
-                navigate('/dashboard-admin');
-              } else {
-                navigate('/');
-              }
-            }}
-          >
-            ← Volver al Dashboard
-          </button>
-          <h1>Gestión de Usuarios</h1>
+    <div className="space-y-6">
+      {/* Header */}
+      <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
+        <div>
+          <h1 className="flex items-center gap-2 text-2xl font-semibold text-fondo">
+            <Users size={28} className="text-menta-petroleo" />
+            Gestión de Usuarios
+          </h1>
+          <p className="mt-1 text-sm text-menta-petroleo">
+            Lista y administra los usuarios del sistema
+          </p>
         </div>
         {puedeCrearUsuarios && (
-          <button 
-            className="btn-crear"
+          <button
+            type="button"
             onClick={() => navigate('/usuarios/formulario')}
+            className="inline-flex items-center justify-center gap-2 rounded-xl bg-menta-petroleo px-4 py-2.5 text-sm font-medium text-white shadow-sm transition-colors hover:bg-menta-marino"
           >
-            <Plus size={16} />
+            <Plus size={18} />
             Crear Usuario
           </button>
         )}
       </div>
 
       {error && (
-        <div className="error-message">
+        <div className="rounded-xl border border-menta-esmeralda bg-white px-4 py-3 text-sm text-menta-petroleo">
           {error}
         </div>
       )}
 
-      <div className="filtros">
-        <div className="filtro-grupo">
-          <input
-            type="text"
-            placeholder="Buscar por nombre, apellido o correo..."
-            value={filtros.busqueda}
-            onChange={(e) => setFiltros({...filtros, busqueda: e.target.value})}
-            className="filtro-busqueda"
-          />
-        </div>
-        
-        <div className="filtro-grupo">
+      {/* Filtros */}
+      <div className="rounded-2xl border border-slate-200 bg-white p-4 shadow-sm">
+        <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-4">
+          <div className="relative lg:col-span-2">
+            <Search className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-menta-petroleo" />
+            <input
+              type="text"
+              placeholder="Buscar por nombre, apellido o correo..."
+              value={filtros.busqueda}
+              onChange={(e) => setFiltros({ ...filtros, busqueda: e.target.value })}
+              className="w-full rounded-xl border border-slate-200 bg-slate-50/50 py-2.5 pl-10 pr-3 text-sm text-slate-800 placeholder-slate-400 focus:border-menta-turquesa focus:bg-white focus:outline-none focus:ring-2 focus:ring-menta-turquesa/20"
+            />
+          </div>
           <select
             value={filtros.rol}
-            onChange={(e) => setFiltros({...filtros, rol: e.target.value})}
-            className="filtro-select"
+            onChange={(e) => setFiltros({ ...filtros, rol: e.target.value })}
+            className="rounded-xl border border-slate-200 bg-slate-50/50 py-2.5 px-3 text-sm text-slate-800 focus:border-menta-turquesa focus:bg-white focus:outline-none focus:ring-2 focus:ring-menta-turquesa/20"
           >
             <option value="">Todos los roles</option>
             <option value="SuperAdmin">Super Administrador</option>
@@ -202,13 +188,10 @@ const GestionUsuarios = () => {
             <option value="Cajero">Cajero</option>
             <option value="Almacenero">Almacenero</option>
           </select>
-        </div>
-        
-        <div className="filtro-grupo">
           <select
             value={filtros.sucursal}
-            onChange={(e) => setFiltros({...filtros, sucursal: e.target.value})}
-            className="filtro-select"
+            onChange={(e) => setFiltros({ ...filtros, sucursal: e.target.value })}
+            className="rounded-xl border border-slate-200 bg-slate-50/50 py-2.5 px-3 text-sm text-slate-800 focus:border-menta-turquesa focus:bg-white focus:outline-none focus:ring-2 focus:ring-menta-turquesa/20"
           >
             <option value="">Todas las sucursales</option>
             {sucursales.map(sucursal => (
@@ -220,76 +203,119 @@ const GestionUsuarios = () => {
         </div>
       </div>
 
-      <div className="tabla-container">
-        <table className="tabla-usuarios">
-          <thead>
-            <tr>
-              <th>Nombre y Apellido</th>
-              <th>Correo</th>
-              <th>Rol</th>
-              <th>Sucursal</th>
-              <th>Estado</th>
-              <th>Acciones</th>
-            </tr>
-          </thead>
-          <tbody>
-            {usuariosFiltrados.length === 0 ? (
-              <tr>
-                <td colSpan="6" className="sin-datos">
-                  No se encontraron usuarios
-                </td>
+      {/* Tabla */}
+      <div className="overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-sm">
+        <div className="overflow-x-auto">
+          <table className="w-full min-w-[640px]">
+            <thead>
+              <tr className="border-b border-slate-200 bg-slate-50/80">
+                <th className="px-4 py-3 text-left text-xs font-semibold uppercase tracking-wider text-menta-petroleo">
+                  Nombre y Apellido
+                </th>
+                <th className="px-4 py-3 text-left text-xs font-semibold uppercase tracking-wider text-menta-petroleo">
+                  Correo
+                </th>
+                <th className="px-4 py-3 text-left text-xs font-semibold uppercase tracking-wider text-menta-petroleo">
+                  Rol
+                </th>
+                <th className="px-4 py-3 text-left text-xs font-semibold uppercase tracking-wider text-menta-petroleo">
+                  Sucursal
+                </th>
+                <th className="px-4 py-3 text-left text-xs font-semibold uppercase tracking-wider text-menta-petroleo">
+                  Estado
+                </th>
+                <th className="px-4 py-3 text-right text-xs font-semibold uppercase tracking-wider text-menta-petroleo">
+                  Acciones
+                </th>
               </tr>
-            ) : (
-              usuariosFiltrados.map(usuario => (
-                <tr key={usuario.id}>
-                  <td>
-                    <div className="usuario-info">
-                      <div className="nombre">{usuario.nombre} {usuario.apellido}</div>
-                    </div>
-                  </td>
-                  <td>{usuario.correo}</td>
-                  <td>
-                    <span className={`rol-badge rol-${usuario.rol.toLowerCase()}`}>
-                      {usuario.rol === 'SuperAdmin' ? 'Super Admin' : usuario.rol}
-                    </span>
-                  </td>
-                  <td>{obtenerNombreSucursal(usuario.sucursalId)}</td>
-                  <td>
-                    <span className={`estado-badge ${usuario.estado ? 'activo' : 'inactivo'}`}>
-                      {usuario.estado ? 'Activo' : 'Inactivo'}
-                    </span>
-                  </td>
-                  <td>
-                    <div className="acciones">
-                      {validarPermisos(usuarioActual, 'editar_usuario', usuario) && (
-                        <button
-                          className="btn-editar"
-                          onClick={() => manejarEditar(usuario)}
-                          title="Editar usuario"
-                        >
-                          <Edit size={16} />
-                        </button>
-                      )}
-                      {validarPermisos(usuarioActual, 'eliminar_usuario', usuario) && (
-                        <button
-                          className="btn-eliminar"
-                          onClick={() => manejarEliminar(usuario.id, usuario)}
-                          title="Eliminar usuario"
-                        >
-                          <Trash2 size={16} />
-                        </button>
-                      )}
-                    </div>
+            </thead>
+            <tbody className="divide-y divide-slate-100">
+              {usuariosFiltrados.length === 0 ? (
+                <tr>
+                  <td colSpan="6" className="px-4 py-12 text-center text-sm text-menta-petroleo">
+                    No se encontraron usuarios
                   </td>
                 </tr>
-              ))
-            )}
-          </tbody>
-        </table>
+              ) : (
+                usuariosFiltrados.map((usuario, index) => (
+                  <tr
+                    key={usuario.id}
+                    className={`transition-colors hover:bg-slate-50/80 ${
+                      index % 2 === 0 ? 'bg-white' : 'bg-slate-50/30'
+                    }`}
+                  >
+                    <td className="px-4 py-3">
+                      <span className="font-medium text-menta-marino">
+                        {usuario.nombre} {usuario.apellido}
+                      </span>
+                    </td>
+                    <td className="px-4 py-3 text-sm text-menta-marino">{usuario.correo}</td>
+                    <td className="px-4 py-3">
+                      <span
+                        className={`inline-flex rounded-lg px-2.5 py-1 text-xs font-medium ${
+                          usuario.rol === 'SuperAdmin'
+                            ? 'bg-blue-100 text-blue-800'
+                            : usuario.rol === 'Admin'
+                            ? 'bg-sky-100 text-sky-800'
+                            : usuario.rol === 'Cajero'
+                            ? 'bg-emerald-100 text-emerald-800'
+                            : 'bg-amber-100 text-amber-800'
+                        }`}
+                      >
+                        {usuario.rol === 'SuperAdmin' ? 'Super Admin' : usuario.rol}
+                      </span>
+                    </td>
+                    <td className="px-4 py-3 text-sm text-menta-marino">
+                      {obtenerNombreSucursal(usuario.sucursalId)}
+                    </td>
+                    <td className="px-4 py-3">
+                      <span
+                        className={`inline-flex rounded-lg px-2.5 py-1 text-xs font-medium ${
+                          usuario.estado
+                            ? 'bg-emerald-100 text-emerald-800'
+                            : 'bg-slate-100 text-slate-600'
+                        }`}
+                      >
+                        {usuario.estado ? 'Activo' : 'Inactivo'}
+                      </span>
+                    </td>
+                    <td className="px-4 py-3 text-right">
+                      <div className="flex items-center justify-end gap-1">
+                        {validarPermisos(usuarioActual, 'editar_usuario', usuario) && (
+                          <button
+                            type="button"
+                            onClick={() => manejarEditar(usuario)}
+                            title="Editar usuario"
+                            className="rounded-lg p-2 text-slate-500 transition-colors hover:bg-menta-claro hover:text-menta-petroleo"
+                          >
+                            <Edit size={18} />
+                          </button>
+                        )}
+                        {validarPermisos(usuarioActual, 'eliminar_usuario', usuario) && (
+                          <button
+                            type="button"
+                            onClick={() => manejarEliminar(usuario.id, usuario)}
+                            title="Eliminar usuario"
+                            className="rounded-lg p-2 text-slate-500 hover:bg-rose-50 hover:text-rose-600 transition-colors"
+                          >
+                            <Trash2 size={18} />
+                          </button>
+                        )}
+                      </div>
+                    </td>
+                  </tr>
+                ))
+              )}
+            </tbody>
+          </table>
+        </div>
       </div>
 
-      <div className="resumen">
-        <p>Total de usuarios: {usuariosFiltrados.length}</p>
+      {/* Resumen */}
+      <div className="flex items-center justify-between rounded-xl border border-slate-200 bg-white px-4 py-3 shadow-sm">
+        <p className="text-sm text-menta-petroleo">
+          Total de usuarios: <span className="font-semibold text-fondo">{usuariosFiltrados.length}</span>
+        </p>
       </div>
     </div>
   );

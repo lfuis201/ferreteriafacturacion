@@ -28,7 +28,7 @@ function GestionCategorias() {
   };
 
   return (
-    <div className="gestion-categorias">
+    <div className="w-full">
       {vistaActual === 'lista' ? (
         <ListaCategorias 
           onNuevaCategoria={handleNuevaCategoria}
