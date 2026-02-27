@@ -1,10 +1,25 @@
 import React, { useEffect, useState } from 'react';
+import {
+  ArrowLeft,
+  Users,
+  Filter,
+  Download,
+  Calendar,
+  DollarSign,
+  TrendingUp,
+  User,
+  Search,
+  ChevronRight,
+  TrendingDown,
+  Activity,
+  Award,
+  CreditCard,
+  FileText,
+  UserCheck
+} from 'lucide-react';
 import { obtenerReporteVentas } from '../../services/ventaService';
 import { obtenerClientes } from '../../services/clienteService';
-import '../../styles/VentasPorCliente.css'; // Importar el CSS
 
-// Componente funcional sin estilos: Ventas por Cliente
-// Usa servicios reales del backend para consolidar ventas por cliente.
 const VentasPorCliente = ({ onBack }) => {
   const [filtros, setFiltros] = useState({
     fechaInicio: '',
@@ -17,7 +32,6 @@ const VentasPorCliente = ({ onBack }) => {
   const [ventas, setVentas] = useState([]);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
-
   const [consolidado, setConsolidado] = useState([]);
 
   useEffect(() => {
@@ -104,102 +118,259 @@ const VentasPorCliente = ({ onBack }) => {
     setConsolidado(ordenarConsolidado(consolidado, criterio));
   };
 
-  const formatearMoneda = (valor) => `S/ ${Number(valor || 0).toFixed(2)}`;
+  const formatearMoneda = (valor) => `S/ ${Number(valor || 0).toLocaleString('es-PE', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`;
+
+  const totalCarteraVentas = consolidado.reduce((s, c) => s + c.totalCompras, 0);
+  const clienteTop = consolidado.length > 0 ? consolidado.reduce((prev, current) => (prev.totalCompras > current.totalCompras) ? prev : current) : null;
 
   return (
-    <div className="ventas-cliente-container">
-      <div className="ventas-cliente-header">
-        <button onClick={onBack} className="ventas-cliente-btn-back">Volver</button>
-        <h2>Ventas por Cliente</h2>
-      </div>
+    <div className="min-h-screen bg-slate-50/50 p-4 md:p-8">
+      <div className="max-w-[1600px] mx-auto space-y-8">
 
-      <div className="ventas-cliente-filtros">
-        <div className="ventas-cliente-filtros-grid">
-          <div className="ventas-cliente-filtro-grupo">
-            <label>Fecha desde: </label>
-            <input type="date" value={filtros.fechaInicio} onChange={(e) => setFiltros({ ...filtros, fechaInicio: e.target.value })} />
+        {/* Header Visual con Gradiente Premium */}
+        <div className="relative overflow-hidden rounded-[2.5rem] bg-gradient-to-br from-blue-900 via-indigo-900 to-slate-950 p-10 text-white shadow-2xl shadow-blue-900/20">
+          <div className="absolute right-0 top-0 p-12 opacity-10 pointer-events-none transform translate-x-1/4 -translate-y-1/4">
+            <Users size={300} />
           </div>
-          <div className="ventas-cliente-filtro-grupo">
-            <label>Fecha hasta: </label>
-            <input type="date" value={filtros.fechaFin} onChange={(e) => setFiltros({ ...filtros, fechaFin: e.target.value })} />
-          </div>
-          <div className="ventas-cliente-filtro-grupo">
-            <label>Cliente: </label>
-            <select value={filtros.clienteId} onChange={(e) => setFiltros({ ...filtros, clienteId: e.target.value })}>
-              <option value="">Todos</option>
-              {clientes.map((c) => (
-                <option key={c.id} value={c.id}>{c.nombre}</option>
-              ))}
-            </select>
-          </div>
-          <div className="ventas-cliente-filtro-grupo">
-            <label>Ordenar por: </label>
-            <select value={filtros.ordenarPor} onChange={(e) => aplicarOrden(e.target.value)}>
-              <option value="total">Total compras</option>
-              <option value="cantidad">Cantidad compras</option>
-              <option value="promedio">Promedio compra</option>
-              <option value="cliente">Nombre cliente</option>
-            </select>
-          </div>
-        </div>
-        <div className="ventas-cliente-filtros-acciones">
-          <button onClick={cargarReporte} disabled={loading} className="ventas-cliente-btn-filtrar">
-            {loading ? 'Cargando...' : 'Aplicar filtros'}
-          </button>
-        </div>
-      </div>
 
-      {error && <div className="ventas-cliente-error">{error}</div>}
-
-      <div className="ventas-cliente-resumen">
-        <h3>Resumen</h3>
-        <div className="ventas-cliente-resumen-grid">
-          <div className="ventas-cliente-resumen-card">
-            <div className="ventas-cliente-resumen-numero">{consolidado.length}</div>
-            <div className="ventas-cliente-resumen-label">Clientes</div>
-          </div>
-          <div className="ventas-cliente-resumen-card">
-            <div className="ventas-cliente-resumen-numero">
-              {formatearMoneda(consolidado.reduce((s, c) => s + c.totalCompras, 0))}
+          <div className="relative z-10">
+            <div className="flex items-center gap-4 mb-6">
+              <button
+                onClick={onBack}
+                className="flex items-center gap-2 h-11 px-5 rounded-xl bg-white/10 text-white hover:bg-white/20 transition-all backdrop-blur-md border border-white/5 font-bold text-xs uppercase tracking-widest group"
+              >
+                <ArrowLeft size={18} className="group-hover:-translate-x-1 transition-transform" />
+                <span>Volver</span>
+              </button>
+              <div className="flex items-center gap-2 text-[10px] font-black uppercase tracking-[0.3em] text-blue-300">
+                <span>Reportería Comercial</span>
+                <span className="h-1 w-1 rounded-full bg-blue-500"></span>
+                <span>Fidelización y Cartera</span>
+              </div>
             </div>
-            <div className="ventas-cliente-resumen-label">Monto Total</div>
+
+            <h1 className="text-4xl font-black tracking-tighter uppercase mb-4 leading-none">
+              Ventas por <span className="text-transparent bg-clip-text bg-gradient-to-r from-blue-300 to-indigo-300">Cliente</span>
+            </h1>
+            <p className="text-slate-400 max-w-xl text-sm font-medium leading-relaxed uppercase tracking-wide text-[10px]">
+              Analiza el comportamiento de compra de tus clientes, identifica a tus compradores estrella y optimiza tu estrategia de fidelización.
+            </p>
           </div>
         </div>
-      </div>
 
-      <div className="ventas-cliente-tabla">
-        <h3>Consolidado por cliente</h3>
-        <div className="ventas-cliente-tabla-container">
-          <table className="ventas-cliente-table">
-            <thead>
-              <tr>
-                <th>Cliente</th>
-                <th>Documento</th>
-                <th>Cantidad Compras</th>
-                <th>Total Compras</th>
-                <th>Promedio</th>
-                <th>Última Compra</th>
-              </tr>
-            </thead>
-            <tbody>
-              {consolidado.map((c) => (
-                <tr key={c.id}>
-                  <td className="ventas-cliente-nombre">{c.cliente}</td>
-                  <td className="ventas-cliente-documento">{c.documento || '-'}</td>
-                  <td className="ventas-cliente-cantidad">{c.cantidadCompras}</td>
-                  <td className="ventas-cliente-total">{formatearMoneda(c.totalCompras)}</td>
-                  <td className="ventas-cliente-promedio">{formatearMoneda(c.promedioCompra)}</td>
-                  <td className="ventas-cliente-fecha">{c.ultimaCompra ? c.ultimaCompra.toLocaleDateString() : '-'}</td>
-                </tr>
-              ))}
-              {consolidado.length === 0 && (
-                <tr>
-                  <td colSpan="6" className="ventas-cliente-sin-datos">No hay datos para los filtros seleccionados</td>
-                </tr>
-              )}
-            </tbody>
-          </table>
+        {/* Analytics Cards */}
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 px-1">
+          <div className="rounded-[2.25rem] border border-slate-200 bg-white p-6 shadow-sm flex items-center gap-5 transition-all hover:shadow-md border-b-4 border-b-blue-500">
+            <div className="flex h-14 w-14 shrink-0 items-center justify-center rounded-2xl bg-blue-50 text-blue-600">
+              <UserCheck size={28} />
+            </div>
+            <div>
+              <p className="text-[10px] font-black uppercase tracking-widest text-slate-400 mb-1">Clientes Activos</p>
+              <p className="text-3xl font-black text-slate-800 tabular-nums">{consolidado.length}</p>
+            </div>
+          </div>
+
+          <div className="rounded-[2.25rem] border border-slate-200 bg-white p-6 shadow-sm flex items-center gap-5 transition-all hover:shadow-md border-b-4 border-b-indigo-500">
+            <div className="flex h-14 w-14 shrink-0 items-center justify-center rounded-2xl bg-indigo-50 text-indigo-600">
+              <CreditCard size={28} />
+            </div>
+            <div>
+              <p className="text-[10px] font-black uppercase tracking-widest text-slate-400 mb-1">Monto de Cartera</p>
+              <div className="flex items-baseline gap-1 font-black text-slate-800">
+                <span className="text-sm text-slate-400">S/</span>
+                <p className="text-3xl tabular-nums">{totalCarteraVentas.toLocaleString('es-PE', { minimumFractionDigits: 1 })}</p>
+              </div>
+            </div>
+          </div>
+
+          <div className="rounded-[2.25rem] border border-slate-200 bg-white p-6 shadow-sm flex items-center gap-5 transition-all hover:shadow-md">
+            <div className="flex h-14 w-14 shrink-0 items-center justify-center rounded-2xl bg-cyan-50 text-cyan-600">
+              <Award size={28} />
+            </div>
+            <div>
+              <p className="text-[10px] font-black uppercase tracking-widest text-slate-400 mb-1">Cliente Top</p>
+              <p className="text-sm font-black text-slate-700 uppercase line-clamp-1">{clienteTop ? clienteTop.cliente : 'N/A'}</p>
+              <p className="text-[10px] font-bold text-indigo-500">{clienteTop ? formatearMoneda(clienteTop.totalCompras) : ''}</p>
+            </div>
+          </div>
+
+          <div className="rounded-[2.25rem] border border-slate-200 bg-white p-6 shadow-sm flex items-center gap-5 transition-all hover:shadow-md">
+            <div className="flex h-14 w-14 shrink-0 items-center justify-center rounded-2xl bg-slate-50 text-slate-600">
+              <TrendingUp size={28} />
+            </div>
+            <div>
+              <p className="text-[10px] font-black uppercase tracking-widest text-slate-400 mb-1">Promedio General</p>
+              <div className="flex items-baseline gap-1 font-black text-slate-800">
+                <span className="text-sm text-slate-400">S/</span>
+                <p className="text-3xl tabular-nums">{(totalCarteraVentas / (consolidado.length || 1)).toLocaleString('es-PE', { minimumFractionDigits: 1 })}</p>
+              </div>
+            </div>
+          </div>
         </div>
+
+        {/* Filtros Modernos */}
+        <div className="rounded-[2.5rem] bg-white border border-slate-200 p-8 shadow-xl shadow-slate-200/50">
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-6 items-end">
+            <div className="space-y-2">
+              <label className="text-[10px] font-black uppercase tracking-widest text-slate-400 ml-2 flex items-center gap-2">
+                <Calendar size={14} /> Fecha Inicio
+              </label>
+              <input
+                type="date"
+                value={filtros.fechaInicio}
+                onChange={(e) => setFiltros({ ...filtros, fechaInicio: e.target.value })}
+                className="w-full h-14 px-5 rounded-2xl border border-slate-100 bg-slate-50/50 outline-none focus:border-blue-500 transition-all font-bold text-slate-700 text-xs"
+              />
+            </div>
+
+            <div className="space-y-2">
+              <label className="text-[10px] font-black uppercase tracking-widest text-slate-400 ml-2 flex items-center gap-2">
+                <Calendar size={14} /> Fecha Fin
+              </label>
+              <input
+                type="date"
+                value={filtros.fechaFin}
+                onChange={(e) => setFiltros({ ...filtros, fechaFin: e.target.value })}
+                className="w-full h-14 px-5 rounded-2xl border border-slate-100 bg-slate-50/50 outline-none focus:border-blue-500 transition-all font-bold text-slate-700 text-xs"
+              />
+            </div>
+
+            <div className="space-y-2">
+              <label className="text-[10px] font-black uppercase tracking-widest text-slate-400 ml-2 flex items-center gap-2">
+                <User size={14} /> Cliente
+              </label>
+              <div className="relative">
+                <select
+                  value={filtros.clienteId}
+                  onChange={(e) => setFiltros({ ...filtros, clienteId: e.target.value })}
+                  className="w-full h-14 px-5 rounded-2xl border border-slate-100 bg-slate-50/50 outline-none focus:border-blue-500 appearance-none font-bold text-slate-700 uppercase text-xs"
+                >
+                  <option value="">Todos los clientes</option>
+                  {clientes.map((c) => (
+                    <option key={c.id} value={c.id}>{c.nombre}</option>
+                  ))}
+                </select>
+                <ChevronRight className="absolute right-4 top-1/2 -translate-y-1/2 text-slate-400 rotate-90" size={18} />
+              </div>
+            </div>
+
+            <div className="space-y-2">
+              <label className="text-[10px] font-black uppercase tracking-widest text-slate-400 ml-2 flex items-center gap-2">
+                <Filter size={14} /> Mostrar primero
+              </label>
+              <div className="relative">
+                <select
+                  value={filtros.ordenarPor}
+                  onChange={(e) => aplicarOrden(e.target.value)}
+                  className="w-full h-14 px-5 rounded-2xl border border-slate-100 bg-slate-50/50 outline-none focus:border-blue-500 appearance-none font-bold text-slate-700 uppercase text-xs"
+                >
+                  <option value="total">Mayor Facturación</option>
+                  <option value="cantidad">Mayor Frecuencia</option>
+                  <option value="promedio">Mejor Promedio</option>
+                  <option value="cliente">Orden Alfabético</option>
+                </select>
+                <ChevronRight className="absolute right-4 top-1/2 -translate-y-1/2 text-slate-400 rotate-90" size={18} />
+              </div>
+            </div>
+
+            <div className="flex gap-3">
+              <button
+                onClick={cargarReporte}
+                disabled={loading}
+                className="flex-1 h-14 rounded-2xl bg-blue-600 text-white font-black uppercase tracking-widest text-[10px] shadow-lg shadow-blue-100 hover:bg-slate-900 transition-all flex items-center justify-center gap-2 disabled:opacity-50"
+              >
+                {loading ? <Activity size={16} className="animate-spin" /> : <Search size={16} />}
+                Consultar
+              </button>
+            </div>
+          </div>
+        </div>
+
+        {error && (
+          <div className="p-6 rounded-3xl bg-rose-50 border border-rose-100 text-rose-600 flex items-center gap-4">
+            <TrendingDown size={24} />
+            <p className="font-bold text-sm uppercase">{error}</p>
+          </div>
+        )}
+
+        {/* Tabla de Consolidado */}
+        <div className="rounded-[2.5rem] border border-slate-200 bg-white shadow-xl shadow-slate-200/40 overflow-hidden">
+          <div className="px-8 py-6 border-b border-slate-50 bg-slate-50/30 flex justify-between items-center">
+            <h3 className="text-xs font-black uppercase tracking-widest text-slate-800 flex items-center gap-3">
+              <div className="h-2 w-2 rounded-full bg-blue-500"></div>
+              Rank de Consumo por Cliente ({consolidado.length})
+            </h3>
+          </div>
+
+          <div className="overflow-x-auto min-h-[400px]">
+            {loading ? (
+              <div className="flex flex-col items-center justify-center py-32 gap-4">
+                <div className="h-12 w-12 border-4 border-blue-100 border-t-blue-600 rounded-full animate-spin"></div>
+                <p className="text-[10px] font-black uppercase tracking-widest text-slate-400">Analizando cartera...</p>
+              </div>
+            ) : consolidado.length > 0 ? (
+              <table className="w-full">
+                <thead>
+                  <tr className="bg-slate-50/50 border-b border-slate-100">
+                    <th className="px-10 py-5 text-left text-[10px] font-black uppercase tracking-[0.2em] text-slate-400">Identidad Cliente</th>
+                    <th className="px-10 py-5 text-center text-[10px] font-black uppercase tracking-[0.2em] text-slate-400">Frecuencia</th>
+                    <th className="px-10 py-5 text-right text-[10px] font-black uppercase tracking-[0.2em] text-slate-400">Volumen Compra</th>
+                    <th className="px-10 py-5 text-right text-[10px] font-black uppercase tracking-[0.2em] text-slate-400">Ticket Promedio</th>
+                    <th className="px-10 py-5 text-right text-[10px] font-black uppercase tracking-[0.2em] text-slate-400">Última Operación</th>
+                  </tr>
+                </thead>
+                <tbody className="divide-y divide-slate-50">
+                  {consolidado.map((item, index) => (
+                    <tr key={item.id} className="hover:bg-blue-50/30 transition-colors group">
+                      <td className="px-10 py-5">
+                        <div className="flex items-center gap-4">
+                          <div className="h-10 w-10 rounded-xl bg-slate-100 text-slate-500 flex items-center justify-center group-hover:bg-white group-hover:shadow-sm transition-all font-black text-xs">
+                            {index + 1}
+                          </div>
+                          <div>
+                            <span className="text-sm font-black text-slate-800 block uppercase">{item.cliente}</span>
+                            <span className="text-[10px] font-bold text-slate-400 uppercase tracking-tighter">DOC: {item.documento || 'No Registrado'}</span>
+                          </div>
+                        </div>
+                      </td>
+                      <td className="px-10 py-5 text-center">
+                        <div className="inline-flex items-center gap-1.5 text-[10px] font-black text-blue-600 bg-blue-50 px-3 py-1 rounded-lg">
+                          <FileText size={12} />
+                          {item.cantidadCompras} Pedidos
+                        </div>
+                      </td>
+                      <td className="px-10 py-5 text-right">
+                        <span className="text-lg font-black text-slate-800 tabular-nums">
+                          {formatearMoneda(item.totalCompras)}
+                        </span>
+                      </td>
+                      <td className="px-10 py-5 text-right">
+                        <div className="flex flex-col items-end">
+                          <span className="text-sm font-black text-indigo-600 tabular-nums">{formatearMoneda(item.promedioCompra)}</span>
+                          <span className="text-[9px] font-bold text-slate-400 uppercase tracking-tighter">Por Operación</span>
+                        </div>
+                      </td>
+                      <td className="px-10 py-5 text-right">
+                        <span className="text-xs font-bold text-slate-500 tabular-nums">
+                          {item.ultimaCompra ? item.ultimaCompra.toLocaleDateString('es-PE', { day: '2-digit', month: '2-digit', year: 'numeric' }) : '-'}
+                        </span>
+                      </td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            ) : (
+              <div className="text-center py-32 px-10 border-2 border-dashed border-slate-100 rounded-[2.5rem] m-8">
+                <Users size={60} className="mx-auto text-slate-100 mb-6" />
+                <h4 className="text-xl font-black text-slate-300 uppercase tracking-tighter mb-2">Sin actividad comercial</h4>
+                <p className="text-xs font-bold text-slate-400 uppercase tracking-widest max-w-xs mx-auto">
+                  No se registran ventas para los criterios seleccionados. Intenta ampliar el rango de fechas.
+                </p>
+              </div>
+            )}
+          </div>
+        </div>
+
       </div>
     </div>
   );
