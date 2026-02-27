@@ -1,5 +1,34 @@
 import React, { useState, useEffect } from 'react';
-import '../../styles/FormularioCompras.css';
+import {
+  Plus,
+  Trash2,
+  Search,
+  FileText,
+  Calendar,
+  UserPlus,
+  ChevronRight,
+  Layout,
+  ShoppingBag,
+  Truck,
+  Building,
+  CreditCard,
+  DollarSign,
+  Clock,
+  RefreshCcw,
+  Settings,
+  Download,
+  FileDown,
+  CheckCircle2,
+  XCircle,
+  MoreVertical,
+  ArrowLeft,
+  Info,
+  Package,
+  FileDigit,
+  User,
+  Hash,
+  ArrowRight
+} from 'lucide-react';
 import { crearCompra, validarCompra, calcularTotales, probarConectividad } from '../../services/compraService';
 import { obtenerProveedores, crearProveedor } from '../../services/proveedorService';
 import { obtenerSucursales } from '../../services/sucursalService';
@@ -7,8 +36,9 @@ import { obtenerProductos } from '../../services/productoService';
 import { obtenerClientes } from '../../services/clienteService';
 import { consultarReniec, consultarSunat } from '../../services/consultaService';
 import * as XLSX from 'xlsx';
+import Swal from 'sweetalert2';
 
-const FormularioCompras = () => {
+const FormularioCompras = ({ onCancelar, onCompraCreada }) => {
   // Estados para datos reales
   const [proveedores, setProveedores] = useState([]);
   const [sucursales, setSucursales] = useState([]);
@@ -65,12 +95,10 @@ const FormularioCompras = () => {
   ]);
 
   const [mostrarModalProveedor, setMostrarModalProveedor] = useState(false);
-  // Importación desde XML
   const [mostrarModalImportar, setMostrarModalImportar] = useState(false);
   const [archivoXml, setArchivoXml] = useState(null);
   const [cargandoImportacion, setCargandoImportacion] = useState(false);
-  
-  // Estado para el nuevo proveedor
+
   const [nuevoProveedor, setNuevoProveedor] = useState({
     tipoDocumento: 'RUC',
     numeroDocumento: '',
@@ -85,48 +113,21 @@ const FormularioCompras = () => {
     esAgentePercepcion: false
   });
 
-  // Estados para consulta automática
   const [consultandoProveedor, setConsultandoProveedor] = useState(false);
   const [errorConsultaProveedor, setErrorConsultaProveedor] = useState('');
 
-  // Estados para clientes
   const [busquedaCliente, setBusquedaCliente] = useState('');
   const [clientesFiltrados, setClientesFiltrados] = useState([]);
   const [mostrarListaClientes, setMostrarListaClientes] = useState(false);
   const [clienteSeleccionado, setClienteSeleccionado] = useState(null);
 
-  // Cargar datos iniciales
   useEffect(() => {
     cargarDatosIniciales();
-  }, []);
-
-  // Cerrar lista de clientes al hacer clic fuera
-  useEffect(() => {
-    const handleClickOutside = (event) => {
-      if (!event.target.closest('.fc-clientes-input-container')) {
-        setMostrarListaClientes(false);
-      }
-    };
-
-    document.addEventListener('mousedown', handleClickOutside);
-    return () => {
-      document.removeEventListener('mousedown', handleClickOutside);
-    };
   }, []);
 
   const cargarDatosIniciales = async () => {
     try {
       setLoading(true);
-      
-      // Probar conectividad primero
-      console.log('🔍 Probando conectividad con el backend...');
-      const conectado = await probarConectividad();
-      if (!conectado) {
-        console.error('❌ No se puede conectar al backend');
-        setErrors({ general: 'No se puede conectar al servidor. Verifique que el backend esté ejecutándose.' });
-        return;
-      }
-      
       const [proveedoresData, sucursalesData, productosData, clientesData] = await Promise.all([
         obtenerProveedores(),
         obtenerSucursales(),
@@ -140,90 +141,63 @@ const FormularioCompras = () => {
       setClientes(clientesData.clientes || clientesData.data || []);
     } catch (error) {
       console.error('Error al cargar datos iniciales:', error);
-      setErrors({ general: 'Error al cargar los datos iniciales' });
+      Swal.fire('Error', 'No se pudieron cargar los datos iniciales', 'error');
     } finally {
       setLoading(false);
     }
   };
 
-  // Manejar cambios en el formulario principal
   const handleInputChange = (e) => {
     const { name, value } = e.target;
-    setFormData(prev => ({
-      ...prev,
-      [name]: value
-    }));
-    
-    // Limpiar errores cuando el usuario empiece a escribir
-    if (errors[name]) {
-      setErrors(prev => ({
-        ...prev,
-        [name]: ''
-      }));
-    }
+    setFormData(prev => ({ ...prev, [name]: value }));
   };
 
   const handleOpcionChange = (e) => {
     const { name, checked } = e.target;
-    setOpciones(prev => ({
-      ...prev,
-      [name]: checked
-    }));
+    setOpciones(prev => ({ ...prev, [name]: checked }));
   };
 
-  // Manejar cambios en el detalle de producto
   const handleDetalleChange = (e) => {
     const { name, value } = e.target;
     const newDetalle = {
       ...detalleProducto,
       [name]: name === 'productoId' ? value : parseFloat(value) || 0
     };
-    
-    // Calcular subtotal automáticamente
     newDetalle.subtotal = newDetalle.cantidad * newDetalle.precioUnitario;
-    
     setDetalleProducto(newDetalle);
   };
 
-  // Manejar cambios en el proveedor
   const handleProveedorChange = (e) => {
     const { name, value, type, checked } = e.target;
     setNuevoProveedor(prev => ({
       ...prev,
       [name]: type === 'checkbox' ? checked : value
     }));
-
-    // Consulta automática cuando se ingresa el número de documento
-    if (name === 'numeroDocumento' && value.length >= 8) {
-      consultarDocumentoProveedor(value);
-    }
   };
 
-  // Función para consultar documento automáticamente
-  const consultarDocumentoProveedor = async (numeroDocumento) => {
-    if (!numeroDocumento || numeroDocumento.length < 8) return;
+  const consultarDocumentoProveedor = async () => {
+    const numeroDocumento = nuevoProveedor.numeroDocumento;
+    if (!numeroDocumento || (nuevoProveedor.tipoDocumento === 'DNI' && numeroDocumento.length !== 8) || (nuevoProveedor.tipoDocumento === 'RUC' && numeroDocumento.length !== 11)) {
+      Swal.fire('Atención', 'Ingrese un número de documento válido', 'warning');
+      return;
+    }
 
     setConsultandoProveedor(true);
     setErrorConsultaProveedor('');
 
     try {
       let resultado = null;
-      
-      if (nuevoProveedor.tipoDocumento === 'DNI' && numeroDocumento.length === 8) {
+      if (nuevoProveedor.tipoDocumento === 'DNI') {
         resultado = await consultarReniec(numeroDocumento);
-      } else if (nuevoProveedor.tipoDocumento === 'RUC' && numeroDocumento.length === 11) {
+      } else if (nuevoProveedor.tipoDocumento === 'RUC') {
         resultado = await consultarSunat(numeroDocumento);
       }
 
-      if (resultado && resultado.mensaje === 'Consulta exitosa' && resultado.datos) {
-        // Extraer el nombre según el tipo de documento
+      if (resultado && (resultado.success || resultado.mensaje === 'Consulta exitosa') && resultado.datos) {
         let nombreCompleto = '';
         if (nuevoProveedor.tipoDocumento === 'DNI') {
-          // Para DNI, usar nombreCompleto del backend o construir desde datos
-          nombreCompleto = resultado.nombreCompleto || 
-            `${resultado.datos.nombres || ''} ${resultado.datos.apellidoPaterno || ''} ${resultado.datos.apellidoMaterno || ''}`.trim();
+          nombreCompleto = resultado.nombreCompleto || `${resultado.datos.nombres || ''} ${resultado.datos.apellidoPaterno || ''} ${resultado.datos.apellidoMaterno || ''}`.trim();
         } else if (nuevoProveedor.tipoDocumento === 'RUC') {
-          // Para RUC, usar nombreCompleto del backend o razonSocial
           nombreCompleto = resultado.nombreCompleto || resultado.datos.razonSocial || resultado.datos.nombre || '';
         }
 
@@ -231,1504 +205,695 @@ const FormularioCompras = () => {
           ...prev,
           nombre: nombreCompleto,
           direccion: resultado.datos.direccion || '',
-          ruc: nuevoProveedor.tipoDocumento === 'RUC' ? numeroDocumento : (resultado.datos.ruc || prev.ruc || '')
         }));
-        
-        setErrorConsultaProveedor('✅ Datos obtenidos exitosamente');
+
+        Swal.fire('¡Éxito!', 'Datos encontrados satisfactoriamente', 'success');
       } else {
-        setErrorConsultaProveedor('No se encontraron datos para el documento consultado');
+        Swal.fire('Información', 'No se encontraron datos para el documento ingresado', 'info');
       }
     } catch (error) {
-      console.error('Error en consulta automática:', error);
-      setErrorConsultaProveedor(`❌ Error al consultar: ${error.message}`);
+      console.error('Error en consulta:', error);
+      Swal.fire('Error', 'Ocurrió un error al consultar el documento', 'error');
     } finally {
       setConsultandoProveedor(false);
     }
   };
 
-  // Función para consulta manual
-  const consultarManualProveedor = () => {
-    if (nuevoProveedor.numeroDocumento) {
-      consultarDocumentoProveedor(nuevoProveedor.numeroDocumento);
-    }
-  };
-
-  // Manejar pagos
-  const handlePagoChange = (index, field, value) => {
-    const newPagos = [...pagos];
-    newPagos[index][field] = value;
-    setPagos(newPagos);
-  };
-
-  // Agregar producto al detalle
   const agregarProducto = () => {
     if (!detalleProducto.productoId || detalleProducto.cantidad <= 0 || detalleProducto.precioUnitario <= 0) {
-      setErrors(prev => ({
-        ...prev,
-        detalle: 'Complete todos los campos del producto'
-      }));
+      Swal.fire('Atención', 'Complete correctamente los datos del producto', 'warning');
       return;
     }
 
     const producto = productos.find(p => p.id == detalleProducto.productoId);
-    
-    // Verificar que el producto existe y está activo
-    if (!producto || !producto.estado) {
-      setErrors(prev => ({
-        ...prev,
-        detalle: 'El producto seleccionado no está disponible'
-      }));
-      return;
-    }
+    if (!producto) return;
+
     const nuevoDetalle = {
       ...detalleProducto,
       producto: producto,
-      id: Date.now() // ID temporal
+      id: Date.now() + Math.random()
     };
 
-    const nuevosDetalles = [...detalles, nuevoDetalle];
-    setDetalles(nuevosDetalles);
-
-    // Limpiar el formulario de detalle
+    setDetalles([...detalles, nuevoDetalle]);
     setDetalleProducto({
       productoId: '',
       cantidad: 1,
       precioUnitario: 0,
       subtotal: 0
     });
-
-    setErrors(prev => ({
-      ...prev,
-      detalle: ''
-    }));
   };
 
-  // Eliminar producto del detalle
-  const eliminarProducto = (index) => {
-    const nuevosDetalles = detalles.filter((_, i) => i !== index);
-    setDetalles(nuevosDetalles);
+  const eliminarProducto = (id) => {
+    setDetalles(detalles.filter(d => d.id !== id));
   };
 
-  const agregarPago = () => {
-    setPagos([...pagos, {
-      formaPago: 'Efectivo',
-      desde: 'CAJA GENERAL - Administracion',
-      referencia: '',
-      glosa: '',
-      monto: '0'
-    }]);
-  };
-
-  const eliminarPago = (index) => {
-    if (pagos.length > 1) {
-      setPagos(pagos.filter((_, i) => i !== index));
-    }
-  };
-
-  // Funciones para manejar clientes
-  const handleBusquedaCliente = (e) => {
-    const valor = e.target.value;
-    setBusquedaCliente(valor);
-
-    if (valor.trim() === '') {
-      setClientesFiltrados([]);
-      setMostrarListaClientes(false);
-      return;
-    }
-
-    // Filtrar clientes por nombre o número de documento
-    const clientesFiltrados = clientes.filter(cliente => 
-      cliente.nombre?.toLowerCase().includes(valor.toLowerCase()) ||
-      cliente.numeroDocumento?.includes(valor)
-    );
-
-    setClientesFiltrados(clientesFiltrados);
-    setMostrarListaClientes(true);
-  };
-
-  const seleccionarCliente = (cliente) => {
-    setClienteSeleccionado(cliente);
-    setBusquedaCliente(`${cliente.nombre} - ${cliente.numeroDocumento}`);
-    setMostrarListaClientes(false);
-  };
-
-  const limpiarSeleccionCliente = () => {
-    setClienteSeleccionado(null);
-    setBusquedaCliente('');
-    setClientesFiltrados([]);
-    setMostrarListaClientes(false);
-  };
-
-  // Modal de proveedor
-  const abrirModalProveedor = () => {
-    setMostrarModalProveedor(true);
-  };
-
-  const cerrarModalProveedor = () => {
-    setMostrarModalProveedor(false);
-    setNuevoProveedor({
-      tipoDocumento: 'RUC',
-      numeroDocumento: '',
-      nombre: '',
-      direccion: '',
-      telefono: '',
-      diasCredito: '',
-      codigoInterno: '',
-      codigoBarras: '',
-      nacionalidad: 'Perú',
-      tipoProveedor: 'Vendedor',
-      esAgentePercepcion: false
-    });
-  };
-
-  // ----- Importar productos desde XML -----
-  const abrirModalImportar = () => {
-    setMostrarModalImportar(true);
-  };
-
-  const cerrarModalImportar = () => {
-    setMostrarModalImportar(false);
-    setArchivoXml(null);
-  };
-
-  const handleArchivoXmlChange = (event) => {
-    const archivo = event.target.files[0];
-    if (archivo && (archivo.type === 'text/xml' || archivo.name.toLowerCase().endsWith('.xml'))) {
-      setArchivoXml(archivo);
+  const handleDescargarPlantilla = (tipo) => {
+    if (tipo === 'existentes') {
+      const ws = XLSX.utils.aoa_to_sheet([['Código Interno', 'Cantidad', 'Precio unitario'], ['P001', '5', '12.50']]);
+      const wb = XLSX.utils.book_new();
+      XLSX.utils.book_append_sheet(wb, ws, 'Existentes');
+      XLSX.writeFile(wb, 'plantilla_existentes.xlsx');
     } else {
-      alert('Por favor seleccione un archivo XML válido');
-      event.target.value = '';
+      const ws = XLSX.utils.aoa_to_sheet([['Número', 'Código Interno', 'Modelo', 'Precio Unitario Venta', 'Cantidad'], ['Producto Ejemplo', '64001', 'M1', '10.00', '1']]);
+      const wb = XLSX.utils.book_new();
+      XLSX.utils.book_append_sheet(wb, ws, 'Nuevos');
+      XLSX.writeFile(wb, 'plantilla_nuevos.xlsx');
     }
   };
 
-  const parseXmlCompra = async (file) => {
-    const texto = await file.text();
-    const parser = new DOMParser();
-    const doc = parser.parseFromString(texto, 'text/xml');
-
-    // Intentar múltiples estructuras comunes (Factura, Nota de Débito/Crédito)
-    const invoiceLines = Array.from(doc.getElementsByTagName('cac:InvoiceLine'));
-    const debitLines = Array.from(doc.getElementsByTagName('cac:DebitNoteLine'));
-    const creditLines = Array.from(doc.getElementsByTagName('cac:CreditNoteLine'));
-    const lines = invoiceLines.length ? invoiceLines : (debitLines.length ? debitLines : creditLines);
-
-    const nuevosDetalles = [];
-
-    // Helpers seguros para XML con namespaces (evita querySelector con ':')
-    const getTag = (node, tag) => {
-      const list = node.getElementsByTagName(tag);
-      return list && list.length > 0 ? list[0] : null;
-    };
-
-    const getText = (node) => (node && node.textContent ? node.textContent.trim() : '');
-
-    const procesarLinea = (node) => {
-      // Código de producto
-      const sellersId = getTag(node, 'cac:SellersItemIdentification') || getTag(node, 'cac:Item');
-      const codeNode = sellersId ? getTag(sellersId, 'cbc:ID') : getTag(node, 'cbc:ID');
-
-      // Cantidad
-      const qtyNode = getTag(node, 'cbc:InvoicedQuantity') 
-        || getTag(node, 'cbc:DebitedQuantity') 
-        || getTag(node, 'cbc:CreditedQuantity');
-
-      // Precio unitario
-      const price = getTag(node, 'cac:Price');
-      const priceNode = price ? getTag(price, 'cbc:PriceAmount') : getTag(node, 'cbc:PriceAmount');
-
-      const codigo = getText(codeNode);
-      const cantidad = parseFloat(getText(qtyNode)) || 0;
-      let precioUnitario = parseFloat(getText(priceNode)) || 0;
-
-      // Fallback: derivar precio de LineExtensionAmount / cantidad
-      if (!precioUnitario) {
-        const lineExt = getTag(node, 'cbc:LineExtensionAmount');
-        if (lineExt && cantidad > 0) {
-          const totalLinea = parseFloat(getText(lineExt)) || 0;
-          precioUnitario = cantidad ? totalLinea / cantidad : 0;
-        }
-      }
-
-      if (cantidad > 0 && precioUnitario > 0) {
-        const productoMatch = productos.find(p => (p.codigo || '').toString().trim() === codigo);
-        const detalle = {
-          productoId: productoMatch?.id || '',
-          cantidad,
-          precioUnitario,
-          subtotal: cantidad * precioUnitario,
-          producto: productoMatch || undefined,
-          id: Date.now() + Math.random()
-        };
-        nuevosDetalles.push(detalle);
-      }
-    };
-
-    if (lines.length > 0) {
-      lines.forEach(procesarLinea);
-    }
-
-    return nuevosDetalles;
-  };
-
-  const handleImportarXml = async () => {
-    if (!archivoXml) {
-      alert('Por favor seleccione un archivo XML');
-      return;
-    }
-
-    try {
-      setCargandoImportacion(true);
-      const importados = await parseXmlCompra(archivoXml);
-
-      if (importados.length === 0) {
-        alert('No se encontraron ítems válidos en el XML');
-        return;
-      }
-
-      setDetalles(prev => [...prev, ...importados]);
-      cerrarModalImportar();
-      alert(`Se importaron ${importados.length} ítems desde el XML`);
-    } catch (error) {
-      console.error('Error al importar XML en formulario:', error);
-      alert('Error al importar XML: ' + error.message);
-    } finally {
-      setCargandoImportacion(false);
-    }
-  };
-
-  const guardarProveedor = async () => {
-    if (!nuevoProveedor.numeroDocumento || !nuevoProveedor.nombre) {
-      alert('Complete los campos obligatorios del proveedor');
-      return;
-    }
-
-    try {
-      setLoading(true);
-      
-      // Preparar datos del proveedor con solo los campos que acepta el backend
-      const datosProveedor = {
-        nombre: nuevoProveedor.nombre,
-        tipoDocumento: nuevoProveedor.tipoDocumento,
-        numeroDocumento: nuevoProveedor.numeroDocumento,
-        direccion: nuevoProveedor.direccion || null,
-        telefono: nuevoProveedor.telefono || null,
-        // email y contacto no están en el formulario pero están en el modelo
-        email: null,
-        contacto: null
-      };
-      
-      const resultado = await crearProveedor(datosProveedor);
-      
-      // Recargar lista de proveedores
-      const proveedoresData = await obtenerProveedores();
-      setProveedores(proveedoresData.proveedores || proveedoresData.data || []);
-      
-      // Seleccionar el nuevo proveedor automáticamente
-      setFormData(prev => ({
-        ...prev,
-        proveedor: resultado.proveedor?.id || resultado.id
-      }));
-
-      alert('Proveedor guardado exitosamente');
-      cerrarModalProveedor();
-    } catch (error) {
-      console.error('Error al guardar proveedor:', error);
-      alert('Error al guardar el proveedor: ' + (error.message || 'Error desconocido'));
-    } finally {
-      setLoading(false);
-    }
-  };
-
-  // Calcular totales
   const calcularTotal = () => {
     const subtotal = detalles.reduce((sum, detalle) => sum + detalle.subtotal, 0);
     const igv = opciones.tieneIGV ? subtotal * 0.18 : 0;
     const total = subtotal + igv;
-    
     return { subtotal, igv, total };
   };
 
   const { subtotal, igv, total } = calcularTotal();
 
-  // Enviar compra
-  const enviarCompra = async (e) => {
+  const handleGuardarCompra = async (e) => {
     e.preventDefault();
-    
-    // Validación básica con mensajes específicos
-    const newErrors = {};
-    
-    if (!formData.proveedor) {
-      newErrors.proveedor = 'Seleccione un proveedor';
-    }
-    
-    if (!formData.sucursalId) {
-      newErrors.sucursalId = 'Seleccione una sucursal';
-    }
-    
-    if (!formData.serie) {
-      newErrors.serie = 'Ingrese la serie del comprobante';
-    }
-    
-    if (!formData.numero) {
-      newErrors.numero = 'Ingrese el número del comprobante';
-    }
 
-    if (detalles.length === 0) {
-      newErrors.general = 'Agregue al menos un producto';
-    }
-    
-    if (Object.keys(newErrors).length > 0) {
-      setErrors(newErrors);
+    if (!formData.proveedor || !formData.sucursalId || !formData.serie || !formData.numero || detalles.length === 0) {
+      Swal.fire('Faltan datos', 'Por favor complete todos los campos obligatorios y agregue productos', 'warning');
       return;
     }
 
-    const compraData = {
-      // Mapear exactamente a los campos que espera el backend
-      proveedorId: parseInt(formData.proveedor), // Backend espera 'proveedorId' como número
-      sucursalId: parseInt(formData.sucursalId), // Backend espera 'sucursalId' como número
-      tipoComprobante: formData.tipoComprobante,
-      serieComprobante: formData.serie, // Backend espera 'serieComprobante'
-      numeroComprobante: formData.numero, // Backend espera 'numeroComprobante'
-      fechaCompra: formData.fechaEmision + 'T00:00:00Z', // Backend espera 'fechaCompra' en formato ISO
-      subtotal: parseFloat(subtotal),
-      igv: parseFloat(igv),
-      total: parseFloat(total),
-      estado: 'PENDIENTE',
-      observacion: formData.observaciones || '', // Backend espera 'observacion' (singular)
-      detalles: detalles.map(detalle => ({
-        productoId: parseInt(detalle.productoId),
-        cantidad: parseFloat(detalle.cantidad),
-        precioUnitario: parseFloat(detalle.precioUnitario),
-        subtotal: parseFloat(detalle.subtotal)
-      }))
-    };
-
+    setLoading(true);
     try {
-      setLoading(true);
-      
-      // Verificar conectividad antes de enviar
-      console.log('🔍 Verificando conectividad antes de crear compra...');
-      const conectado = await probarConectividad();
-      if (!conectado) {
-        setErrors({ general: 'No se puede conectar al servidor. Verifique que el backend esté ejecutándose.' });
-        alert('Error: No se puede conectar al servidor');
-        return;
-      }
-      
-      const resultado = await crearCompra(compraData);
-      
-      // Limpiar formulario después del éxito
-      setFormData({
-        tipoComprobante: 'FACTURA ELECTRÓNICA',
-        serie: '',
-        numero: '',
-        fechaEmision: new Date().toISOString().split('T')[0],
-        fechaVencimiento: '',
-        proveedor: '',
-        moneda: 'Soles',
-        tipoCambio: '3.511',
-        ordenCompra: '',
-        observaciones: '',
-        constDetraccion: '',
-        fechaDetraccion: '',
-        porcentajeDetraccion: '',
-        periodoCompra: new Date().toISOString().slice(0, 7),
-        condicionPago: 'Contado',
-        sucursalId: '',
-        estado: 'PENDIENTE'
-      });
-      
-      setDetalles([]);
-      setPagos([{
-        formaPago: 'Efectivo',
-        desde: 'CAJA GENERAL - Administracion',
-        referencia: '',
-        glosa: '',
-        monto: '0'
-      }]);
-      setErrors({});
-      alert('Compra creada exitosamente');
-      
+      const compraData = {
+        proveedorId: parseInt(formData.proveedor),
+        sucursalId: parseInt(formData.sucursalId),
+        tipoComprobante: formData.tipoComprobante,
+        serieComprobante: formData.serie,
+        numeroComprobante: formData.numero,
+        fechaCompra: formData.fechaEmision + 'T00:00:00Z',
+        subtotal: parseFloat(subtotal),
+        igv: parseFloat(igv),
+        total: parseFloat(total),
+        estado: 'PENDIENTE',
+        observacion: formData.observaciones || '',
+        detalles: detalles.map(detalle => ({
+          productoId: parseInt(detalle.productoId),
+          cantidad: parseFloat(detalle.cantidad),
+          precioUnitario: parseFloat(detalle.precioUnitario),
+          subtotal: parseFloat(detalle.subtotal)
+        }))
+      };
+
+      await crearCompra(compraData);
+      Swal.fire('¡Compra Guardada!', 'La compra se registró correctamente en el sistema', 'success');
+      onCompraCreada?.();
     } catch (error) {
-      console.error('Error al crear compra:', error);
-      setErrors({ general: 'Error al crear la compra' });
-      alert('Error al crear la compra');
+      console.error('Error al guardar compra:', error);
+      Swal.fire('Error', 'No se pudo registrar la compra', 'error');
     } finally {
       setLoading(false);
     }
   };
 
-  const meses = [
-    { value: 'ene', label: 'ene', numero: '01' },
-    { value: 'feb', label: 'feb', numero: '02' },
-    { value: 'mar', label: 'mar', numero: '03' },
-    { value: 'abr', label: 'abr', numero: '04' },
-    { value: 'may', label: 'may', numero: '05' },
-    { value: 'jun', label: 'jun', numero: '06' },
-    { value: 'jul', label: 'jul', numero: '07' },
-    { value: 'ago', label: 'ago', numero: '08' },
-    { value: 'sep', label: 'sep', numero: '09' },
-    { value: 'oct', label: 'oct', numero: '10' },
-    { value: 'nov', label: 'nov', numero: '11' },
-    { value: 'dic', label: 'dic', numero: '12' }
-  ];
-
-  // Estado para el año del calendario
-  const [anoCalendario, setAnoCalendario] = useState(new Date().getFullYear());
-  
-  // Función para cambiar año
-  const cambiarAno = (direccion) => {
-    setAnoCalendario(prev => prev + direccion);
-  };
-
-  // Función para seleccionar mes
-  const seleccionarMes = (mes) => {
-    const nuevoPeriodo = `${anoCalendario}-${mes.numero}`;
-    setFormData({...formData, periodoCompra: nuevoPeriodo});
-  };
-
-  // Obtener mes actual del período
-  const obtenerMesActual = () => {
-    if (formData.periodoCompra) {
-      const [ano, mes] = formData.periodoCompra.split('-');
-      return mes;
+  const handleGuardarProveedor = async () => {
+    if (!nuevoProveedor.numeroDocumento || !nuevoProveedor.nombre) {
+      Swal.fire('Atención', 'Nombre y documento son obligatorios', 'warning');
+      return;
     }
-    return new Date().toISOString().slice(5, 7);
+
+    try {
+      setLoading(true);
+      const resultado = await crearProveedor({
+        nombre: nuevoProveedor.nombre,
+        tipoDocumento: nuevoProveedor.tipoDocumento,
+        numeroDocumento: nuevoProveedor.numeroDocumento,
+        direccion: nuevoProveedor.direccion || null,
+        telefono: nuevoProveedor.telefono || null,
+      });
+
+      const proveedoresData = await obtenerProveedores();
+      setProveedores(proveedoresData.proveedores || proveedoresData.data || []);
+      setFormData(prev => ({ ...prev, proveedor: resultado.id.toString() }));
+      setMostrarModalProveedor(false);
+      Swal.fire('¡Éxito!', 'Proveedor creado satisfactoriamente', 'success');
+    } catch (error) {
+      Swal.fire('Error', 'No se pudo crear el proveedor', 'error');
+    } finally {
+      setLoading(false);
+    }
   };
 
-  // Función para descargar plantilla de productos existentes
-  const descargarPlantillaProductosExistentes = () => {
-    // Estructura de la plantilla para productos existentes
-    const encabezados = [
-      'Código Interno',
-      'Cantidad',
-      'Precio unitario'
-    ];
+  const handleImportarXml = async () => {
+    if (!archivoXml) return;
+    setCargandoImportacion(true);
+    try {
+      // Mock parsing function based on previous logic
+      const texto = await archivoXml.text();
+      const parser = new DOMParser();
+      const doc = parser.parseFromString(texto, 'text/xml');
+      const lines = Array.from(doc.getElementsByTagName('cac:InvoiceLine'));
 
-    // Datos de ejemplo
-    const datosEjemplo = [
-      ['P0141', '4', '25.6']
-    ];
+      const nuevosDetalles = lines.map(node => {
+        const qty = parseFloat(node.getElementsByTagName('cbc:InvoicedQuantity')[0]?.textContent) || 0;
+        const price = parseFloat(node.getElementsByTagName('cbc:PriceAmount')[0]?.textContent) || 0;
+        const code = node.getElementsByTagName('cbc:ID')[0]?.textContent || '';
+        const productoMatch = productos.find(p => p.codigo === code);
 
-    // Crear hoja de trabajo
-    const datosPlantilla = [encabezados, ...datosEjemplo];
-    const ws = XLSX.utils.aoa_to_sheet(datosPlantilla);
+        return {
+          productoId: productoMatch?.id || '',
+          producto: productoMatch || { nombre: 'Producto XML: ' + code },
+          cantidad: qty,
+          precioUnitario: price,
+          subtotal: qty * price,
+          id: Date.now() + Math.random()
+        };
+      }).filter(d => d.cantidad > 0);
 
-    // Configurar ancho de columnas
-    ws['!cols'] = [
-      { wch: 15 }, // Código Interno
-      { wch: 10 }, // Cantidad
-      { wch: 15 }  // Precio unitario
-    ];
-
-    // Crear libro de trabajo
-    const wb = XLSX.utils.book_new();
-    XLSX.utils.book_append_sheet(wb, ws, 'Productos Existentes');
-
-    // Descargar archivo
-    const fechaActual = new Date().toISOString().split('T')[0];
-    XLSX.writeFile(wb, `plantilla_productos_existentes_${fechaActual}.xlsx`);
-  };
-
-  // Función para descargar plantilla de productos nuevos
-  const descargarPlantillaProductosNuevos = () => {
-    // Estructura de la plantilla para productos nuevos (basada en la estructura completa del sistema)
-    const encabezados = [
-      'Número',
-      'Código Interno',
-      'Modelo',
-      'Código Sunat',
-      'Código Tipo de Unidad',
-      'Código Tipo de Moneda',
-      'Precio Unitario Venta',
-      'Código Tipo de Afectación de Igv',
-      'Tasa Igv',
-      'Precio Unitario Compra',
-      'Código Tipo de Afectación de Igv Compra',
-      'Stock Mínimo',
-      'Stock Máximo',
-      'Descripción Número Lote/Serie',
-      'Código Sunat Fec. Vencimiento',
-      'Cod Barra',
-      'Intervenciones',
-      'Cantidad'
-    ];
-
-    // Datos de ejemplo basados en la imagen proporcionada
-    const datosEjemplo = [
-      [
-        'BATERIAS BATERIAS 6X6 COLOR NEGRO',
-        '64001',
-        '',
-        'NIU',
-        'PEN',
-        '10.00',
-        '10',
-        '0.18',
-        '10.00',
-        '10',
-        '0',
-        '0',
-        'BATERIAS BATERIAS 6X6 COLOR NEGRO',
-        '',
-        '1000000001',
-        'Intervenciones',
-        '1'
-      ]
-    ];
-
-    // Crear hoja de trabajo
-    const datosPlantilla = [encabezados, ...datosEjemplo];
-    const ws = XLSX.utils.aoa_to_sheet(datosPlantilla);
-
-    // Configurar ancho de columnas
-    ws['!cols'] = [
-      { wch: 35 }, // Número
-      { wch: 15 }, // Código Interno
-      { wch: 15 }, // Modelo
-      { wch: 15 }, // Código Sunat
-      { wch: 20 }, // Código Tipo de Unidad
-      { wch: 20 }, // Código Tipo de Moneda
-      { wch: 20 }, // Precio Unitario Venta
-      { wch: 25 }, // Código Tipo de Afectación de Igv
-      { wch: 10 }, // Tasa Igv
-      { wch: 20 }, // Precio Unitario Compra
-      { wch: 30 }, // Código Tipo de Afectación de Igv Compra
-      { wch: 15 }, // Stock Mínimo
-      { wch: 15 }, // Stock Máximo
-      { wch: 30 }, // Descripción Número Lote/Serie
-      { wch: 25 }, // Código Sunat Fec. Vencimiento
-      { wch: 15 }, // Cod Barra
-      { wch: 15 }, // Intervenciones
-      { wch: 10 }  // Cantidad
-    ];
-
-    // Crear libro de trabajo
-    const wb = XLSX.utils.book_new();
-    XLSX.utils.book_append_sheet(wb, ws, 'Productos Nuevos');
-
-    // Descargar archivo
-    const fechaActual = new Date().toISOString().split('T')[0];
-    XLSX.writeFile(wb, `plantilla_productos_nuevos_${fechaActual}.xlsx`);
+      setDetalles([...detalles, ...nuevosDetalles]);
+      setMostrarModalImportar(false);
+      Swal.fire('Importación', `Se importaron ${nuevosDetalles.length} productos correctamente`, 'success');
+    } catch (error) {
+      Swal.fire('Error', 'No se pudo procesar el archivo XML', 'error');
+    } finally {
+      setCargandoImportacion(false);
+      setArchivoXml(null);
+    }
   };
 
   return (
-    <div className="fc-container">
-      <h2 className="fc-title">Nueva Compra</h2>
-      
-      <form className="fc-form" onSubmit={enviarCompra}>
-        <div className="fc-row">
-          <div className="fc-field">
-            <label className="fc-label">Tipo comprobante</label>
-            <select 
-              name="tipoComprobante" 
-              value={formData.tipoComprobante}
-              onChange={handleInputChange}
-              className="fc-select"
-            >
-              <option value="FACTURA ELECTRÓNICA">FACTURA ELECTRÓNICA</option>
-              <option value="BOLETA DE VENTA ELECTRONICA">BOLETA DE VENTA ELECTRONICA</option>
-              <option value="NOTA DE CREDITO">NOTA DE CRÉDITO</option>
-              <option value="NOTA DE DEBITO">NOTA DE DÉBITO</option>
-              <option value="GUÍA">GUÍA</option>
-              <option value="NOTA DE VENTA">NOTA DE VENTA</option>
-              <option value="RECIBO POR HONORARIOS">RECIBO POR HONORARIOS</option>
-              <option value="SERVICIOS PÚBLICOS">SERVICIOS PÚBLICOS</option>
-            </select>
-          </div>
-          
-          <div className="fc-field">
-            <label className="fc-label">Serie <span className="fc-required">*</span></label>
-            <input 
-              type="text" 
-              name="serie"
-              value={formData.serie}
-              onChange={handleInputChange}
-              className="fc-input"
-            />
-            {errors.serie && <span className="fc-error">{errors.serie}</span>}
-          </div>
-          
-          <div className="fc-field">
-            <label className="fc-label">Número <span className="fc-required">*</span></label>
-            <input 
-              type="text" 
-              name="numero"
-              value={formData.numero}
-              onChange={handleInputChange}
-              className="fc-input"
-            />
-            {errors.numero && <span className="fc-error">{errors.numero}</span>}
-          </div>
-          
-          <div className="fc-field">
-            <label className="fc-label">Fec Emisión</label>
-            <input 
-              type="date" 
-              name="fechaEmision"
-              value={formData.fechaEmision}
-              onChange={handleInputChange}
-              className="fc-date-input"
-            />
-          </div>
-          
-          <div className="fc-field">
-            <label className="fc-label">Fec. Vencimiento</label>
-            <input 
-              type="date" 
-              name="fechaVencimiento"
-              value={formData.fechaVencimiento}
-              onChange={handleInputChange}
-              className="fc-date-input"
-            />
-          </div>
+    <div className="flex flex-col space-y-6 p-4 md:p-6 bg-slate-50/30 animate-in fade-in duration-500">
+
+      {/* Premium Header */}
+      <div className="relative overflow-hidden rounded-[2.5rem] bg-gradient-to-br from-indigo-700 via-indigo-800 to-violet-900 p-8 text-white shadow-2xl shadow-indigo-200">
+        <div className="absolute right-0 top-0 p-12 opacity-10 pointer-events-none transform translate-x-1/4 -translate-y-1/4">
+          <ShoppingBag size={280} />
+        </div>
+        <div className="absolute left-0 bottom-0 p-10 opacity-5 pointer-events-none transform -translate-x-1/4 translate-y-1/4">
+          <Truck size={200} />
         </div>
 
-        <div className="fc-row">
-          <div className="fc-field">
-            <label className="fc-label">Proveedor <span className="fc-required">*</span> <span className="fc-new" onClick={abrirModalProveedor}>[+ Nuevo]</span></label>
-            <select 
-              name="proveedor"
-              value={formData.proveedor}
-              onChange={handleInputChange}
-              className="fc-select"
-            >
-              <option value="">Seleccionar</option>
-              {proveedores.map(proveedor => (
-                <option key={proveedor.id} value={proveedor.id}>
-                  {proveedor.nombre} - {proveedor.ruc || proveedor.numeroDocumento}
-                </option>
-              ))}
-            </select>
-            {errors.proveedor && <span className="fc-error">{errors.proveedor}</span>}
-          </div>
-
-          <div className="fc-field">
-            <label className="fc-label">Sucursal <span className="fc-required">*</span></label>
-            <select 
-              name="sucursalId"
-              value={formData.sucursalId}
-              onChange={handleInputChange}
-              className="fc-select"
-            >
-              <option value="">Seleccionar</option>
-              {sucursales.map(sucursal => (
-                <option key={sucursal.id} value={sucursal.id}>
-                  {sucursal.nombre}
-                </option>
-              ))}
-            </select>
-            {errors.sucursalId && <span className="fc-error">{errors.sucursalId}</span>}
-          </div>
-          
-          <div className="fc-field">
-            <label className="fc-label">Moneda</label>
-            <select 
-              name="moneda"
-              value={formData.moneda}
-              onChange={handleInputChange}
-              className="fc-select"
-            >
-              <option value="Soles">Soles</option>
-              <option value="Dolares">Dólares</option>
-            </select>
-          </div>
-          
-          <div className="fc-field">
-            <label className="fc-label">Tipo de cambio <span className="fc-info">ⓘ</span></label>
-            <input 
-              type="text" 
-              name="tipoCambio"
-              value={formData.tipoCambio}
-              onChange={handleInputChange}
-              className="fc-input"
-            />
-          </div>
-          
-          <div className="fc-field">
-            <label className="fc-label">Orden de compra</label>
-            <input 
-              type="text" 
-              name="ordenCompra"
-              value={formData.ordenCompra}
-              onChange={handleInputChange}
-              className="fc-input"
-              placeholder="Número de documento"
-            />
-          </div>
-        </div>
-
-        <div className="fc-row">
-          <div className="fc-field fc-full-width">
-            <label className="fc-label">Observaciones</label>
-            <textarea 
-              name="observaciones"
-              value={formData.observaciones}
-              onChange={handleInputChange}
-              className="fc-textarea"
-              placeholder="Observaciones"
-            />
-          </div>
-        </div>
-
-        <div className="fc-row">
-          <div className="fc-field">
-            <label className="fc-label">Const. Detracción</label>
-            <input 
-              type="text" 
-              name="constDetraccion"
-              value={formData.constDetraccion}
-              onChange={handleInputChange}
-              className="fc-input"
-              placeholder="Const. Detracción"
-            />
-          </div>
-          
-          <div className="fc-field">
-            <label className="fc-label">Fecha Detracción</label>
-            <input 
-              type="date" 
-              name="fechaDetraccion"
-              value={formData.fechaDetraccion}
-              onChange={handleInputChange}
-              className="fc-date-input"
-              placeholder="Fecha Detracción"
-            />
-          </div>
-          
-          <div className="fc-field">
-            <label className="fc-label">Porcentaje Detracción</label>
-            <input 
-              type="text" 
-              name="porcentajeDetraccion"
-              value={formData.porcentajeDetraccion}
-              onChange={handleInputChange}
-              className="fc-input"
-              placeholder="Porcentaje Detracción"
-            />
-          </div>
-        </div>
-
-        <div className="fc-checkboxes">
-          <div className="fc-checkbox-item">
-            <input 
-              type="checkbox" 
-              id="aplicarOtroPeriodo"
-              name="aplicarOtroPeriodo"
-              checked={opciones.aplicarOtroPeriodo}
-              onChange={handleOpcionChange}
-              className="fc-checkbox"
-            />
-            <label htmlFor="aplicarOtroPeriodo" className="fc-checkbox-label">
-              ¿Desea aplicar la compra para otro periodo?
-            </label>
-          </div>
-
-          <div className="fc-checkbox-item">
-            <input 
-              type="checkbox" 
-              id="agregarCliente"
-              name="agregarCliente"
-              checked={opciones.agregarCliente}
-              onChange={handleOpcionChange}
-              className="fc-checkbox"
-            />
-            <label htmlFor="agregarCliente" className="fc-checkbox-label">
-              ¿Desea agregar el cliente para esta compra?
-            </label>
-          </div>
-
-          <div className="fc-checkbox-item">
-            <input 
-              type="checkbox" 
-              id="agregarPagos"
-              name="agregarPagos"
-              checked={opciones.agregarPagos}
-              onChange={handleOpcionChange}
-              className="fc-checkbox"
-            />
-            <label htmlFor="agregarPagos" className="fc-checkbox-label">
-              ¿Desea agregar pagos a esta compra?
-            </label>
-          </div>
-
-          <div className="fc-checkbox-item">
-            <input 
-              type="checkbox" 
-              id="tieneIGV"
-              name="tieneIGV"
-              checked={opciones.tieneIGV}
-              onChange={handleOpcionChange}
-              className="fc-checkbox"
-            />
-            <label htmlFor="tieneIGV" className="fc-checkbox-label">
-              ¿La compra tiene el 18% de IGV?
-            </label>
-          </div>
-        </div>
-
-        {/* Sección de productos */}
-        <div className="fc-section">
-          <h3 className="fc-section-title">Productos</h3>
-          <div style={{ marginBottom: '10px' }}>
+        <div className="relative z-10 flex flex-col gap-6 sm:flex-row sm:items-center sm:justify-between">
+          <div className="flex items-center gap-6">
             <button
-              type="button"
-              className="fc-btn fc-btn-secondary"
-              onClick={abrirModalImportar}
+              onClick={onCancelar}
+              className="flex h-14 w-14 items-center justify-center rounded-2xl bg-white/10 backdrop-blur-md border border-white/20 hover:bg-white/20 transition-all active:scale-95 group shadow-lg"
             >
-              Importar XML
+              <ArrowLeft size={28} className="group-hover:-translate-x-1 transition-transform" />
             </button>
+            <div>
+              <h1 className="text-3xl font-black tracking-tight uppercase leading-none">Orden de <span className="text-indigo-300">Compra</span></h1>
+              <div className="mt-2 flex items-center gap-2 text-indigo-200/80 text-[10px] font-bold uppercase tracking-[0.2em]">
+                <Layout size={14} className="text-indigo-400" /> Registro de Ingresos de Mercadería
+              </div>
+            </div>
           </div>
-          
-          <div className="fc-producto-form">
-            <div className="fc-row">
-              <div className="fc-field">
-                <label className="fc-label">Producto <span className="fc-required">*</span></label>
-                <select 
-                  name="productoId"
-                  value={detalleProducto.productoId}
-                  onChange={handleDetalleChange}
-                  className="fc-select"
-                >
-                  <option value="">Seleccionar producto</option>
-                  {productos.filter(producto => producto.estado === true).map(producto => (
-                    <option key={producto.id} value={producto.id}>
-                      {producto.codigo} - {producto.nombre}
-                    </option>
-                  ))}
+
+          <div className="flex flex-wrap items-center gap-3">
+            <button
+              onClick={() => setMostrarModalImportar(true)}
+              className="flex h-12 items-center gap-2 rounded-2xl bg-white/10 backdrop-blur-md px-6 text-sm font-bold border border-white/10 hover:bg-white/20 transition-all border-dashed"
+            >
+              <FileDigit size={20} className="text-indigo-300" /> IMPORTAR XML
+            </button>
+            <div className="h-10 w-px bg-white/10 hidden sm:block mx-2" />
+            <div className="flex flex-col text-right">
+              <span className="text-[10px] font-bold text-indigo-300 uppercase tracking-widest leading-none mb-1">Total Compra</span>
+              <span className="text-2xl font-black">{new Intl.NumberFormat('es-PE', { style: 'currency', currency: 'PEN' }).format(total)}</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <form onSubmit={handleGuardarCompra} className="grid grid-cols-1 gap-6 lg:grid-cols-12 pb-12">
+
+        {/* Main Section */}
+        <div className="lg:col-span-8 space-y-6">
+
+          {/* Document Info Card */}
+          <div className="rounded-3xl border border-slate-200 bg-white p-8 shadow-sm">
+            <div className="mb-8 flex items-center gap-3 border-b border-slate-50 pb-5">
+              <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-indigo-50 text-indigo-600 shadow-sm border border-indigo-100">
+                <FileText size={20} />
+              </div>
+              <h2 className="text-sm font-black text-slate-800 uppercase tracking-widest">Información del Comprobante</h2>
+            </div>
+
+            <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3">
+              <div className="space-y-2">
+                <label className="text-[11px] font-black uppercase tracking-widest text-slate-400 px-1">Comprobante</label>
+                <select name="tipoComprobante" value={formData.tipoComprobante} onChange={handleInputChange} className="w-full h-12 rounded-2xl border border-slate-100 bg-slate-50/50 px-4 text-sm font-bold text-slate-700 focus:border-indigo-500 focus:bg-white focus:ring-4 focus:ring-indigo-500/10 outline-none transition-all">
+                  <option value="FACTURA ELECTRÓNICA">FACTURA ELECTRÓNICA</option>
+                  <option value="BOLETA DE VENTA ELECTRONICA">BOLETA DE VENTA ELECTRONICA</option>
+                  <option value="NOTA DE VENTA">NOTA DE VENTA</option>
+                  <option value="GUÍA">GUÍA DE REMISIÓN</option>
                 </select>
               </div>
-              
-              <div className="fc-field">
-                <label className="fc-label">Cantidad <span className="fc-required">*</span></label>
-                <input 
-                  type="number" 
-                  name="cantidad"
-                  value={detalleProducto.cantidad}
-                  onChange={handleDetalleChange}
-                  className="fc-input"
-                  min="1"
-                />
+              <div className="space-y-2">
+                <label className="text-[11px] font-black uppercase tracking-widest text-slate-400 px-1">Serie</label>
+                <div className="relative">
+                  <Hash className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-300" size={16} />
+                  <input type="text" name="serie" value={formData.serie} onChange={handleInputChange} placeholder="F001" className="w-full h-12 rounded-2xl border border-slate-100 bg-slate-50/50 pl-11 pr-4 text-sm font-bold text-slate-700 focus:border-indigo-500 focus:bg-white outline-none transition-all" />
+                </div>
               </div>
-              
-              <div className="fc-field">
-                <label className="fc-label">Precio Unitario <span className="fc-required">*</span></label>
-                <input 
-                  type="number" 
-                  name="precioUnitario"
-                  value={detalleProducto.precioUnitario}
-                  onChange={handleDetalleChange}
-                  className="fc-input"
-                  min="0"
-                  step="0.01"
-                />
+              <div className="space-y-2">
+                <label className="text-[11px] font-black uppercase tracking-widest text-slate-400 px-1">Número</label>
+                <input type="text" name="numero" value={formData.numero} onChange={handleInputChange} placeholder="0004523" className="w-full h-12 rounded-2xl border border-slate-100 bg-slate-50/50 px-4 text-sm font-bold text-slate-700 focus:border-indigo-500 focus:bg-white outline-none transition-all" />
               </div>
-              
-              <div className="fc-field">
-                <label className="fc-label">Subtotal</label>
-                <input 
-                  type="text" 
-                  value={`S/ ${detalleProducto.subtotal.toFixed(2)}`}
-                  className="fc-input"
-                  readOnly
-                />
+              <div className="space-y-2">
+                <label className="text-[11px] font-black uppercase tracking-widest text-slate-400 px-1">Fec. Emisión</label>
+                <div className="relative">
+                  <Calendar className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-300" size={16} />
+                  <input type="date" name="fechaEmision" value={formData.fechaEmision} onChange={handleInputChange} className="w-full h-12 rounded-2xl border border-slate-100 bg-slate-50/50 pl-11 pr-4 text-sm font-bold text-slate-700 focus:border-indigo-500 focus:bg-white outline-none transition-all" />
+                </div>
               </div>
-              
-              <div className="fc-field">
-                <button 
-                  type="button" 
-                  onClick={agregarProducto}
-                  className="fc-btn fc-btn-primary"
-                >
-                  + Agregar
-                </button>
+              <div className="space-y-2">
+                <label className="text-[11px] font-black uppercase tracking-widest text-slate-400 px-1">Fec. Vencimiento</label>
+                <input type="date" name="fechaVencimiento" value={formData.fechaVencimiento} onChange={handleInputChange} className="w-full h-12 rounded-2xl border border-slate-100 bg-slate-50/50 px-4 text-sm font-bold text-slate-700 focus:border-indigo-500 focus:bg-white outline-none transition-all" />
+              </div>
+              <div className="space-y-2">
+                <label className="text-[11px] font-black uppercase tracking-widest text-slate-400 px-1">Moneda</label>
+                <div className="relative">
+                  <DollarSign className="absolute left-4 top-1/2 -translate-y-1/2 text-emerald-500" size={16} />
+                  <select name="moneda" value={formData.moneda} onChange={handleInputChange} className="w-full h-12 rounded-2xl border border-slate-100 bg-slate-50/50 pl-11 pr-4 text-sm font-bold text-slate-700 focus:border-indigo-500 focus:bg-white outline-none transition-all appearance-none">
+                    <option value="Soles">PEN - Soles</option>
+                    <option value="Dolares">USD - Dólares</option>
+                  </select>
+                </div>
               </div>
             </div>
           </div>
 
-          {/* Lista de productos agregados */}
-          {detalles.length > 0 && (
-            <div className="fc-productos-lista">
-              <table className="fc-table">
-                <thead>
+          {/* Supplier Info Card */}
+          <div className="rounded-3xl border border-slate-200 bg-white p-8 shadow-sm">
+            <div className="mb-8 flex items-center justify-between border-b border-slate-50 pb-5">
+              <div className="flex items-center gap-3">
+                <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-indigo-50 text-indigo-600 shadow-sm border border-indigo-100">
+                  <Truck size={20} />
+                </div>
+                <h2 className="text-sm font-black text-slate-800 uppercase tracking-widest">Proveedor y Almacén</h2>
+              </div>
+              <button
+                type="button"
+                onClick={() => setMostrarModalProveedor(true)}
+                className="flex items-center gap-2 text-xs font-bold text-indigo-600 hover:text-indigo-800 transition-all uppercase tracking-widest group"
+              >
+                <UserPlus size={16} className="group-hover:scale-110" /> <span>Nuevo Proveedor</span>
+              </button>
+            </div>
+
+            <div className="grid grid-cols-1 gap-6 sm:grid-cols-2">
+              <div className="space-y-2">
+                <label className="text-[11px] font-black uppercase tracking-widest text-slate-400 px-1">Seleccionar Proveedor</label>
+                <div className="relative">
+                  <User className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-300" size={18} />
+                  <select name="proveedor" value={formData.proveedor} onChange={handleInputChange} className="w-full h-14 rounded-2xl border border-slate-100 bg-slate-50/50 pl-12 pr-4 text-sm font-bold text-slate-700 focus:border-indigo-500 focus:bg-white focus:ring-4 focus:ring-indigo-500/10 outline-none transition-all appearance-none">
+                    <option value="">Buscar proveedor...</option>
+                    {proveedores.map(prov => (
+                      <option key={prov.id} value={prov.id}>{prov.nombre} - {prov.ruc || prov.numeroDocumento}</option>
+                    ))}
+                  </select>
+                </div>
+              </div>
+              <div className="space-y-2">
+                <label className="text-[11px] font-black uppercase tracking-widest text-slate-400 px-1">Sucursal / Almacén</label>
+                <div className="relative">
+                  <Building className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-300" size={18} />
+                  <select name="sucursalId" value={formData.sucursalId} onChange={handleInputChange} className="w-full h-14 rounded-2xl border border-slate-100 bg-slate-50/50 pl-12 pr-4 text-sm font-bold text-slate-700 focus:border-indigo-500 focus:bg-white outline-none transition-all appearance-none">
+                    <option value="">Seleccione destino...</option>
+                    {sucursales.map(suc => (
+                      <option key={suc.id} value={suc.id}>{suc.nombre}</option>
+                    ))}
+                  </select>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          {/* Product Items Table Card */}
+          <div className="rounded-3xl border border-slate-200 bg-white shadow-sm overflow-hidden flex flex-col">
+            <div className="bg-slate-50 border-b border-slate-100 px-8 py-5 flex items-center justify-between">
+              <div className="flex items-center gap-3">
+                <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-slate-900 text-white shadow-md">
+                  <Package size={20} />
+                </div>
+                <h3 className="text-sm font-black text-slate-800 uppercase tracking-widest">Detalle de Compra</h3>
+              </div>
+              <span className="text-[10px] font-bold text-slate-400 uppercase tracking-[0.2em]">{detalles.length} Items Registrados</span>
+            </div>
+
+            <div className="overflow-x-auto min-h-[300px]">
+              <table className="w-full text-left text-sm whitespace-nowrap">
+                <thead className="bg-slate-50/50 text-[10px] font-black uppercase tracking-widest text-slate-400">
                   <tr>
-                    <th>Producto</th>
-                    <th>Cantidad</th>
-                    <th>Precio Unit.</th>
-                    <th>Subtotal</th>
-                    <th>Acciones</th>
+                    <th className="px-8 py-4 w-12 text-center">#</th>
+                    <th className="px-6 py-4">Descripción del Producto</th>
+                    <th className="px-6 py-4 text-center">Unidad</th>
+                    <th className="px-6 py-4 text-center">Cant.</th>
+                    <th className="px-6 py-4 text-right">Precio Unit.</th>
+                    <th className="px-6 py-4 text-right">Subtotal</th>
+                    <th className="px-8 py-4 text-center">Acciones</th>
                   </tr>
                 </thead>
-                <tbody>
-                  {detalles.map((detalle, index) => (
-                    <tr key={detalle.id || index}>
-                      <td>{detalle.producto?.nombre || 'Producto'}</td>
-                      <td>{detalle.cantidad}</td>
-                      <td>S/ {detalle.precioUnitario.toFixed(2)}</td>
-                      <td>S/ {detalle.subtotal.toFixed(2)}</td>
-                      <td>
-                        <button 
-                          type="button"
-                          onClick={() => eliminarProducto(index)}
-                          className="fc-delete-btn"
-                        >
-                          🗑️
-                        </button>
+                <tbody className="divide-y divide-slate-100">
+                  {detalles.length === 0 ? (
+                    <tr>
+                      <td colSpan="7" className="py-24 text-center">
+                        <div className="flex flex-col items-center gap-4 text-slate-200 group transition-all duration-500 hover:text-indigo-200">
+                          <ShoppingBag size={80} strokeWidth={1} className="transition-transform group-hover:scale-110" />
+                          <div className="flex flex-col gap-1">
+                            <p className="text-sm font-black uppercase tracking-[0.3em]">Carrito de Compra Vacío</p>
+                            <p className="text-xs font-bold text-slate-400 uppercase tracking-widest">Use el panel lateral para agregar productos</p>
+                          </div>
+                        </div>
                       </td>
                     </tr>
-                  ))}
+                  ) : (
+                    detalles.map((detalle, idx) => (
+                      <tr key={detalle.id} className="group transition-all duration-300 hover:bg-slate-50/50">
+                        <td className="px-8 py-5 text-center font-bold text-slate-300 italic">{idx + 1}</td>
+                        <td className="px-6 py-5">
+                          <div className="flex flex-col gap-1">
+                            <span className="font-bold text-slate-700">{detalle.producto?.nombre || 'Producto XML'}</span>
+                            <span className="text-[10px] text-slate-400 font-bold uppercase tracking-widest">{detalle.producto?.codigo || '--'}</span>
+                          </div>
+                        </td>
+                        <td className="px-6 py-5 text-center">
+                          <span className="inline-flex rounded-lg bg-slate-100 px-3 py-1 text-[10px] font-black text-slate-500 uppercase">{detalle.producto?.unidadMedida || 'UNI'}</span>
+                        </td>
+                        <td className="px-6 py-5 text-center font-black text-slate-700">{detalle.cantidad}</td>
+                        <td className="px-6 py-5 text-right font-bold text-slate-500">
+                          {new Intl.NumberFormat('es-PE', { style: 'currency', currency: 'PEN' }).format(detalle.precioUnitario)}
+                        </td>
+                        <td className="px-6 py-5 text-right font-black text-indigo-600">
+                          {new Intl.NumberFormat('es-PE', { style: 'currency', currency: 'PEN' }).format(detalle.subtotal)}
+                        </td>
+                        <td className="px-8 py-5 text-center">
+                          <button
+                            type="button"
+                            onClick={() => eliminarProducto(idx)}
+                            className="flex h-10 w-10 items-center justify-center rounded-xl bg-red-50 text-red-400 transition-all hover:bg-red-500 hover:text-white hover:rotate-12 active:scale-95 shadow-sm"
+                          >
+                            <Trash2 size={18} />
+                          </button>
+                        </td>
+                      </tr>
+                    ))
+                  )}
                 </tbody>
               </table>
-              
-              {/* Totales */}
-              <div className="fc-totales">
-                <div className="fc-total-item">
-                  <strong>Subtotal: S/ {subtotal.toFixed(2)}</strong>
-                </div>
-                <div className="fc-total-item">
-                  <strong>IGV: S/ {igv.toFixed(2)}</strong>
-                </div>
-                <div className="fc-total-item fc-total-final">
-                  <strong>Total: S/ {total.toFixed(2)}</strong>
+            </div>
+
+            {detalles.length > 0 && (
+              <div className="bg-slate-900 p-8 text-white">
+                <div className="grid grid-cols-1 sm:grid-cols-3 gap-8">
+                  <div className="flex flex-col gap-1 opacity-60">
+                    <span className="text-[10px] font-black uppercase tracking-[0.3em] text-indigo-400">Subtotal</span>
+                    <span className="text-xl font-bold">{new Intl.NumberFormat('es-PE', { style: 'currency', currency: 'PEN' }).format(subtotal)}</span>
+                  </div>
+                  <div className="flex flex-col gap-1 opacity-60">
+                    <span className="text-[10px] font-black uppercase tracking-[0.3em] text-indigo-400">Impuestos (18%)</span>
+                    <span className="text-xl font-bold">{new Intl.NumberFormat('es-PE', { style: 'currency', currency: 'PEN' }).format(igv)}</span>
+                  </div>
+                  <div className="flex flex-col gap-1 items-end relative overflow-hidden">
+                    <div className="flex h-12 w-12 items-center justify-center rounded-2xl bg-indigo-500/20 text-indigo-400 mb-2">
+                      <CreditCard size={24} />
+                    </div>
+                    <span className="text-[10px] font-black uppercase tracking-[0.5em] text-indigo-400 mb-1">Total Final Compra</span>
+                    <span className="text-5xl font-black tracking-tight">{new Intl.NumberFormat('es-PE', { style: 'currency', currency: 'PEN' }).format(total)}</span>
+                  </div>
                 </div>
               </div>
-            </div>
-          )}
-          {errors.detalle && <span className="fc-error">{errors.detalle}</span>}
+            )}
+          </div>
         </div>
 
-        {/* Período de compra SUNAT */}
-        {opciones.aplicarOtroPeriodo && (
-          <div className="fc-section fc-periodo-section">
-            <h3 className="fc-section-title">Período de compra (SUNAT)</h3>
-            <div className="fc-periodo-container">
-              <input 
-                type="text" 
-                value={formData.periodoCompra}
-                onChange={(e) => setFormData({...formData, periodoCompra: e.target.value})}
-                className="fc-periodo-input"
-              />
-              <div className="fc-calendario">
-                <div className="fc-calendario-header">
-                  <button 
-                    type="button" 
-                    className="fc-nav-btn"
-                    onClick={() => cambiarAno(-1)}
-                  >
-                    ‹
-                  </button>
-                  <span>{anoCalendario}</span>
-                  <button 
-                    type="button" 
-                    className="fc-nav-btn"
-                    onClick={() => cambiarAno(1)}
-                  >
-                    ›
-                  </button>
-                </div>
-                <div className="fc-meses-grid">
-                  {meses.map((mes) => (
-                    <button
-                      key={mes.value}
-                      type="button"
-                      className={`fc-mes-btn ${mes.numero === obtenerMesActual() ? 'fc-mes-activo' : ''}`}
-                      onClick={() => seleccionarMes(mes)}
-                    >
-                      {mes.label}
-                    </button>
-                  ))}
-                </div>
-              </div>
-            </div>
-          </div>
-        )}
+        {/* Right Sidebar */}
+        <div className="lg:col-span-4 space-y-6">
 
-        {/* Sección de clientes */}
-        {opciones.agregarCliente && (
-          <div className="fc-section">
-            <div className="fc-clientes-container">
-              <span className="fc-clientes-text">Clientes</span>
-              <div className="fc-clientes-input-container">
-                <input 
-                  type="text" 
-                  className="fc-clientes-input"
-                  placeholder="Buscar o agregar cliente..."
-                  value={busquedaCliente}
-                  onChange={handleBusquedaCliente}
-                  onFocus={() => {
-                    if (clientesFiltrados.length > 0) {
-                      setMostrarListaClientes(true);
-                    }
-                  }}
-                />
-                {clienteSeleccionado && (
-                  <button 
-                    type="button"
-                    className="fc-limpiar-cliente-btn"
-                    onClick={limpiarSeleccionCliente}
-                    title="Limpiar selección"
+          {/* Add Product Selection */}
+          <div className="rounded-3xl border border-slate-200 bg-white p-8 shadow-sm">
+            <div className="mb-8 flex items-center gap-3 border-b border-slate-50 pb-5">
+              <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-indigo-50 text-indigo-600 shadow-sm border border-indigo-100">
+                <Plus size={20} />
+              </div>
+              <h2 className="text-sm font-black text-slate-800 uppercase tracking-widest">Agregar Items</h2>
+            </div>
+
+            <div className="space-y-6">
+              <div className="space-y-2">
+                <label className="text-[11px] font-black uppercase tracking-widest text-slate-400 px-1">Producto / Insumo</label>
+                <div className="relative">
+                  <Search className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-300" size={20} />
+                  <select
+                    name="productoId"
+                    value={detalleProducto.productoId}
+                    onChange={handleDetalleChange}
+                    className="w-full h-14 rounded-2xl border border-slate-100 bg-slate-50/50 pl-12 pr-4 text-sm font-bold text-slate-700 focus:border-indigo-500 focus:bg-white outline-none transition-all appearance-none"
                   >
-                    ×
-                  </button>
-                )}
-                
-                {/* Lista desplegable de clientes */}
-                {mostrarListaClientes && clientesFiltrados.length > 0 && (
-                  <div className="fc-clientes-dropdown">
-                    {clientesFiltrados.slice(0, 10).map((cliente) => (
-                      <div 
-                        key={cliente.id}
-                        className="fc-cliente-item"
-                        onClick={() => seleccionarCliente(cliente)}
-                      >
-                        <div className="fc-cliente-nombre">{cliente.nombre}</div>
-                        <div className="fc-cliente-documento">
-                          {cliente.tipoDocumento}: {cliente.numeroDocumento}
-                        </div>
-                        {cliente.telefono && (
-                          <div className="fc-cliente-telefono">Tel: {cliente.telefono}</div>
-                        )}
-                      </div>
+                    <option value="">Seleccione producto...</option>
+                    {productos.filter(p => p.estado).map(p => (
+                      <option key={p.id} value={p.id}>{p.nombre} {p.codigo ? `(${p.codigo})` : ''}</option>
                     ))}
-                    {clientesFiltrados.length > 10 && (
-                      <div className="fc-cliente-item fc-mas-resultados">
-                        Y {clientesFiltrados.length - 10} clientes más...
-                      </div>
-                    )}
-                  </div>
-                )}
-
-                {/* Mensaje cuando no hay resultados */}
-                {mostrarListaClientes && busquedaCliente && clientesFiltrados.length === 0 && (
-                  <div className="fc-clientes-dropdown">
-                    <div className="fc-cliente-item fc-no-resultados">
-                      No se encontraron clientes con ese criterio
-                    </div>
-                  </div>
-                )}
+                  </select>
+                </div>
               </div>
 
-              {/* Información del cliente seleccionado */}
-              {clienteSeleccionado && (
-                <div className="fc-cliente-seleccionado">
-                  <div className="fc-cliente-info">
-                    <strong>{clienteSeleccionado.nombre}</strong>
-                    <span>{clienteSeleccionado.tipoDocumento}: {clienteSeleccionado.numeroDocumento}</span>
-                    {clienteSeleccionado.direccion && (
-                      <span>Dirección: {clienteSeleccionado.direccion}</span>
-                    )}
-                    {clienteSeleccionado.telefono && (
-                      <span>Teléfono: {clienteSeleccionado.telefono}</span>
-                    )}
-                  </div>
+              <div className="grid grid-cols-2 gap-4">
+                <div className="space-y-2">
+                  <label className="text-[11px] font-black uppercase tracking-widest text-slate-400 px-1">Cantidad</label>
+                  <input type="number" name="cantidad" value={detalleProducto.cantidad} onChange={handleDetalleChange} className="w-full h-14 rounded-2xl border border-slate-100 bg-slate-50/50 px-5 text-lg font-black text-slate-700 focus:border-indigo-500 outline-none transition-all text-center" />
                 </div>
-              )}
+                <div className="space-y-2">
+                  <label className="text-[11px] font-black uppercase tracking-widest text-slate-400 px-1">P. Unitario</label>
+                  <input type="number" name="precioUnitario" value={detalleProducto.precioUnitario} onChange={handleDetalleChange} className="w-full h-14 rounded-2xl border border-slate-100 bg-slate-50/50 px-5 text-lg font-black text-slate-700 focus:border-indigo-500 outline-none transition-all text-center" />
+                </div>
+              </div>
+
+              <div className="rounded-2xl bg-indigo-50 p-6 flex items-center justify-between border border-indigo-100/50 group">
+                <div className="flex flex-col">
+                  <span className="text-[9px] font-black text-indigo-400 uppercase tracking-widest mb-1">Valor Parcial</span>
+                  <span className="text-xl font-black text-indigo-700">{new Intl.NumberFormat('es-PE', { style: 'currency', currency: 'PEN' }).format(detalleProducto.subtotal)}</span>
+                </div>
+                <button
+                  type="button"
+                  onClick={agregarProducto}
+                  className="flex h-14 w-14 items-center justify-center rounded-2xl bg-indigo-600 text-white shadow-lg shadow-indigo-200 hover:scale-105 active:scale-95 transition-all"
+                >
+                  <Plus size={28} />
+                </button>
+              </div>
             </div>
           </div>
-        )}
 
-        {/* Condición de pago */}
-        {opciones.agregarPagos && (
-          <div className="fc-section fc-pagos-section">
-            <div className="fc-condicion-pago">
-              <label className="fc-label">Condición de pago</label>
-              <select 
-                value={formData.condicionPago}
-                onChange={(e) => setFormData({...formData, condicionPago: e.target.value})}
-                className="fc-select"
+          {/* Config Options */}
+          <div className="rounded-3xl border border-slate-200 bg-white p-8 shadow-sm">
+            <div className="mb-8 flex items-center gap-3 border-b border-slate-50 pb-5">
+              <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-orange-50 text-orange-600 shadow-sm border border-orange-100">
+                <Settings size={20} />
+              </div>
+              <h2 className="text-sm font-black text-slate-800 uppercase tracking-widest">Opciones de carga</h2>
+            </div>
+
+            <div className="space-y-4">
+              <label className="flex items-center gap-4 group cursor-pointer p-3 rounded-2xl hover:bg-slate-50 transition-colors">
+                <input type="checkbox" name="tieneIGV" checked={opciones.tieneIGV} onChange={handleOpcionChange} className="w-5 h-5 rounded-lg border-slate-200 text-indigo-600 focus:ring-indigo-500" />
+                <div className="flex flex-col">
+                  <span className="text-sm font-bold text-slate-700 uppercase tracking-tight">Aplicar IGV (18%)</span>
+                  <span className="text-[10px] text-slate-400 font-medium">Calcular impuestos sobre subtotal</span>
+                </div>
+              </label>
+              <label className="flex items-center gap-4 group cursor-pointer p-3 rounded-2xl hover:bg-slate-50 transition-colors">
+                <input type="checkbox" name="aplicarOtroPeriodo" checked={opciones.aplicarOtroPeriodo} onChange={handleOpcionChange} className="w-5 h-5 rounded-lg border-slate-200 text-indigo-600 focus:ring-indigo-500" />
+                <div className="flex flex-col">
+                  <span className="text-sm font-bold text-slate-700 uppercase tracking-tight">Cambiar Periodo</span>
+                  <span className="text-[10px] text-slate-400 font-medium">Afectar stock en mes contable distinto</span>
+                </div>
+              </label>
+              <label className="flex items-center gap-4 group cursor-pointer p-3 rounded-2xl hover:bg-slate-50 transition-colors">
+                <input type="checkbox" name="agregarPagos" checked={opciones.agregarPagos} onChange={handleOpcionChange} className="w-5 h-5 rounded-lg border-slate-200 text-indigo-600 focus:ring-indigo-500" />
+                <div className="flex flex-col">
+                  <span className="text-sm font-bold text-slate-700 uppercase tracking-tight">Control de Pagos</span>
+                  <span className="text-[10px] text-slate-400 font-medium">Registrar egreso de caja asociado</span>
+                </div>
+              </label>
+            </div>
+          </div>
+
+          {/* Plantillas Card */}
+          <div className="rounded-3xl border border-slate-200 bg-white p-8 shadow-sm">
+            <div className="mb-6 flex items-center gap-3">
+              <FileDown size={20} className="text-emerald-500" />
+              <h2 className="text-xs font-black text-slate-800 uppercase tracking-[0.2em]">Plantillas Excel</h2>
+            </div>
+            <div className="grid grid-cols-1 gap-3">
+              <button
+                type="button"
+                onClick={() => handleDescargarPlantilla('existentes')}
+                className="flex items-center justify-between p-3 rounded-2xl border border-slate-100 hover:border-emerald-500 hover:bg-emerald-50/30 transition-all group"
               >
-                <option value="Contado">Contado</option>
-                <option value="Crédito">Crédito</option>
-              </select>
-            </div>
-
-            <div className="fc-pagos-table">
-              <div className="fc-pagos-header">
-                <span>Forma de pago</span>
-                <span>Desde <span className="fc-info">ⓘ</span></span>
-                <span>Referencia</span>
-                <span>Glosa</span>
-                <span>Monto</span>
-                <span>
-                  <button 
-                    type="button" 
-                    className="fc-agregar-btn"
-                    onClick={agregarPago}
-                  >
-                    [+ Agregar]
-                  </button>
-                </span>
-              </div>
-              
-              {pagos.map((pago, index) => (
-                <div key={index} className="fc-pagos-row">
-                  <select 
-                    value={pago.formaPago}
-                    onChange={(e) => handlePagoChange(index, 'formaPago', e.target.value)}
-                    className="fc-select fc-small"
-                  >
-                    <option value="Efectivo">Efectivo</option>
-                    <option value="Transferencia">Transferencia</option>
-                  </select>
-                  
-                  <select 
-                    value={pago.desde}
-                    onChange={(e) => handlePagoChange(index, 'desde', e.target.value)}
-                    className="fc-select fc-small"
-                  >
-                    <option value="CAJA GENERAL - Administracion">CAJA GENERAL - Administracion</option>
-                  </select>
-                  
-                  <input 
-                    type="text"
-                    value={pago.referencia}
-                    onChange={(e) => handlePagoChange(index, 'referencia', e.target.value)}
-                    className="fc-input fc-small"
-                  />
-                  
-                  <input 
-                    type="text"
-                    value={pago.glosa}
-                    onChange={(e) => handlePagoChange(index, 'glosa', e.target.value)}
-                    className="fc-input fc-small"
-                  />
-                  
-                  <input 
-                    type="text"
-                    value={pago.monto}
-                    onChange={(e) => handlePagoChange(index, 'monto', e.target.value)}
-                    className="fc-input fc-small"
-                  />
-                  
-                  <button 
-                    type="button"
-                    onClick={() => eliminarPago(index)}
-                    className="fc-delete-btn"
-                  >
-                    🗑️
-                  </button>
-                </div>
-              ))}
+                <span className="text-[10px] font-bold text-slate-500 group-hover:text-emerald-700 uppercase tracking-widest">Productos Existentes</span>
+                <Download size={14} className="text-emerald-500" />
+              </button>
+              <button
+                type="button"
+                onClick={() => handleDescargarPlantilla('nuevos')}
+                className="flex items-center justify-between p-3 rounded-2xl border border-slate-100 hover:border-emerald-500 hover:bg-emerald-50/30 transition-all group"
+              >
+                <span className="text-[10px] font-bold text-slate-500 group-hover:text-emerald-700 uppercase tracking-widest">Productos Nuevos</span>
+                <Download size={14} className="text-emerald-500" />
+              </button>
             </div>
           </div>
-        )}
 
-        {/* Modal de Nuevo Proveedor */}
-        {mostrarModalProveedor && (
-          <div className="fc-modal-overlay">
-            <div className="fc-modal">
-              <div className="fc-modal-header">
-                <h3>Nuevo Proveedor</h3>
-                <button className="fc-modal-close" onClick={cerrarModalProveedor}>×</button>
-              </div>
-              
-              <div className="fc-modal-body">
-                <div className="fc-modal-row">
-                  <div className="fc-modal-field">
-                    <label className="fc-label">Tipo Doc. Identidad *</label>
-                    <select 
-                      name="tipoDocumento"
-                      value={nuevoProveedor.tipoDocumento}
-                      onChange={handleProveedorChange}
-                      className="fc-select"
-                    >
-                      <option value="RUC">RUC</option>
-                      <option value="DNI">DNI</option>
-                      <option value="CE">Carnet Extranjería</option>
-                    </select>
-                  </div>
-                  
-                  <div className="fc-modal-field">
-                    <label className="fc-label">Número *</label>
-                    <div className="fc-input-group">
-                      <input 
-                        type="text" 
-                        name="numeroDocumento"
-                        value={nuevoProveedor.numeroDocumento}
-                        onChange={handleProveedorChange}
-                        className="fc-input"
-                        placeholder="Número de documento"
-                        disabled={consultandoProveedor}
-                      />
-                      <button 
-                        type="button"
-                        onClick={consultarManualProveedor}
-                        disabled={consultandoProveedor || !nuevoProveedor.numeroDocumento}
-                        className="fc-btn fc-btn-consulta"
-                      >
-                        {consultandoProveedor ? 'Consultando...' : 'Consultar'}
-                      </button>
-                    </div>
-                    {errorConsultaProveedor && (
-                      <div className="fc-error-message">
-                        {errorConsultaProveedor}
-                      </div>
-                    )}
-                  </div>
-                </div>
-
-                <div className="fc-modal-row">
-                  <div className="fc-modal-field fc-full-width">
-                    <label className="fc-label">Nombre *</label>
-                    <input 
-                      type="text" 
-                      name="nombre"
-                      value={nuevoProveedor.nombre}
-                      onChange={handleProveedorChange}
-                      className="fc-input"
-                      placeholder="Nombre completo"
-                    />
-                  </div>
-                </div>
-
-
-                {/*
-
-                <div className="fc-modal-row">
-                  <div className="fc-modal-field fc-full-width">
-                    <label className="fc-label">Dirección</label>
-                    <input 
-                      type="text" 
-                      name="direccion"
-                      value={nuevoProveedor.direccion}
-                      onChange={handleProveedorChange}
-                      className="fc-input"
-                      placeholder="Dirección completa"
-                    />
-                  </div>
-                </div>*/}
-
-                <div className="fc-modal-row">
-                  <div className="fc-modal-field">
-                    <label className="fc-label">Teléfono</label>
-                    <input 
-                      type="text" 
-                      name="telefono"
-                      value={nuevoProveedor.telefono}
-                      onChange={handleProveedorChange}
-                      className="fc-input"
-                      placeholder="Teléfono"
-                    />
-                  </div>
-                  
-                  <div className="fc-modal-field">
-                    <label className="fc-label">Días de crédito</label>
-                    <input 
-                      type="number" 
-                      name="diasCredito"
-                      value={nuevoProveedor.diasCredito}
-                      onChange={handleProveedorChange}
-                      className="fc-input"
-                      placeholder="0"
-                    />
-                </div>
-              </div>
-
-              <div className="fc-modal-row">
-                <div className="fc-modal-field">
-                    <label className="fc-label">Código Interno</label>
-                    <input 
-                      type="text" 
-                      name="codigoInterno"
-                      value={nuevoProveedor.codigoInterno}
-                      onChange={handleProveedorChange}
-                      className="fc-input"
-                      placeholder="Código interno"
-                    />
-                  </div>
-                  
-                  <div className="fc-modal-field">
-                    <label className="fc-label">Código de barra</label>
-                    <input 
-                      type="text" 
-                      name="codigoBarras"
-                      value={nuevoProveedor.codigoBarras}
-                      onChange={handleProveedorChange}
-                      className="fc-input"
-                      placeholder="Código de barra"
-                    />
-                  </div>
-                </div>
-
-                <div className="fc-modal-row">
-                  <div className="fc-modal-field">
-                    <label className="fc-label">Nacionalidad</label>
-                    <select 
-                      name="nacionalidad"
-                      value={nuevoProveedor.nacionalidad}
-                      onChange={handleProveedorChange}
-                      className="fc-select"
-                    >
-                      <option value="Perú">Perú</option>
-                      <option value="Otro">Otro</option>
-                    </select>
-                  </div>
-                  
-                  <div className="fc-modal-field">
-                    <label className="fc-label">Tipo de proveedor</label>
-                    <select 
-                      name="tipoProveedor"
-                      value={nuevoProveedor.tipoProveedor}
-                      onChange={handleProveedorChange}
-                      className="fc-select"
-                    >
-                      <option value="Vendedor">Vendedor</option>
-                      <option value="Fabricante">Fabricante</option>
-                      <option value="Distribuidor">Distribuidor</option>
-                    </select>
-                  </div>
-                </div>
-
-
-                {/* <div className="fc-modal-row">
-                  <div className="fc-modal-checkbox">
-                    <input 
-                      type="checkbox" 
-                      id="esAgentePercepcion"
-                      name="esAgentePercepcion"
-                      checked={nuevoProveedor.esAgentePercepcion}
-                      onChange={handleProveedorChange}
-                      className="fc-checkbox"
-                    />
-                    <label htmlFor="esAgentePercepcion" className="fc-checkbox-label">
-                      ¿Es agente de percepción?
-                    </label>
-                  </div>
-                </div>*/}
-
-               
-              </div>
-              
-              <div className="fc-modal-footer">
-                <button 
-                  type="button" 
-                  className="fc-btn fc-btn-secondary"
-                  onClick={cerrarModalProveedor}
-                >
-                  Cancelar
-                </button>
-                <button 
-                  type="button" 
-                  className="fc-btn fc-btn-primary"
-                  onClick={guardarProveedor}
-                  disabled={loading}
-                >
-                  {loading ? 'Guardando...' : 'Guardar Proveedor'}
-                </button>
-              </div>
-            </div>
-          </div>
-        )}
-
-        {/* Modal de Importar XML */}
-        {mostrarModalImportar && (
-          <div className="fc-modal-overlay">
-            <div className="fc-modal">
-              <div className="fc-modal-header">
-                <h3>Importar XML de Compra</h3>
-                <button className="fc-modal-close" onClick={cerrarModalImportar}>×</button>
-              </div>
-              <div className="fc-modal-body">
-                <div className="fc-modal-row">
-                  <div className="fc-modal-field fc-full-width">
-                    <label className="fc-label">Archivo XML</label>
-                    <input 
-                      type="file" 
-                      accept=".xml" 
-                      onChange={handleArchivoXmlChange}
-                      className="fc-input"
-                    />
-                    {archivoXml && (
-                      <div className="fc-file-name">Archivo: {archivoXml.name}</div>
-                    )}
-                  </div>
-                </div>
-                <div className="fc-modal-actions">
-                  <button 
-                    type="button" 
-                    className="fc-btn fc-btn-cancel" 
-                    onClick={cerrarModalImportar}
-                    disabled={cargandoImportacion}
-                  >
-                    Cancelar
-                  </button>
-                  <button 
-                    type="button" 
-                    className="fc-btn fc-btn-primary" 
-                    onClick={handleImportarXml}
-                    disabled={cargandoImportacion || !archivoXml}
-                  >
-                    {cargandoImportacion ? 'Importando...' : 'Importar XML'}
-                  </button>
-                </div>
-              </div>
-            </div>
-          </div>
-        )}
-
-        {errors.general && (
-          <div className="fc-error-general">
-            {errors.general}
-          </div>
-        )}
-
-        {loading && (
-          <div className="fc-loading">
-            <span>Cargando...</span>
-          </div>
-        )}
-
-        <div className="fc-actions">
-          <button 
-            type="submit" 
-            className="fc-btn fc-btn-primary"
+          <button
+            type="submit"
             disabled={loading}
+            className="flex w-full h-20 items-center justify-center gap-3 rounded-[2rem] bg-indigo-600 text-white shadow-2xl shadow-indigo-200 hover:bg-indigo-700 hover:scale-[1.02] active:scale-95 transition-all disabled:opacity-50"
           >
-            {loading ? 'Guardando...' : 'Guardar Compra'}
-          </button>
-
-
-         {/* 
-          <button type="button" className="fc-btn fc-btn-secondary">Subir productos existentes</button>
-          <button type="button" className="fc-btn fc-btn-secondary">Subir productos nuevos</button> 
-
-
-             <div className="fc-file-actions">
-            <button type="button" className="fc-btn fc-btn-outline">Seleccionar archivo</button>
-            <span className="fc-file-text">Ningún archivo seleccionado</span>
-            <button type="button" className="fc-btn fc-btn-link">Cargar Archivo</button>
-          </div>*/ }
-          
-      
-          
-          {/*  <button type="button" className="fc-btn fc-btn-cancel">Cancelar</button>*/ }
-        </div>
-
-
-         {/* 
-
-        <div className="fc-download-links">
-          <button 
-            type="button" 
-            className="fc-download-link"
-            onClick={descargarPlantillaProductosExistentes}
-          >
-            Descargar formato para subir productos existentes
-          </button>
-          <button 
-            type="button" 
-            className="fc-download-link"
-            onClick={descargarPlantillaProductosNuevos}
-          >
-            Descargar formato para subir productos nuevos
+            {loading ? <RefreshCcw size={32} className="animate-spin" /> : (
+              <div className="flex items-center gap-4">
+                <CheckCircle2 size={32} />
+                <div className="flex flex-col text-left">
+                  <span className="text-[10px] font-black uppercase tracking-[0.4em] text-indigo-300 mb-0.5">Finalizar Proceso</span>
+                  <span className="text-lg font-black uppercase tracking-widest">GUARDAR COMPRA</span>
+                </div>
+              </div>
+            )}
           </button>
         </div>
-*/ }
-
-
-
-
       </form>
+
+      {/* Modals Section */}
+
+      {/* Nuevo Proveedor Modal */}
+      {mostrarModalProveedor && (
+        <div className="fixed inset-0 z-[60] flex items-center justify-center p-4 md:p-10 animate-in fade-in duration-300">
+          <div className="absolute inset-0 bg-slate-900/40 backdrop-blur-md" onClick={() => setMostrarModalProveedor(false)} />
+          <div className="relative w-full max-w-4xl max-h-[85vh] overflow-y-auto rounded-[3rem] bg-white p-8 md:p-12 shadow-[0_40px_100px_-20px_rgba(0,0,0,0.2)] animate-in zoom-in-95 backdrop-saturate-200 border border-slate-100/50">
+
+            <button onClick={() => setMostrarModalProveedor(false)} className="absolute right-10 top-10 flex h-12 w-12 items-center justify-center rounded-2xl bg-slate-50 text-slate-400 hover:bg-red-50 hover:text-red-500 transition-all active:scale-90">
+              <XCircle size={24} />
+            </button>
+
+            <div className="mb-10 flex items-center gap-6">
+              <div className="flex h-20 w-20 items-center justify-center rounded-3xl bg-indigo-600 text-white shadow-2xl shadow-indigo-200">
+                <UserPlus size={40} />
+              </div>
+              <div>
+                <h2 className="text-3xl font-black text-slate-800 uppercase tracking-tight">Nuevo <span className="text-indigo-600">Proveedor</span></h2>
+                <p className="text-sm font-medium text-slate-400 uppercase tracking-widest">Alta de socios comerciales en el sistema</p>
+              </div>
+            </div>
+
+            <div className="grid grid-cols-1 gap-8 md:grid-cols-2">
+              <div className="space-y-6">
+                <div className="space-y-2">
+                  <label className="text-[11px] font-black uppercase tracking-widest text-slate-400 px-1">Tipo de Documento</label>
+                  <select name="tipoDocumento" value={nuevoProveedor.tipoDocumento} onChange={handleProveedorChange} className="w-full h-14 rounded-2xl border border-slate-100 bg-slate-50/50 px-5 text-sm font-bold text-slate-700 outline-none">
+                    <option value="RUC">RUC - Registro Único Contribuyente</option>
+                    <option value="DNI">DNI - Documento Nacional Identidad</option>
+                    <option value="CE">Carnet Extranjería</option>
+                  </select>
+                </div>
+                <div className="space-y-2">
+                  <label className="text-[11px] font-black uppercase tracking-widest text-slate-400 px-1">Número de Documento</label>
+                  <div className="flex gap-2">
+                    <input type="text" name="numeroDocumento" value={nuevoProveedor.numeroDocumento} onChange={handleProveedorChange} className="flex-1 h-14 rounded-2xl border border-slate-100 bg-slate-50/50 px-5 text-lg font-black text-slate-700 outline-none" />
+                    <button type="button" onClick={consultarDocumentoProveedor} className="flex h-14 items-center gap-2 rounded-2xl bg-slate-900 px-6 font-bold text-white transition-all hover:bg-indigo-600 active:scale-95">
+                      {consultandoProveedor ? <RefreshCcw size={20} className="animate-spin" /> : <Search size={20} />}
+                    </button>
+                  </div>
+                </div>
+                <div className="space-y-2">
+                  <label className="text-[11px] font-black uppercase tracking-widest text-slate-400 px-1">Razón Social / Nombre Comercial</label>
+                  <input type="text" name="nombre" value={nuevoProveedor.nombre} onChange={handleProveedorChange} className="w-full h-14 rounded-2xl border border-slate-100 bg-slate-50/50 px-5 font-bold text-slate-700 outline-none" />
+                </div>
+              </div>
+
+              <div className="space-y-6">
+                <div className="space-y-2">
+                  <label className="text-[11px] font-black uppercase tracking-widest text-slate-400 px-1">Dirección Legal</label>
+                  <input type="text" name="direccion" value={nuevoProveedor.direccion} onChange={handleProveedorChange} className="w-full h-14 rounded-2xl border border-slate-100 bg-slate-50/50 px-5 font-bold text-slate-700 outline-none" />
+                </div>
+                <div className="grid grid-cols-2 gap-4">
+                  <div className="space-y-2">
+                    <label className="text-[11px] font-black uppercase tracking-widest text-slate-400 px-1">Teléfono</label>
+                    <input type="text" name="telefono" value={nuevoProveedor.telefono} onChange={handleProveedorChange} className="w-full h-14 rounded-2xl border border-slate-100 bg-slate-50/50 px-5 font-bold text-slate-700 outline-none" />
+                  </div>
+                  <div className="space-y-2">
+                    <label className="text-[11px] font-black uppercase tracking-widest text-slate-400 px-1">Días de Crédito</label>
+                    <input type="number" name="diasCredito" value={nuevoProveedor.diasCredito} onChange={handleProveedorChange} className="w-full h-14 rounded-2xl border border-slate-100 bg-slate-50/50 px-5 font-bold text-slate-700 outline-none" />
+                  </div>
+                </div>
+                <div className="space-y-2">
+                  <label className="text-[11px] font-black uppercase tracking-widest text-slate-400 px-1">Tipo de Proveedor</label>
+                  <div className="flex gap-4">
+                    {['Vendedor', 'Fabricante', 'Distribuidor'].map(tipo => (
+                      <label key={tipo} className={`flex-1 flex items-center justify-center h-14 rounded-2xl border-2 transition-all cursor-pointer font-bold uppercase tracking-widest text-[10px] ${nuevoProveedor.tipoProveedor === tipo ? 'bg-indigo-600 border-indigo-600 text-white shadow-lg' : 'bg-slate-50 border-transparent text-slate-400 hover:border-slate-200'}`}>
+                        <input type="radio" name="tipoProveedor" value={tipo} className="hidden" onChange={handleProveedorChange} />
+                        {tipo}
+                      </label>
+                    ))}
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <div className="mt-12 flex justify-end gap-4">
+              <button onClick={() => setMostrarModalProveedor(false)} className="h-14 px-10 rounded-2xl font-bold text-slate-400 hover:text-slate-600 transition-all uppercase tracking-widest">Descartar</button>
+              <button onClick={handleGuardarProveedor} className="h-14 px-12 rounded-2xl bg-indigo-600 font-bold text-white shadow-2xl shadow-indigo-200 hover:bg-indigo-700 transition-all uppercase tracking-widest active:scale-95">REGISTRAR PROVEEDOR</button>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* Importar XML Modal */}
+      {mostrarModalImportar && (
+        <div className="fixed inset-0 z-[60] flex items-center justify-center p-4 animate-in fade-in duration-300">
+          <div className="absolute inset-0 bg-slate-900/40 backdrop-blur-md" onClick={() => setMostrarModalImportar(false)} />
+          <div className="relative w-full max-w-lg rounded-[2.5rem] bg-white p-8 shadow-2xl animate-in zoom-in-95 border border-slate-100">
+            <div className="mb-8 flex flex-col items-center text-center gap-4">
+              <div className="flex h-20 w-20 items-center justify-center rounded-3xl bg-indigo-100 text-indigo-600 shadow-inner">
+                <FileDigit size={40} />
+              </div>
+              <div>
+                <h3 className="text-2xl font-black text-slate-800 uppercase tracking-tight">Importar Factura XML</h3>
+                <p className="text-xs font-medium text-slate-400 uppercase tracking-[0.2em] mt-1">Formatos UBL 2.1 Soportados</p>
+              </div>
+            </div>
+
+            <div className="group relative h-48 w-full">
+              <input
+                type="file"
+                accept=".xml"
+                onChange={handleArchivoXmlChange}
+                className="absolute inset-0 z-10 w-full opacity-0 cursor-pointer"
+              />
+              <div className={`h-full w-full rounded-2xl border-4 border-dashed transition-all flex flex-col items-center justify-center gap-4 ${archivoXml ? 'bg-indigo-50 border-indigo-200' : 'bg-slate-50 border-slate-100 hover:border-indigo-200 hover:bg-indigo-50/50'}`}>
+                {archivoXml ? (
+                  <>
+                    <CheckCircle2 size={48} className="text-indigo-500" />
+                    <span className="text-sm font-bold text-indigo-700 uppercase tracking-tighter truncate max-w-[200px]">{archivoXml.name}</span>
+                    <button onClick={(e) => { e.stopPropagation(); setArchivoXml(null); }} className="text-[10px] font-black text-indigo-400 uppercase tracking-widest hover:text-red-500 underline">Quitar archivo</button>
+                  </>
+                ) : (
+                  <>
+                    <Download size={48} className="text-slate-300 group-hover:text-indigo-300 group-hover:scale-110 transition-all" />
+                    <span className="text-xs font-black text-slate-400 uppercase tracking-widest">Arrastre aquí su XML</span>
+                  </>
+                )}
+              </div>
+            </div>
+
+            <div className="mt-8 flex flex-col gap-3">
+              <button
+                onClick={handleImportarXml}
+                disabled={!archivoXml || cargandoImportacion}
+                className="w-full h-14 rounded-2xl bg-indigo-600 text-white font-black uppercase tracking-widest shadow-xl shadow-indigo-200 transition-all hover:bg-indigo-700 active:scale-95 disabled:opacity-50"
+              >
+                {cargandoImportacion ? <RefreshCcw size={24} className="animate-spin mx-auto" /> : 'Sincronizar Comprobante'}
+              </button>
+              <button onClick={() => setMostrarModalImportar(false)} className="w-full h-12 text-[10px] font-black text-slate-400 uppercase tracking-[0.4em]">Cerrar Ventana</button>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 };

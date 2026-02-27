@@ -79,27 +79,21 @@ function DashboardLayout({ children }) {
         return;
       case 'productos, presentaciones':
         setProductosExpanded(!productosExpanded);
-        navigate('/dashboard', { state: { activeSection: 'productos, presentaciones' } });
         return;
       case 'ventas':
         setVentasExpanded(!ventasExpanded);
-        navigate('/dashboard', { state: { activeSection: 'ventas' } });
         return;
       case 'guiaRemision':
         setGuiaRemisionExpanded(!guiaRemisionExpanded);
-        navigate('/dashboard', { state: { activeSection: 'guiaRemision' } });
         return;
       case 'inventario':
         setInventarioExpanded(!inventarioExpanded);
-        navigate('/dashboard', { state: { activeSection: 'inventario' } });
         return;
       case 'compras':
         setComprasExpanded(!comprasExpanded);
-        navigate('/dashboard', { state: { activeSection: 'compras' } });
         return;
       case 'proveedores':
         setProveedoresExpanded(!proveedoresExpanded);
-        navigate('/dashboard', { state: { activeSection: 'proveedores' } });
         return;
       case 'caja':
       case 'servicios':

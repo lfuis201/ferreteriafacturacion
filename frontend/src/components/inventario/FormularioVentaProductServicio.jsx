@@ -8,7 +8,7 @@ import { obtenerSucursales } from "../../services/sucursalService";
 import ModalAgregarPresentaciones from "./ModalAgregarPresentaciones";
 import ModalUbicacionProducto from "./ModalUbicacionProducto";
 
-function ProductoDetalle({ onProductoSeleccionado, productos: productosProps }) {
+function ProductoDetalle({ onProductoSeleccionado, productos: productosProps, sucursalOrigenId, contexto }) {
   const [productos, setProductos] = useState(productosProps || []);
   const [categorias, setCategorias] = useState([]);
   const [sucursales, setSucursales] = useState([]);
@@ -73,7 +73,7 @@ function ProductoDetalle({ onProductoSeleccionado, productos: productosProps }) 
     sujetoDetraccion: false,
     estado: true
   });
-  
+
   // Estados para manejo de imágenes en nuevo producto
   const [imagenesNuevoProducto, setImagenesNuevoProducto] = useState({
     imagen1: null,
@@ -99,7 +99,7 @@ function ProductoDetalle({ onProductoSeleccionado, productos: productosProps }) 
   });
 
   const [atributos, setAtributos] = useState('');
-  
+
   const [productosRelacionados, setProductosRelacionados] = useState([]);
   const [loadingRelacionados, setLoadingRelacionados] = useState(false);
   const [mostrarModalProductosRelacionados, setMostrarModalProductosRelacionados] = useState(false);
@@ -107,7 +107,7 @@ function ProductoDetalle({ onProductoSeleccionado, productos: productosProps }) 
   const [mostrarFormularioNuevoProducto, setMostrarFormularioNuevoProducto] = useState(false);
   const [busquedaModal, setBusquedaModal] = useState('');
   const [cargandoCreacion, setCargandoCreacion] = useState(false);
-  
+
   // Estados para modal de presentaciones
   const [modalAgregarPresentacionesAbierto, setModalAgregarPresentacionesAbierto] = useState(false);
   const [cantidadPresentaciones, setCantidadPresentaciones] = useState(0);
@@ -121,6 +121,15 @@ function ProductoDetalle({ onProductoSeleccionado, productos: productosProps }) 
 
   // Obtener usuario actual y establecer sucursalId en filtros
   useEffect(() => {
+    if (sucursalOrigenId) {
+      setFiltros(prev => ({
+        ...prev,
+        sucursalId: sucursalOrigenId,
+      }));
+      console.log("✅ SucursalId recibida por props establecido en filtros:", sucursalOrigenId);
+      return;
+    }
+
     const usuarioGuardado = localStorage.getItem("usuario");
     if (usuarioGuardado) {
       const usuario = JSON.parse(usuarioGuardado);
@@ -146,7 +155,7 @@ function ProductoDetalle({ onProductoSeleccionado, productos: productosProps }) 
       }));
       console.log("⚠️ Sin usuario en localStorage, usando sucursal por defecto en filtros: 1");
     }
-  }, []);
+  }, [sucursalOrigenId]);
 
   // Recargar productos cuando cambien los filtros (especialmente sucursalId)
   useEffect(() => {
@@ -179,7 +188,7 @@ function ProductoDetalle({ onProductoSeleccionado, productos: productosProps }) 
       [name]: type === 'checkbox' ? checked : value
     }));
   };
-  
+
   // Función para manejar cambios en las imágenes del nuevo producto
   const handleImagenNuevoProductoChange = (e, imagenKey) => {
     const file = e.target.files[0];
@@ -197,7 +206,7 @@ function ProductoDetalle({ onProductoSeleccionado, productos: productosProps }) 
       }
 
       setImagenesNuevoProducto(prev => ({ ...prev, [imagenKey]: file }));
-      
+
       // Crear preview
       const reader = new FileReader();
       reader.onload = (e) => {
@@ -215,24 +224,24 @@ function ProductoDetalle({ onProductoSeleccionado, productos: productosProps }) 
   const cargarProductos = async () => {
     try {
       setLoading(true);
-      
+
       // USAR obtenerProductosConInventario para obtener productos con stock real
       console.log('🔍 Filtros usados para cargar productos:', filtros);
       console.log('🏢 Sucursal ID específica:', filtros.sucursalId);
-      
+
       const response = await obtenerProductosConInventario({
         categoriaId: filtros.categoria,
         nombre: filtros.busqueda,
         sucursalId: filtros.sucursalId || "1" // Usar sucursal por defecto
       });
-      
+
       console.log('📦 Respuesta completa de productos con inventario:', response);
       console.log('📦 Estructura de response.productos:', response.productos);
-      
+
       const productosData = response.productos || response.data || [];
       console.log('📊 Total productos recibidos:', productosData.length);
       console.log('📊 Primer producto completo:', JSON.stringify(productosData[0], null, 2));
-      
+
       // Verificar si algún producto tiene stock > 0
       const productosConStockReal = productosData.filter(p => p.stock > 0);
       console.log('📈 Productos con stock > 0:', productosConStockReal.length);
@@ -243,7 +252,7 @@ function ProductoDetalle({ onProductoSeleccionado, productos: productosProps }) 
         stockOriginal: p.stock,
         inventarios: p.Inventarios
       })));
-      
+
       // Mapear productos para asegurar que tengan la estructura correcta
       const productosConStock = productosData.map(producto => {
         console.log(`🔍 Procesando producto ${producto.nombre}:`, {
@@ -253,7 +262,7 @@ function ProductoDetalle({ onProductoSeleccionado, productos: productosProps }) 
           precioVentaInventario: producto.precioVentaInventario,
           inventarios: producto.Inventarios
         });
-        
+
         return {
           ...producto,
           stock: producto.stock || 0,
@@ -261,7 +270,7 @@ function ProductoDetalle({ onProductoSeleccionado, productos: productosProps }) 
           precioVenta: producto.precioVenta || producto.precioVentaInventario || 0
         };
       });
-      
+
       console.log('🎯 Productos mapeados con stock:', productosConStock.map(p => ({
         nombre: p.nombre,
         codigo: p.codigo,
@@ -269,13 +278,13 @@ function ProductoDetalle({ onProductoSeleccionado, productos: productosProps }) 
         stockMinimo: p.stockMinimo,
         precioVenta: p.precioVenta
       })));
-      
+
       setProductos(productosConStock);
-      
+
       // Calcular estadísticas del inventario
       const productosActivos = productosConStock.filter(p => p.iscActivo) || [];
       const valorTotal = productosActivos.reduce((sum, p) => sum + (parseFloat(p.precioVenta) || 0), 0);
-      
+
       setInventario(prev => ({
         ...prev,
         totalProductos: productosConStock.length || 0,
@@ -343,7 +352,7 @@ function ProductoDetalle({ onProductoSeleccionado, productos: productosProps }) 
   const abrirModalProductosRelacionados = async () => {
     setMostrarModalProductosRelacionados(true);
     setBusquedaModal(''); // Limpiar búsqueda anterior
-    
+
     // Cargar todos los productos disponibles
     try {
       const response = await productoService.obtenerProductos({});
@@ -399,7 +408,7 @@ function ProductoDetalle({ onProductoSeleccionado, productos: productosProps }) 
           formData.append(key, nuevoProducto[key]);
         }
       });
-      
+
       // Agregar imágenes si existen
       if (imagenesNuevoProducto.imagen1) {
         formData.append("imagen1", imagenesNuevoProducto.imagen1);
@@ -410,13 +419,13 @@ function ProductoDetalle({ onProductoSeleccionado, productos: productosProps }) 
       if (imagenesNuevoProducto.imagen3) {
         formData.append("imagen3", imagenesNuevoProducto.imagen3);
       }
-      
+
       // Agregar presentaciones si existen
       if (presentacionesIntegradas && presentacionesIntegradas.length > 0) {
         formData.append('presentaciones', JSON.stringify(presentacionesIntegradas));
         console.log('📦 Enviando presentaciones al backend:', presentacionesIntegradas);
       }
-      
+
       const response = await productoService.crearProducto(formData);
       alert('Producto creado exitosamente');
       setMostrarFormularioNuevoProducto(false);
@@ -449,7 +458,7 @@ function ProductoDetalle({ onProductoSeleccionado, productos: productosProps }) 
         observaciones: "",
         imagen: null
       });
-      
+
       // Resetear estados de imágenes
       setImagenesNuevoProducto({
         imagen1: null,
@@ -461,7 +470,7 @@ function ProductoDetalle({ onProductoSeleccionado, productos: productosProps }) 
         imagen2: null,
         imagen3: null
       });
-      
+
       await cargarProductos();
     } catch (error) {
       console.error('Error al crear producto:', error);
@@ -489,7 +498,7 @@ function ProductoDetalle({ onProductoSeleccionado, productos: productosProps }) 
     try {
       setLoadingPresentaciones(true);
       const response = await obtenerPresentaciones(productoId);
-      
+
       let presentacionesData = [];
       if (Array.isArray(response)) {
         presentacionesData = response;
@@ -498,7 +507,7 @@ function ProductoDetalle({ onProductoSeleccionado, productos: productosProps }) 
       } else if (response && response.data && Array.isArray(response.data)) {
         presentacionesData = response.data;
       }
-      
+
       // Formatear presentaciones para la tabla
       const presentacionesFormateadas = presentacionesData.map(p => ({
         unidad: p.unidadMedida || 'UNI',
@@ -510,7 +519,7 @@ function ProductoDetalle({ onProductoSeleccionado, productos: productosProps }) 
         precioDefecto: p.esDefecto ? 'Precio por defecto' : 'Precio alternativo',
         codigoBarras: p.codigoBarras || ''
       }));
-      
+
       setPresentaciones(presentacionesFormateadas);
     } catch (error) {
       console.error('Error al cargar presentaciones:', error);
@@ -609,19 +618,19 @@ function ProductoDetalle({ onProductoSeleccionado, productos: productosProps }) 
     try {
       // Aquí iría la lógica para guardar las presentaciones en el backend
       console.log('Guardando presentaciones:', presentacionesEditables);
-      
+
       // Actualizar las presentaciones mostradas
       setPresentaciones([...presentacionesEditables]);
-      
+
       // Cerrar modal
       cerrarModalEditarPrecios();
-      
+
       alert('Presentaciones guardadas correctamente');
     } catch (error) {
-       console.error('Error al guardar presentaciones:', error);
-       alert('Error al guardar las presentaciones');
-     }
-   };
+      console.error('Error al guardar presentaciones:', error);
+      alert('Error al guardar las presentaciones');
+    }
+  };
 
   useEffect(() => {
     if (!productosProps || productosProps.length === 0) {
@@ -635,18 +644,18 @@ function ProductoDetalle({ onProductoSeleccionado, productos: productosProps }) 
 
   // Filtrar productos
   const productosFiltrados = productos.filter(producto => {
-    const cumpleBusqueda = !filtros.busqueda || 
+    const cumpleBusqueda = !filtros.busqueda ||
       producto.nombre?.toLowerCase().includes(filtros.busqueda.toLowerCase()) ||
       producto.codigo?.toLowerCase().includes(filtros.busqueda.toLowerCase());
-    
+
     // Filtro de categoría corregido para usar la estructura del backend
-    const cumpleCategoria = !filtros.categoria || 
+    const cumpleCategoria = !filtros.categoria ||
       (producto.Categorium && producto.Categorium.nombre === filtros.categoria);
-    
+
     const cumplePrecioMin = !filtros.precioMin || parseFloat(producto.precioVenta) >= parseFloat(filtros.precioMin);
-    
+
     const cumplePrecioMax = !filtros.precioMax || parseFloat(producto.precioVenta) <= parseFloat(filtros.precioMax);
-    
+
     return cumpleBusqueda && cumpleCategoria && cumplePrecioMin && cumplePrecioMax;
   });
 
@@ -689,8 +698,8 @@ function ProductoDetalle({ onProductoSeleccionado, productos: productosProps }) 
         margin: '0',
         padding: '20px'
       }}>
-        
-        
+
+
 
         {/* Barra de búsqueda y filtros */}
         <div style={{
@@ -715,7 +724,7 @@ function ProductoDetalle({ onProductoSeleccionado, productos: productosProps }) 
               fontSize: '12px'
             }}
           />
-          
+
           <select
             name="categoria"
             value={filtros.categoria}
@@ -732,13 +741,13 @@ function ProductoDetalle({ onProductoSeleccionado, productos: productosProps }) 
             {categorias.map(categoria => (
               <option key={categoria.id} value={categoria.nombre}>{categoria.nombre}</option>
             ))}
-          </select> 
+          </select>
 
 
-       
-          
-          
-          
+
+
+
+
           <button
             onClick={() => setMostrarFormularioNuevo(true)}
             style={{
@@ -793,12 +802,12 @@ function ProductoDetalle({ onProductoSeleccionado, productos: productosProps }) 
               <div style={{ textAlign: 'right' }}>Precio</div>
               <div style={{ textAlign: 'center' }}>Acción</div>
             </div>
-            
+
             {/* Filas de productos */}
             {productosAMostrar.map((prod, index) => {
               // Procesar las imágenes del producto
               const imagenes = prod.imagen ? prod.imagen.split(',') : [];
-              
+
               return (
                 <div
                   key={prod.id || index}
@@ -828,7 +837,7 @@ function ProductoDetalle({ onProductoSeleccionado, productos: productosProps }) 
                   }}>
                     {index + 1}
                   </div>
-                  
+
                   {/* Nombre del producto con hover para imágenes */}
                   <div style={{
                     position: 'relative',
@@ -855,14 +864,14 @@ function ProductoDetalle({ onProductoSeleccionado, productos: productosProps }) 
                             z-index: 1000;
                             max-width: 300px;
                           `;
-                          
+
                           const imageContainer = document.createElement('div');
                           imageContainer.style.cssText = `
                             display: grid;
                             grid-template-columns: repeat(auto-fit, minmax(80px, 1fr));
                             gap: 8px;
                           `;
-                          
+
                           imagenes.slice(0, 4).forEach(img => {
                             const imgElement = document.createElement('img');
                             imgElement.src = img;
@@ -875,9 +884,9 @@ function ProductoDetalle({ onProductoSeleccionado, productos: productosProps }) 
                             `;
                             imageContainer.appendChild(imgElement);
                           });
-                          
+
                           tooltip.appendChild(imageContainer);
-                          
+
                           if (imagenes.length > 4) {
                             const moreText = document.createElement('div');
                             moreText.textContent = `+${imagenes.length - 4} más`;
@@ -889,9 +898,9 @@ function ProductoDetalle({ onProductoSeleccionado, productos: productosProps }) 
                             `;
                             tooltip.appendChild(moreText);
                           }
-                          
+
                           document.body.appendChild(tooltip);
-                          
+
                           const rect = e.target.getBoundingClientRect();
                           tooltip.style.left = `${rect.right + 10}px`;
                           tooltip.style.top = `${rect.top}px`;
@@ -916,7 +925,7 @@ function ProductoDetalle({ onProductoSeleccionado, productos: productosProps }) 
                       )}
                     </span>
                   </div>
-                  
+
                   {/* Código */}
                   <div style={{
                     color: '#666',
@@ -924,14 +933,14 @@ function ProductoDetalle({ onProductoSeleccionado, productos: productosProps }) 
                   }}>
                     {prod.codigo}
                   </div>
-                  
+
                   {/* Categoría */}
                   <div style={{
                     color: '#666'
                   }}>
                     {prod.Categorium?.nombre || prod.categoria || 'Sin categoría'}
                   </div>
-                  
+
                   {/* Stock */}
                   <div style={{
                     textAlign: 'center',
@@ -940,7 +949,7 @@ function ProductoDetalle({ onProductoSeleccionado, productos: productosProps }) 
                   }}>
                     {prod.stock || 0}
                   </div>
-                  
+
                   {/* Precio */}
                   <div style={{
                     textAlign: 'right',
@@ -949,7 +958,7 @@ function ProductoDetalle({ onProductoSeleccionado, productos: productosProps }) 
                   }}>
                     S/ {parseFloat(prod.precioVenta || 0).toFixed(2)}
                   </div>
-                  
+
                   {/* Acción - Lupa para ver ubicación */}
                   <div style={{
                     textAlign: 'center'
@@ -1008,8 +1017,8 @@ function ProductoDetalle({ onProductoSeleccionado, productos: productosProps }) 
               <div className="form-header">
                 <div className="header-content">
                   <h1 className="form-title">📦 Crear Nuevo Producto</h1>
-                  <button 
-                    className="btn-close-form" 
+                  <button
+                    className="btn-close-form"
                     onClick={() => setMostrarFormularioNuevo(false)}
                     type="button"
                   >
@@ -1025,7 +1034,7 @@ function ProductoDetalle({ onProductoSeleccionado, productos: productosProps }) 
                     {/* Información básica */}
                     <div className="form-section">
                       <h3>📋 Información Básica</h3>
-                      
+
                       <div className="form-row">
                         <div className="form-group">
                           <label htmlFor="codigo">Código del Producto *</label>
@@ -1039,7 +1048,7 @@ function ProductoDetalle({ onProductoSeleccionado, productos: productosProps }) 
                             placeholder="Ej: PROD-001"
                           />
                         </div>
-                        
+
                         <div className="form-group">
                           <label htmlFor="nombre">Nombre del Producto *</label>
                           <input
@@ -1123,7 +1132,7 @@ function ProductoDetalle({ onProductoSeleccionado, productos: productosProps }) 
                     {/* Precios */}
                     <div className="form-section">
                       <h3>💰 Precios</h3>
-                      
+
                       <div className="form-row">
                         <div className="form-group">
                           <label htmlFor="precioCompra">Precio de Compra (S/.) *</label>
@@ -1155,7 +1164,7 @@ function ProductoDetalle({ onProductoSeleccionado, productos: productosProps }) 
                           />
                         </div>
                       </div>
-                      
+
                       <div className="form-row">
                         <div className="form-group">
                           <label htmlFor="stock">Stock Inicial</label>
@@ -1169,7 +1178,7 @@ function ProductoDetalle({ onProductoSeleccionado, productos: productosProps }) 
                             placeholder="0"
                           />
                         </div>
-                        
+
                         <div className="form-group">
                           <label htmlFor="stockMinimo">Stock Mínimo</label>
                           <input
@@ -1188,7 +1197,7 @@ function ProductoDetalle({ onProductoSeleccionado, productos: productosProps }) 
                     {/* Información Adicional */}
                     <div className="form-section">
                       <h3>ℹ️ Información Adicional</h3>
-                      
+
                       <div className="form-row">
                         <div className="form-group">
                           <label htmlFor="codigoBarras">Código de Barras</label>
@@ -1245,7 +1254,7 @@ function ProductoDetalle({ onProductoSeleccionado, productos: productosProps }) 
                     {/* Códigos */}
                     <div className="form-section">
                       <h3>🏷️ Códigos</h3>
-                      
+
                       <div className="form-row">
                         <div className="form-group">
                           <label htmlFor="codigosunat">Código SUNAT</label>
@@ -1276,7 +1285,7 @@ function ProductoDetalle({ onProductoSeleccionado, productos: productosProps }) 
                     {/* Productos Relacionados */}
                     <div className="form-section">
                       <h3>🔗 Productos Relacionados</h3>
-                      
+
                       <div className="form-group full-width">
                         <label>Productos Relacionados</label>
                         <div style={{ display: 'flex', flexDirection: 'column', gap: '10px' }}>
@@ -1336,7 +1345,7 @@ function ProductoDetalle({ onProductoSeleccionado, productos: productosProps }) 
                               Seleccione productos relacionados
                             </div>
                           )}
-                          
+
                           {/* Botón de seleccionar */}
                           <button
                             type="button"
@@ -1353,7 +1362,7 @@ function ProductoDetalle({ onProductoSeleccionado, productos: productosProps }) 
                     {/* Presentaciones */}
                     <div className="form-section">
                       <h3>📦 Presentaciones</h3>
-                      
+
                       <div className="presentaciones-creacion">
                         <div className="presentaciones-info">
                           <h4>📦 Configurar Presentaciones</h4>
@@ -1384,7 +1393,7 @@ function ProductoDetalle({ onProductoSeleccionado, productos: productosProps }) 
                     {/* Imágenes */}
                     <div className="form-section">
                       <h3>🖼️ Imágenes del Producto</h3>
-                      
+
                       <div className="image-upload-grid">
                         {[1, 2, 3].map((num) => {
                           const imagenKey = `imagen${num}`;
@@ -1393,8 +1402,8 @@ function ProductoDetalle({ onProductoSeleccionado, productos: productosProps }) 
                               <div className="image-upload-box">
                                 {previewImagenesNuevoProducto[imagenKey] ? (
                                   <div className="image-preview">
-                                    <img 
-                                      src={previewImagenesNuevoProducto[imagenKey]} 
+                                    <img
+                                      src={previewImagenesNuevoProducto[imagenKey]}
                                       alt={`Preview ${num}`}
                                     />
                                     <button
@@ -1457,11 +1466,11 @@ function ProductoDetalle({ onProductoSeleccionado, productos: productosProps }) 
 
 
 
-            
+
           </div>
         )}
 
-      
+
 
         {/* Contenido principal con imagen y detalles */}
         <div style={{
@@ -1509,7 +1518,7 @@ function ProductoDetalle({ onProductoSeleccionado, productos: productosProps }) 
                   </>
                 );
               }
-              
+
               // Si no tiene imagen, mostrar placeholder pero continuar con los detalles
               if (!productoSeleccionado.imagen) {
                 return (
@@ -1534,9 +1543,9 @@ function ProductoDetalle({ onProductoSeleccionado, productos: productosProps }) 
                   </>
                 );
               }
-              
+
               const imagenes = productoSeleccionado.imagen.split(',').filter(img => img.trim());
-              
+
               return (
                 <>
                   <div style={{
@@ -1548,8 +1557,8 @@ function ProductoDetalle({ onProductoSeleccionado, productos: productosProps }) 
                     boxShadow: '0 2px 8px rgba(0,0,0,0.1)',
                     position: 'relative'
                   }}>
-                    <img 
-                      src={imagenes[imagenActual]} 
+                    <img
+                      src={imagenes[imagenActual]}
                       alt={`${productoSeleccionado.nombre || 'Producto'} - Imagen ${imagenActual + 1}`}
                       style={{
                         width: '100%',
@@ -1578,7 +1587,7 @@ function ProductoDetalle({ onProductoSeleccionado, productos: productosProps }) 
                       <div style={{ fontSize: '40px', marginBottom: '10px' }}>📷</div>
                       <div style={{ fontSize: '11px' }}>Error al cargar imagen</div>
                     </div>
-                    
+
                     {/* Controles del carrusel */}
                     {imagenes.length > 1 && (
                       <>
@@ -1626,7 +1635,7 @@ function ProductoDetalle({ onProductoSeleccionado, productos: productosProps }) 
                         >
                           ›
                         </button>
-                        
+
                         {/* Indicadores */}
                         <div style={{
                           position: 'absolute',
@@ -1654,7 +1663,7 @@ function ProductoDetalle({ onProductoSeleccionado, productos: productosProps }) 
                       </>
                     )}
                   </div>
-                  
+
                   <div style={{ color: '#666', fontSize: '11px', marginBottom: '5px' }}>
                     {imagenes.length > 1 ? `Imagen ${imagenActual + 1} de ${imagenes.length}` : 'Imagen del producto'}
                   </div>
@@ -1681,7 +1690,7 @@ function ProductoDetalle({ onProductoSeleccionado, productos: productosProps }) 
                 }}>
                   <strong>{productoSeleccionado.codigo || 'Sin código'}</strong>
                 </div>
-                
+
                 <div style={{
                   display: 'grid',
                   gridTemplateColumns: '1fr',
@@ -1746,7 +1755,7 @@ function ProductoDetalle({ onProductoSeleccionado, productos: productosProps }) 
                 </div>
               </>
             )}
-            
+
             {!productoSeleccionado && (
               <div style={{
                 textAlign: 'center',
@@ -1908,12 +1917,12 @@ function ProductoDetalle({ onProductoSeleccionado, productos: productosProps }) 
         </div>
         
         */}
-       
 
-       
-        
 
-       
+
+
+
+
 
         {/* Lista de Precios */}
         <div style={{ marginBottom: '20px' }}>
@@ -1940,7 +1949,7 @@ function ProductoDetalle({ onProductoSeleccionado, productos: productosProps }) 
             }}>
               ?
             </div>
-            <button 
+            <button
               onClick={() => abrirModalEditarPrecios()}
               style={{
                 backgroundColor: 'transparent',
@@ -2119,7 +2128,7 @@ function ProductoDetalle({ onProductoSeleccionado, productos: productosProps }) 
                         Sin imagen
                       </div>
                     </div>
-                    
+
                     {/* Información del producto */}
                     <div style={{
                       fontWeight: 'bold',
@@ -2495,7 +2504,7 @@ function ProductoDetalle({ onProductoSeleccionado, productos: productosProps }) 
                 Limpiar Selección
               </button>
             </div>
-            
+
             <div style={{
               marginBottom: '15px'
             }}>
@@ -2532,7 +2541,7 @@ function ProductoDetalle({ onProductoSeleccionado, productos: productosProps }) 
                         producto.marca?.toLowerCase().includes(busqueda)
                       );
                     });
-                    
+
                     if (productosFiltrados.length === 0) {
                       return (
                         <tr>
@@ -2542,7 +2551,7 @@ function ProductoDetalle({ onProductoSeleccionado, productos: productosProps }) 
                         </tr>
                       );
                     }
-                    
+
                     return productosFiltrados.map((producto) => {
                       const isSelected = productosSeleccionados.find(p => p.id === producto.id);
                       return (
@@ -2612,7 +2621,7 @@ function ProductoDetalle({ onProductoSeleccionado, productos: productosProps }) 
           </div>
         </div>
       )}
-      
+
       {/* Modal de Agregar Presentaciones */}
       <ModalAgregarPresentaciones
         isOpen={modalAgregarPresentacionesAbierto}
@@ -2622,7 +2631,7 @@ function ProductoDetalle({ onProductoSeleccionado, productos: productosProps }) 
         precioVenta={nuevoProducto.precioVenta}
         presentacionesIniciales={presentacionesIntegradas}
       />
-      
+
       {/* Modal de Ubicación del Producto */}
       <ModalUbicacionProducto
         isOpen={mostrarModalUbicacion}
@@ -2633,7 +2642,7 @@ function ProductoDetalle({ onProductoSeleccionado, productos: productosProps }) 
         producto={productoParaUbicacion}
       />
     </div>
-   );
+  );
 }
 
 export default ProductoDetalle;

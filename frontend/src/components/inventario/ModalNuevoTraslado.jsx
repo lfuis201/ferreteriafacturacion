@@ -1,9 +1,26 @@
 import React, { useState, useEffect } from 'react';
-import { X, Search, Plus, Download, Info } from 'lucide-react';
-import '../../styles/ModalNuevoTraslado.css';
+import {
+  X,
+  Search,
+  Plus,
+  Download,
+  Info,
+  ArrowRightLeft,
+  Store,
+  Package,
+  TrendingDown,
+  AlertCircle,
+  Hash,
+  Trash2,
+  CheckCircle2,
+  ChevronDown,
+  RefreshCcw,
+  FileText
+} from 'lucide-react';
 import { obtenerSucursalesActivas, obtenerProductosActivos, trasladarProducto } from '../../services/inventarioService';
 import { obtenerProductosConInventario } from '../../services/productoService';
 import FormularioVentaProductServicio from './FormularioVentaProductServicio';
+import Swal from 'sweetalert2';
 
 const ModalNuevoTraslado = ({ isOpen, onClose, onTrasladoCreado }) => {
   const [formData, setFormData] = useState({
@@ -24,7 +41,6 @@ const ModalNuevoTraslado = ({ isOpen, onClose, onTrasladoCreado }) => {
   const [mostrarFormularioProducto, setMostrarFormularioProducto] = useState(false);
   const [productoSeleccionado, setProductoSeleccionado] = useState(null);
 
-  // Cargar datos iniciales
   useEffect(() => {
     if (isOpen) {
       cargarDatosIniciales();
@@ -38,11 +54,10 @@ const ModalNuevoTraslado = ({ isOpen, onClose, onTrasladoCreado }) => {
         obtenerSucursalesActivas(),
         obtenerProductosActivos()
       ]);
-      
+
       setSucursales(sucursalesRes.data || []);
       setProductosDisponibles(productosRes.data || []);
-      
-      // Establecer primera sucursal como origen por defecto
+
       if (sucursalesRes.data && sucursalesRes.data.length > 0) {
         setFormData(prev => ({
           ...prev,
@@ -57,53 +72,7 @@ const ModalNuevoTraslado = ({ isOpen, onClose, onTrasladoCreado }) => {
   };
 
   const handleInputChange = (field, value) => {
-    setFormData(prev => ({
-      ...prev,
-      [field]: value
-    }));
-  };
-
-  const handleAddProduct = () => {
-    setMostrarFormularioProducto(true);
-  };
-
-  const buscarProductos = async (termino) => {
-    if (!termino.trim()) {
-      setProductosEncontrados([]);
-      setMostrarResultados(false);
-      return;
-    }
-
-    if (!formData.sucursalOrigenId) {
-      alert('Por favor selecciona una sucursal origen primero');
-      return;
-    }
-
-    try {
-      setLoading(true);
-      const response = await obtenerProductosConInventario({
-        nombre: termino,
-        sucursalId: formData.sucursalOrigenId
-      });
-      
-      console.log('Respuesta obtenerProductosConInventario en ModalNuevoTraslado:', response);
-      
-      // Filtrar productos que tengan stock disponible
-      const productosConStock = response.productos?.filter(producto => 
-        producto.stock > 0
-      ) || [];
-      
-      console.log('Productos con stock en ModalNuevoTraslado:', productosConStock);
-      
-      setProductosEncontrados(productosConStock);
-      setMostrarResultados(productosConStock.length > 0);
-    } catch (error) {
-      console.error('Error al buscar productos:', error);
-      setProductosEncontrados([]);
-      setMostrarResultados(false);
-    } finally {
-      setLoading(false);
-    }
+    setFormData(prev => ({ ...prev, [field]: value }));
   };
 
   const handleProductoSeleccionado = (producto) => {
@@ -111,51 +80,26 @@ const ModalNuevoTraslado = ({ isOpen, onClose, onTrasladoCreado }) => {
     setFormData(prev => ({
       ...prev,
       cantidadActual: producto.stock || 0,
-      cantidadTraslado: 0
+      cantidadTraslado: 1
     }));
     setMostrarFormularioProducto(false);
   };
 
-  const seleccionarProductoDeBusqueda = (producto) => {
-    if (producto.stock <= 0) {
-      alert(`El producto "${producto.Producto?.nombre || producto.nombre}" no tiene stock disponible para trasladar`);
-      return;
-    }
-    
-    setProductoSeleccionado(producto);
-    setFormData(prev => ({
-      ...prev,
-      cantidadActual: producto.stock || 0,
-      cantidadTraslado: 1 // Establecer 1 como valor inicial
-    }));
-    setSearchTerm(producto.Producto?.nombre || producto.nombre || '');
-    setMostrarResultados(false);
-    setProductosEncontrados([]);
-  };
-
   const agregarProductoALista = () => {
-    if (!productoSeleccionado) {
-      alert('Por favor seleccione un producto de la búsqueda');
-      return;
-    }
+    if (!productoSeleccionado) return;
 
     if (formData.cantidadTraslado <= 0) {
-      alert('La cantidad a trasladar debe ser mayor a 0');
+      Swal.fire('Atención', 'La cantidad debe ser mayor a 0', 'warning');
       return;
     }
 
     if (formData.cantidadTraslado > formData.cantidadActual) {
-      alert(`La cantidad a trasladar (${formData.cantidadTraslado}) no puede ser mayor al stock disponible (${formData.cantidadActual})`);
-      return;
-    }
-
-    if (formData.cantidadActual <= 0) {
-      alert('Este producto no tiene stock disponible para trasladar');
+      Swal.fire('Atención', 'No hay suficiente stock disponible', 'warning');
       return;
     }
 
     const nuevoProducto = {
-      id: Date.now(), // ID temporal para la tabla
+      id: Date.now(),
       productoId: productoSeleccionado.productoId || productoSeleccionado.id,
       codigo: productoSeleccionado.Producto?.codigo || productoSeleccionado.codigo,
       nombre: productoSeleccionado.Producto?.nombre || productoSeleccionado.nombre,
@@ -164,83 +108,47 @@ const ModalNuevoTraslado = ({ isOpen, onClose, onTrasladoCreado }) => {
     };
 
     setProducts(prev => [...prev, nuevoProducto]);
-    
-    // Limpiar selección
     setProductoSeleccionado(null);
-    setFormData(prev => ({
-      ...prev,
-      cantidadActual: 0,
-      cantidadTraslado: 0
-    }));
+    setFormData(prev => ({ ...prev, cantidadActual: 0, cantidadTraslado: 0 }));
   };
 
   const eliminarProducto = (id) => {
     setProducts(prev => prev.filter(p => p.id !== id));
   };
 
-  const editarProducto = (producto) => {
-    // Cargar el producto en el formulario para editar
-    setProductoSeleccionado({
-      ...producto,
-      Producto: {
-        codigo: producto.codigo,
-        nombre: producto.nombre
-      }
-    });
-    setFormData(prev => ({
-      ...prev,
-      cantidadActual: producto.stockActual,
-      cantidadTraslado: producto.cantidad
-    }));
-    setSearchTerm(producto.nombre);
-    
-    // Eliminar el producto de la lista para que se pueda volver a agregar editado
-    eliminarProducto(producto.id);
-  };
-
   const handleSubmit = async () => {
     if (!formData.sucursalOrigenId || !formData.sucursalDestinoId) {
-      alert('Seleccione las sucursales de origen y destino');
+      Swal.fire('Atención', 'Seleccione sucursales de origen y destino', 'warning');
       return;
     }
 
-    if (formData.sucursalOrigenId === formData.sucursalDestinoId) {
-      alert('La sucursal de origen debe ser diferente a la de destino');
+    if (formData.sucursalOrigenId == formData.sucursalDestinoId) {
+      Swal.fire('Atención', 'Las sucursales deben ser diferentes', 'warning');
       return;
     }
 
     if (products.length === 0) {
-      alert('Agregue al menos un producto al traslado');
+      Swal.fire('Atención', 'Agregue al menos un producto', 'warning');
       return;
     }
 
     try {
       setLoading(true);
-      
-      // Procesar cada producto del traslado
       for (const producto of products) {
-        const datosTraslado = {
+        await trasladarProducto({
           productoId: producto.productoId,
           sucursalOrigenId: parseInt(formData.sucursalOrigenId),
           sucursalDestinoId: parseInt(formData.sucursalDestinoId),
           cantidad: producto.cantidad,
           observacion: formData.motivoTraslado || 'Traslado entre sucursales'
-        };
-
-        await trasladarProducto(datosTraslado);
+        });
       }
 
-      alert('Traslado realizado exitosamente');
-      
-      // Notificar al componente padre que se creó un traslado
-      if (onTrasladoCreado) {
-        onTrasladoCreado();
-      }
-      
+      Swal.fire('¡Éxito!', 'Traslado registrado correctamente', 'success');
+      onTrasladoCreado?.();
       handleCancel();
     } catch (error) {
-      console.error('Error al realizar traslado:', error);
-      alert('Error al realizar el traslado: ' + error.message);
+      Swal.fire('Error', 'No se pudo completar el traslado', 'error');
     } finally {
       setLoading(false);
     }
@@ -255,265 +163,224 @@ const ModalNuevoTraslado = ({ isOpen, onClose, onTrasladoCreado }) => {
       cantidadTraslado: 0
     });
     setProducts([]);
-    setSucursales([]);
-    setProductosDisponibles([]);
     setProductoSeleccionado(null);
     setMostrarFormularioProducto(false);
-    setLoading(false);
     onClose();
   };
 
   if (!isOpen) return null;
 
   return (
-    <div className="modal-traslado-overlay">
-      <div className="modal-traslado-container">
+    <div className="fixed inset-0 z-[100] flex items-center justify-center p-4 bg-slate-900/60 backdrop-blur-md animate-in fade-in duration-300">
+      <div className="w-full max-w-5xl bg-white rounded-[2.5rem] shadow-2xl overflow-hidden flex flex-col animate-in zoom-in-95 duration-300 border border-white/20">
+
         {/* Header */}
-        <div className="modal-traslado-header">
-          <h2>Nuevo Traslado</h2>
-          <button className="modal-traslado-close-btn" onClick={onClose}>
-            <X size={20} />
-          </button>
+        <div className="bg-gradient-to-r from-indigo-700 via-indigo-800 to-violet-900 px-10 py-8 text-white">
+          <div className="flex items-center justify-between">
+            <div className="flex items-center gap-6">
+              <div className="flex h-16 w-16 items-center justify-center rounded-2xl bg-white/10 backdrop-blur-md border border-white/20 shadow-xl">
+                <ArrowRightLeft size={32} />
+              </div>
+              <div>
+                <h2 className="text-2xl font-black uppercase tracking-tight">Nueva Operación de Traslado</h2>
+                <div className="flex items-center gap-2 text-indigo-200 text-[10px] font-bold uppercase tracking-[0.2em] mt-1">
+                  <TrendingDown size={14} /> Logística Interna de Inventarios
+                </div>
+              </div>
+            </div>
+            <button onClick={onClose} className="h-12 w-12 flex items-center justify-center rounded-2xl bg-white/5 hover:bg-white/10 transition-all border border-white/10">
+              <X size={24} />
+            </button>
+          </div>
         </div>
 
         {/* Body */}
-        <div className="modal-traslado-body">
-          {/* Almacenes Row */}
-          <div className="traslado-form-row">
-            <div className="traslado-form-group">
-              <label>Sucursal Inicial</label>
-              <select 
-                value={formData.sucursalOrigenId}
-                onChange={(e) => handleInputChange('sucursalOrigenId', e.target.value)}
-                className="traslado-form-select"
-                disabled={loading}
-              >
-                <option value="">Seleccionar sucursal</option>
-                {sucursales.map(sucursal => (
-                  <option key={sucursal.id} value={sucursal.id}>
-                    {sucursal.nombre}
-                  </option>
-                ))}
-              </select>
-            </div>
-            <div className="traslado-form-group">
-              <label>Sucursal Final</label>
-              <select 
-                value={formData.sucursalDestinoId}
-                onChange={(e) => handleInputChange('sucursalDestinoId', e.target.value)}
-                className="traslado-form-select"
-                disabled={loading}
-              >
-                <option value="">Seleccionar sucursal</option>
-                {sucursales.filter(s => s.id !== parseInt(formData.sucursalOrigenId)).map(sucursal => (
-                  <option key={sucursal.id} value={sucursal.id}>
-                    {sucursal.nombre}
-                  </option>
-                ))}
-              </select>
-            </div>
-          </div>
+        <div className="p-10 space-y-8 overflow-y-auto max-h-[75vh] custom-scrollbar bg-slate-50/30">
 
-          {/* Motivo de Traslado */}
-          <div className="traslado-form-group full-width">
-            <label>Motivo de Traslado</label>
-            <textarea
-              value={formData.motivoTraslado}
-              onChange={(e) => handleInputChange('motivoTraslado', e.target.value)}
-              className="traslado-form-textarea"
-              placeholder="Ingrese el motivo del traslado..."
-              rows="3"
-            />
-          </div>
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
 
-          {/* Producto Section */}
-          <div className="traslado-producto-section">
-            <div className="traslado-producto-header">
-              <div className="traslado-producto-title">
-                <label>Producto</label>
-                <Info size={16} className="traslado-info-icon" />
+            {/* Config Card */}
+            <div className="rounded-3xl border border-slate-200 bg-white p-8 shadow-sm space-y-6">
+              <div className="flex items-center gap-3 border-b border-slate-50 pb-5">
+                <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-indigo-50 text-indigo-600 shadow-sm border border-indigo-100">
+                  <Store size={20} />
+                </div>
+                <h3 className="text-sm font-black text-slate-800 uppercase tracking-widest">Configuración de Ruta</h3>
               </div>
-              <div className="traslado-cantidad-inputs">
-                <div className="traslado-search-container" style={{ position: 'relative' }}>
 
-                  {/*  <input
-                    type="text"
-                    placeholder="Escribe para buscar por nombre o código de barras"
-                    className="traslado-search-input-modal"
-                    value={searchTerm}
-                    onChange={(e) => {
-                      setSearchTerm(e.target.value);
-                      buscarProductos(e.target.value);
-                    }}
-                    disabled={!formData.sucursalOrigenId || loading}
-                  />*/}
-                
-                  
-                  {/* Lista de resultados de búsqueda */}
-                  {mostrarResultados && productosEncontrados.length > 0 && (
-                    <div className="traslado-search-results" style={{
-                      position: 'absolute',
-                      top: '100%',
-                      left: 0,
-                      right: 0,
-                      backgroundColor: 'white',
-                      border: '1px solid #ddd',
-                      borderTop: 'none',
-                      maxHeight: '200px',
-                      overflowY: 'auto',
-                      zIndex: 1000,
-                      boxShadow: '0 2px 4px rgba(0,0,0,0.1)'
-                    }}>
-                      {productosEncontrados.map((producto, index) => (
-                        <div
-                          key={index}
-                          className="traslado-search-result-item"
-                          style={{
-                            padding: '10px',
-                            borderBottom: '1px solid #eee',
-                            cursor: 'pointer',
-                            fontSize: '12px'
-                          }}
-                          onClick={() => seleccionarProductoDeBusqueda(producto)}
-                          onMouseEnter={(e) => e.target.style.backgroundColor = '#f5f5f5'}
-                          onMouseLeave={(e) => e.target.style.backgroundColor = 'white'}
-                        >
-                          <div style={{ fontWeight: 'bold', color: '#333' }}>
-                             {producto.Producto?.nombre || producto.nombre}
-                           </div>
-                           <div style={{ color: '#666', fontSize: '11px', marginTop: '2px' }}>
-                             Código: {producto.Producto?.codigo || producto.codigo}
-                           </div>
-                           <div style={{ 
-                             color: producto.stock > 0 ? '#28a745' : '#dc3545', 
-                             fontSize: '11px', 
-                             fontWeight: 'bold',
-                             marginTop: '2px'
-                           }}>
-                             Stock Disponible: {producto.stock} unidades
-                           </div>
-                        </div>
-                      ))}
-                    </div>
-                  )}
-                </div>
-
-                {productoSeleccionado && (
-                  <div className="producto-seleccionado mb-3">
-                    <strong>Producto seleccionado:</strong> {productoSeleccionado.Producto?.nombre || productoSeleccionado.nombre}
-                    <br />
-                    <small>Código: {productoSeleccionado.Producto?.codigo || productoSeleccionado.codigo}</small>
-                  </div>
-                )}
-
-                <div className="traslado-cantidad-group">
-                  <label style={{ color: '#28a745', fontWeight: 'bold' }}>
-                    Stock Disponible para Trasladar
-                  </label>
-                  <input
-                    type="number"
-                    value={formData.cantidadActual}
-                    onChange={(e) => handleInputChange('cantidadActual', e.target.value)}
-                    className="traslado-cantidad-input"
-                    readOnly
-                    style={{ backgroundColor: '#f8f9fa', fontWeight: 'bold', color: '#28a745' }}
-                  />
-                </div>
-
-                <div className="traslado-cantidad-group">
-                  <label style={{ color: '#007bff', fontWeight: 'bold' }}>
-                    Cantidad a Trasladar (máx: {formData.cantidadActual})
-                  </label>
-                  <input
-                    type="number"
-                    value={formData.cantidadTraslado}
-                    onChange={(e) => handleInputChange('cantidadTraslado', e.target.value)}
-                    className="traslado-cantidad-input"
-                    max={formData.cantidadActual}
-                    min="1"
-                    placeholder={`Máximo ${formData.cantidadActual} unidades`}
-                  />
-                </div>
-
-                <div className="traslado-action-buttons">
-                  <button 
-                    className="traslado-btn-add-product" 
-                    onClick={handleAddProduct}
-                    disabled={loading}
-                  >
-                    Agregar Producto
-                  </button> 
-                </div>
-
-                {productoSeleccionado && (
-                  <div className="mt-2">
-                    <button 
-                      type="button" 
-                      className="btn btn-success btn-sm"
-                      onClick={agregarProductoALista}
-                      disabled={!formData.cantidadTraslado || formData.cantidadTraslado <= 0}
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <div className="space-y-2">
+                  <label className="text-[11px] font-black uppercase tracking-widest text-slate-400 px-1">Sucursal Origen</label>
+                  <div className="relative">
+                    <select
+                      value={formData.sucursalOrigenId}
+                      onChange={(e) => handleInputChange('sucursalOrigenId', e.target.value)}
+                      className="w-full h-14 rounded-2xl border border-slate-100 bg-slate-50/50 px-5 text-sm font-bold text-slate-700 focus:border-indigo-500 focus:bg-white outline-none transition-all appearance-none"
                     >
-                      Confirmar Producto
-                    </button>
+                      <option value="">Seleccione origen...</option>
+                      {sucursales.map(s => <option key={s.id} value={s.id}>{s.nombre}</option>)}
+                    </select>
+                    <ChevronDown className="absolute right-4 top-1/2 -translate-y-1/2 text-slate-300 pointer-events-none" size={18} />
                   </div>
-                )}
+                </div>
+                <div className="space-y-2">
+                  <label className="text-[11px] font-black uppercase tracking-widest text-slate-400 px-1">Sucursal Destino</label>
+                  <div className="relative">
+                    <select
+                      value={formData.sucursalDestinoId}
+                      onChange={(e) => handleInputChange('sucursalDestinoId', e.target.value)}
+                      className="w-full h-14 rounded-2xl border border-slate-100 bg-slate-50/50 px-5 text-sm font-bold text-slate-700 focus:border-indigo-500 focus:bg-white outline-none transition-all appearance-none"
+                    >
+                      <option value="">Seleccione destino...</option>
+                      {sucursales.filter(s => s.id != formData.sucursalOrigenId).map(s => (
+                        <option key={s.id} value={s.id}>{s.nombre}</option>
+                      ))}
+                    </select>
+                    <ChevronDown className="absolute right-4 top-1/2 -translate-y-1/2 text-slate-300 pointer-events-none" size={18} />
+                  </div>
+                </div>
+              </div>
+
+              <div className="space-y-2">
+                <label className="text-[11px] font-black uppercase tracking-widest text-slate-400 px-1">Motivo / Observación</label>
+                <textarea
+                  value={formData.motivoTraslado}
+                  onChange={(e) => handleInputChange('motivoTraslado', e.target.value)}
+                  className="w-full rounded-2xl border border-slate-100 bg-slate-50/50 py-4 px-5 text-sm font-medium text-slate-700 focus:border-indigo-500 focus:bg-white outline-none transition-all resize-none"
+                  placeholder="Detalle el motivo del movimiento logístico..."
+                  rows="2"
+                />
               </div>
             </div>
 
-            {/* Products Table */}
-            <div className="traslado-products-table-container">
-              <table className="traslado-products-table">
-                <thead>
+            {/* Product Selection Card */}
+            <div className="rounded-3xl border border-slate-200 bg-white p-8 shadow-sm space-y-6">
+              <div className="flex items-center justify-between border-b border-slate-50 pb-5">
+                <div className="flex items-center gap-3">
+                  <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-emerald-50 text-emerald-600 shadow-sm border border-emerald-100">
+                    <Package size={20} />
+                  </div>
+                  <h3 className="text-sm font-black text-slate-800 uppercase tracking-widest">Seleccionar Item</h3>
+                </div>
+                <button
+                  onClick={() => setMostrarFormularioProducto(true)}
+                  className="flex items-center gap-2 text-xs font-black text-indigo-600 hover:text-indigo-800 transition-all uppercase tracking-widest"
+                >
+                  <Search size={16} /> BUSCAR PRODUCTO
+                </button>
+              </div>
+
+              {productoSeleccionado ? (
+                <div className="space-y-6 animate-in fade-in slide-in-from-top-2">
+                  <div className="rounded-2xl bg-indigo-50 p-6 border border-indigo-100 flex items-center justify-between">
+                    <div>
+                      <span className="text-[10px] font-black text-indigo-400 uppercase tracking-widest leading-none">Producto Seleccionado</span>
+                      <p className="text-sm font-bold text-slate-700 uppercase mt-1">{productoSeleccionado.Producto?.nombre || productoSeleccionado.nombre}</p>
+                      <p className="text-[10px] font-medium text-slate-400 uppercase mt-0.5">CÓD: {productoSeleccionado.Producto?.codigo || productoSeleccionado.codigo}</p>
+                    </div>
+                    <div className="text-right">
+                      <span className="text-[10px] font-black text-indigo-400 uppercase tracking-widest leading-none">Disponible</span>
+                      <p className="text-xl font-black text-indigo-600 tabular-nums">{formData.cantidadActual}</p>
+                    </div>
+                  </div>
+
+                  <div className="grid grid-cols-2 gap-4">
+                    <div className="space-y-2">
+                      <label className="text-[11px] font-black uppercase tracking-widest text-slate-400 px-1">Cant. Traslado</label>
+                      <input
+                        type="number"
+                        value={formData.cantidadTraslado}
+                        onChange={(e) => handleInputChange('cantidadTraslado', e.target.value)}
+                        className="w-full h-14 rounded-2xl border border-slate-100 bg-slate-50/50 px-5 text-center text-xl font-black text-indigo-600 focus:border-indigo-500 outline-none transition-all"
+                        placeholder="0"
+                      />
+                    </div>
+                    <div className="flex items-end">
+                      <button
+                        onClick={agregarProductoALista}
+                        className="w-full h-14 rounded-2xl bg-indigo-600 text-white font-black uppercase tracking-widest shadow-lg shadow-indigo-100 hover:bg-indigo-700 active:scale-95 transition-all flex items-center justify-center gap-2"
+                      >
+                        <Plus size={20} /> AGREGAR
+                      </button>
+                    </div>
+                  </div>
+                </div>
+              ) : (
+                <div className="h-[180px] flex flex-col items-center justify-center border-2 border-dashed border-slate-100 rounded-2xl text-slate-300">
+                  <Package size={48} strokeWidth={1} />
+                  <p className="text-[10px] font-black uppercase tracking-[0.3em] mt-4">Sin producto seleccionado</p>
+                  <button
+                    onClick={() => setMostrarFormularioProducto(true)}
+                    className="mt-4 px-6 py-2 rounded-xl bg-slate-50 text-slate-500 text-[10px] font-bold uppercase tracking-widest hover:bg-indigo-50 hover:text-indigo-600 transition-all border border-slate-100"
+                  >
+                    Vincular Item
+                  </button>
+                </div>
+              )}
+            </div>
+          </div>
+
+          {/* Table Card */}
+          <div className="rounded-3xl border border-slate-200 bg-white overflow-hidden shadow-sm flex flex-col">
+            <div className="bg-slate-50 border-b border-slate-100 px-8 py-5 flex items-center justify-between">
+              <div className="flex items-center gap-3">
+                <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-slate-900 text-white shadow-md">
+                  <FileText size={18} />
+                </div>
+                <h3 className="text-sm font-black text-slate-800 uppercase tracking-widest">Resumen de Traslado</h3>
+              </div>
+              <span className="text-[10px] font-bold text-slate-400 uppercase tracking-[0.2em]">{products.length} Items Listados</span>
+            </div>
+
+            <div className="overflow-x-auto min-h-[300px]">
+              <table className="w-full text-left text-sm whitespace-nowrap">
+                <thead className="bg-slate-50/50 text-[10px] font-black uppercase tracking-widest text-slate-400">
                   <tr>
-                    <th>#</th>
-                    <th>Cod. Barras</th>
-                    <th>Producto</th>
-                    <th style={{ color: '#007bff' }}>Cant. a Trasladar</th>
-                    <th style={{ color: '#28a745' }}>Stock Disponible</th>
-                    <th>Acciones</th>
+                    <th className="px-8 py-4 w-12 text-center">#</th>
+                    <th className="px-6 py-4">Descripción del Producto</th>
+                    <th className="px-6 py-4 text-center">Disponible</th>
+                    <th className="px-6 py-4 text-center">A Trasladar</th>
+                    <th className="px-8 py-4 text-center">Acciones</th>
                   </tr>
                 </thead>
-                <tbody>
+                <tbody className="divide-y divide-slate-100">
                   {products.length === 0 ? (
                     <tr>
-                      <td colSpan="6" className="traslado-no-products">
-                        No hay productos agregados
+                      <td colSpan="5" className="py-24 text-center">
+                        <div className="flex flex-col items-center gap-4 text-slate-200 group transition-all duration-500 hover:text-indigo-200">
+                          <ArrowRightLeft size={80} strokeWidth={1} className="transition-transform group-hover:scale-110" />
+                          <div className="flex flex-col gap-1">
+                            <p className="text-sm font-black uppercase tracking-[0.3em]">Lista de Carga Vacía</p>
+                            <p className="text-xs font-bold text-slate-400 uppercase tracking-widest">Agregue productos para iniciar el traslado</p>
+                          </div>
+                        </div>
                       </td>
                     </tr>
                   ) : (
-                    products.map((product, index) => (
-                      <tr key={product.id}>
-                        <td>{index + 1}</td>
-                        <td>{product.codigo}</td>
-                        <td>{product.nombre}</td>
-                        <td style={{ color: '#007bff', fontWeight: 'bold' }}>
-                          {product.cantidad} unidades
+                    products.map((p, idx) => (
+                      <tr key={p.id} className="group hover:bg-slate-50/50 transition-colors">
+                        <td className="px-8 py-5 text-center font-bold text-slate-300">{idx + 1}</td>
+                        <td className="px-6 py-5">
+                          <div className="flex flex-col gap-1">
+                            <span className="font-bold text-slate-700 uppercase">{p.nombre}</span>
+                            <div className="flex items-center gap-2">
+                              <Hash size={12} className="text-indigo-400" />
+                              <span className="text-[10px] text-slate-400 font-bold tracking-widest">{p.codigo || 'S/C'}</span>
+                            </div>
+                          </div>
                         </td>
-                        <td style={{ color: '#28a745', fontWeight: 'bold' }}>
-                          {product.stockActual} disponibles
+                        <td className="px-6 py-5 text-center">
+                          <span className="inline-flex rounded-lg bg-amber-50 px-3 py-1 text-[10px] font-black text-amber-600 uppercase border border-amber-100">{p.stockActual} UNI</span>
                         </td>
-                        <td> 
-
-
-                          {/*    <button
-                            type="button"
-                            className="btn btn-primary btn-sm me-2"
-                            onClick={() => editarProducto(product)}
-                            title="Editar producto"
-                            style={{ marginRight: '5px' }}
-                          >
-                            <i className="fas fa-edit"></i>
-                          </button> */}
-                      
-
-
-                          
+                        <td className="px-6 py-5 text-center">
+                          <span className="inline-flex rounded-lg bg-indigo-600 px-4 py-1.5 text-xs font-black text-white shadow-sm">{p.cantidad} UNI</span>
+                        </td>
+                        <td className="px-8 py-5 text-center">
                           <button
-                            
-                            onClick={() => eliminarProducto(product.id)}
-                            title="Eliminar producto"
+                            onClick={() => eliminarProducto(p.id)}
+                            className="flex h-10 w-10 items-center justify-center rounded-xl bg-red-50 text-red-400 transition-all hover:bg-red-500 hover:text-white active:scale-95 shadow-sm mx-auto"
                           >
-                            <i className="fas fa-trash"></i>
+                            <Trash2 size={18} />
                           </button>
                         </td>
                       </tr>
@@ -526,64 +393,65 @@ const ModalNuevoTraslado = ({ isOpen, onClose, onTrasladoCreado }) => {
         </div>
 
         {/* Footer */}
-        <div className="modal-traslado-footer">
-          <button 
-            className="traslado-btn-cancel" 
-            onClick={handleCancel}
-            disabled={loading}
-          >
-            Cancelar
-          </button>
-          <button 
-            className="traslado-btn-save" 
-            onClick={handleSubmit}
-            disabled={loading || products.length === 0}
-          >
-            {loading ? 'Procesando...' : 'Guardar'}
-          </button>
+        <div className="px-10 py-8 bg-slate-50 border-t border-slate-100 flex items-center justify-between gap-4">
+          <div className="hidden md:flex flex-col">
+            <span className="text-[10px] font-black text-slate-400 uppercase tracking-widest">Resumen de Carga</span>
+            <p className="text-sm font-bold text-slate-700 uppercase tracking-tight">{products.length} Productos por trasladar</p>
+          </div>
+          <div className="flex items-center gap-4 flex-1 md:flex-initial">
+            <button
+              onClick={handleCancel}
+              className="px-10 h-14 rounded-2xl font-black text-[10px] text-slate-400 hover:bg-slate-100 hover:text-slate-600 transition-all uppercase tracking-[0.3em]"
+            >
+              Descartar
+            </button>
+            <button
+              onClick={handleSubmit}
+              disabled={loading || products.length === 0}
+              className="flex-1 md:flex-initial px-12 h-14 rounded-2xl bg-indigo-600 text-white text-xs font-black uppercase tracking-widest shadow-2xl shadow-indigo-200 hover:bg-indigo-700 hover:scale-[1.02] active:scale-95 transition-all disabled:opacity-50 flex items-center justify-center gap-3"
+            >
+              {loading ? <RefreshCcw size={20} className="animate-spin" /> : <CheckCircle2 size={20} />}
+              {loading ? 'PROCESANDO...' : 'EJECUTAR TRASLADO'}
+            </button>
+          </div>
         </div>
       </div>
 
-
-
-
-
-
-
-      
-
-      {/* Modal para FormularioVentaProductServicio */}
-
-
-
-
+      {/* Nested Product Search Modal */}
       {mostrarFormularioProducto && (
-        <div >
-          <div className="modal">
-            <div className="modal-content">
-              <div className="modal-header">
-                <h5 className="modal-title">Seleccionar Producto</h5>
-                <button
-                  type="button"
-                  className="btn-close"
-                  onClick={() => setMostrarFormularioProducto(false)}
-                ></button>
+        <div className="fixed inset-0 z-[110] flex items-center justify-center p-4 bg-slate-900/40 backdrop-blur-xl animate-in fade-in duration-300">
+          <div className="w-full max-w-4xl bg-white rounded-[3rem] shadow-[0_50px_100px_-20px_rgba(0,0,0,0.3)] overflow-hidden animate-in zoom-in-95 duration-300 flex flex-col border border-white/50">
+            <div className="px-10 py-8 border-b border-slate-100 flex items-center justify-between">
+              <div className="flex items-center gap-4">
+                <div className="flex h-12 w-12 items-center justify-center rounded-2xl bg-indigo-600 text-white shadow-lg shadow-indigo-200">
+                  <Search size={24} />
+                </div>
+                <h3 className="text-xl font-black text-slate-800 uppercase tracking-tight">Seleccionar Producto</h3>
               </div>
-              <div className="modal-body">
-                 <FormularioVentaProductServicio
-                   onProductoSeleccionado={handleProductoSeleccionado}
-                   productos={productosDisponibles}
-                 />
-               </div>
-              <div className="modal-footer">
-                <button
-                  type="button"
-                  className="btn btn-secondary"
-                  onClick={() => setMostrarFormularioProducto(false)}
-                >
-                  Cancelar
-                </button>
-              </div>
+              <button
+                onClick={() => setMostrarFormularioProducto(false)}
+                className="h-10 w-10 flex items-center justify-center rounded-full bg-slate-50 text-slate-400 hover:bg-red-50 hover:text-red-500 transition-all"
+              >
+                <X size={20} />
+              </button>
+            </div>
+
+            <div className="p-10 flex-1 overflow-y-auto max-h-[60vh] custom-scrollbar bg-slate-50/20">
+              <FormularioVentaProductServicio
+                onProductoSeleccionado={handleProductoSeleccionado}
+                productos={productosDisponibles}
+                contexto="traslado"
+                sucursalOrigenId={formData.sucursalOrigenId}
+              />
+            </div>
+
+            <div className="px-10 py-6 bg-slate-50 border-t border-slate-100 flex justify-end">
+              <button
+                onClick={() => setMostrarFormularioProducto(false)}
+                className="h-12 px-10 rounded-2xl text-[10px] font-black text-slate-400 hover:text-slate-600 uppercase tracking-widest transition-all"
+              >
+                Cerrar Búsqueda
+              </button>
             </div>
           </div>
         </div>

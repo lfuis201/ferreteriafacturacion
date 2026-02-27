@@ -25,11 +25,11 @@ import ReferenciaInventario from '../inventario/referenciaInventario';
 import TrasladoInventario from '../inventario/TrasladoInventario';
 import MovimientoInventario from '../inventario/Movimientoinventario';
 import CotizacionesLista from '../cotizaciones/cotizacionesLista';
-import ListaClientes from '../clientes/listaclientes';  
-import ValidarInventario from '../inventario/ValidarInventario'; 
-import RevicionInventario from '../inventario/RevicionInventario'; 
-import StocHistori from '../inventario/StocHistori';  
-import Consultakardex from '../inventario/Consultakardex';  
+import ListaClientes from '../clientes/listaclientes';
+import ValidarInventario from '../inventario/ValidarInventario';
+import RevicionInventario from '../inventario/RevicionInventario';
+import StocHistori from '../inventario/StocHistori';
+import Consultakardex from '../inventario/Consultakardex';
 import FormularioCompras from '../Compras/FormularioCompras';
 import ListaCompras from '../Compras/ListaCompras';
 import ListaProveedores from '../proveedores/ListaProveedores';
@@ -41,11 +41,11 @@ import FormularioProveedores from '../proveedores/FormularioProveedores';
 
 
 import ListaProductos from '../productos-presentacion/ListaProductos';
-import FormularioProducto from '../productos-presentacion/FormularioProducto'; 
-import PacksPromociones from '../productos-presentacion/PacksPromociones'; 
-import Servicios from '../productos-presentacion/Servicios'; 
-import Marcas from '../productos-presentacion/Marcas'; 
-import Series from '../productos-presentacion/Series';  
+import FormularioProducto from '../productos-presentacion/FormularioProducto';
+import PacksPromociones from '../productos-presentacion/PacksPromociones';
+import Servicios from '../productos-presentacion/Servicios';
+import Marcas from '../productos-presentacion/Marcas';
+import Series from '../productos-presentacion/Series';
 import Lotes from '../productos-presentacion/Lotes';
 
 // Modales de importar/exportar para ListaProductos
@@ -62,28 +62,28 @@ import ExportarEtiquetas from '../productos-presentacion/ExportarEtiquetas';
 
 
 
-import FormularioVenta from '../ventas/FormularioVenta'; 
-import ListaVentas from '../ventas/ListaVentas'; 
-import NotaVentaLista from '../ventas/NotaVentaLista';   
-import ComprobantesNoEnviados from '../ventas/ComprobantesNoEnviados'; 
-import CPErectificar from '../ventas/CPErectificar'; 
-import Resumenes from '../ventas/Resumenes';  
-import Anulaciones from '../ventas/Anulaciones';  
+import FormularioVenta from '../ventas/FormularioVenta';
+import ListaVentas from '../ventas/ListaVentas';
+import NotaVentaLista from '../ventas/NotaVentaLista';
+import ComprobantesNoEnviados from '../ventas/ComprobantesNoEnviados';
+import CPErectificar from '../ventas/CPErectificar';
+import Resumenes from '../ventas/Resumenes';
+import Anulaciones from '../ventas/Anulaciones';
 
 import Pedidos from '../ventas/Pedidos';
 
 
 
-import DocumentoRecurrencia from '../ventas/DocumentoRecurrencia'; 
+import DocumentoRecurrencia from '../ventas/DocumentoRecurrencia';
 
 
 import ComprobanteContingencia from '../ventas/ComprobanteContingencia';
 
 
-import LiquidacionCompras from '../Compras/LiquidacionCompras'; 
-import SolicitarCotizacion from '../Compras/SolicitarCotizacion'; 
-import OrdenesCompra from '../Compras/OrdenesCompra'; 
- 
+import LiquidacionCompras from '../Compras/LiquidacionCompras';
+import SolicitarCotizacion from '../Compras/SolicitarCotizacion';
+import OrdenesCompra from '../Compras/OrdenesCompra';
+
 import GastosDiversos from '../Compras/GastosDiversos';
 
 
@@ -93,12 +93,12 @@ import GastosDiversos from '../Compras/GastosDiversos';
 
 
 import Reportes from '../Reportes/reporte';
-import Configuraciones from '../configuraciones/configuraciones'; 
-import ListaCaja from '../caja/ListaCaja'; 
-import TransportistaLista from '../guiaRemisionTransportista/TransportitaLista'; 
-import ConductoresLista from '../guiaRemisionTransportista/ConductoresLista'; 
-import VehiculoLista from '../guiaRemisionTransportista/VehiculoLista';   
-import DirecciónPartidaLista from '../guiaRemision/DirecciónPartidaLista'; 
+import Configuraciones from '../configuraciones/configuraciones';
+import ListaCaja from '../caja/ListaCaja';
+import TransportistaLista from '../guiaRemisionTransportista/TransportitaLista';
+import ConductoresLista from '../guiaRemisionTransportista/ConductoresLista';
+import VehiculoLista from '../guiaRemisionTransportista/VehiculoLista';
+import DirecciónPartidaLista from '../guiaRemision/DirecciónPartidaLista';
 import InicioOverview from './InicioOverview';
 
 // Servicios para métricas del dashboard
@@ -127,11 +127,11 @@ function DashboardSuperAdmin() {
   const [inventarioExpanded, setInventarioExpanded] = useState(false);
   const [inventarioSubsection, setInventarioSubsection] = useState('');
   const [comprasExpanded, setComprasExpanded] = useState(false);
-  const [comprasSubsection, setComprasSubsection] = useState(''); 
+  const [comprasSubsection, setComprasSubsection] = useState('');
   const [proveedoresExpanded, setProveedoresExpanded] = useState(false);
   const [proveedoresSubsection, setProveedoresSubsection] = useState('');
   const [ventasExpanded, setVentasExpanded] = useState(false);
-  const [ventasSubsection, setVentasSubsection] = useState(''); 
+  const [ventasSubsection, setVentasSubsection] = useState('');
 
 
 
@@ -140,7 +140,7 @@ function DashboardSuperAdmin() {
 
   const [productosExpanded, setProductosExpanded] = useState(false);
   const [productosSubsection, setProductosSubsection] = useState('');
-  const [sidebarOpen, setSidebarOpen] = useState(false); 
+  const [sidebarOpen, setSidebarOpen] = useState(false);
 
   // Estados para modales de importar/exportar en Productos
   const [modalImportarAbierto, setModalImportarAbierto] = useState(false);
@@ -279,25 +279,25 @@ function DashboardSuperAdmin() {
     { id: 'usuarios', label: 'Gestión de Usuarios', icon: Users },
     { id: 'sucursales', label: 'Gestión de Sucursales', icon: Building2 },
     { id: 'categorias', label: 'Categorías', icon: FolderOpen },
-    
-    
-    { id: 'caja', label: 'Caja', icon: DollarSign },  
+
+
+    { id: 'caja', label: 'Caja', icon: DollarSign },
 
 
 
-    { id: 'servicios', label: 'Servicios', icon: ServerCrash }, 
+    { id: 'servicios', label: 'Servicios', icon: ServerCrash },
 
 
-    
-    { id: 'productos, presentaciones', label: 'Productos y Presentaciones', icon: Package }, 
-    { id: 'ventas', label: 'Ventas', icon: DollarSign },  
-    { id: 'guiaRemision', label: 'Guía de Remisión', icon: Truck }, 
-    { id: 'cotizaciones', label: 'Cotizaciones', icon: Package }, 
+
+    { id: 'productos, presentaciones', label: 'Productos y Presentaciones', icon: Package },
+    { id: 'ventas', label: 'Ventas', icon: DollarSign },
+    { id: 'guiaRemision', label: 'Guía de Remisión', icon: Truck },
+    { id: 'cotizaciones', label: 'Cotizaciones', icon: Package },
     { id: 'clientes', label: 'Clientes', icon: Users },
-    { id: 'inventario', label: 'Inventario', icon: BarChart3 },  
-    { id: 'compras', label: 'Compras', icon: ShoppingCart }, 
-    { id: 'proveedores', label: 'Proveedores', icon: Truck }, 
-    { id: 'reportes', label: 'Reportes', icon: TrendingUp }, 
+    { id: 'inventario', label: 'Inventario', icon: BarChart3 },
+    { id: 'compras', label: 'Compras', icon: ShoppingCart },
+    { id: 'proveedores', label: 'Proveedores', icon: Truck },
+    { id: 'reportes', label: 'Reportes', icon: TrendingUp },
 
 
 
@@ -308,12 +308,12 @@ function DashboardSuperAdmin() {
 
 
 
-    
+
   ];
 
   // Módulos visibles por rol y filtrado del menú
   const MODULOS_POR_ROL = {
-    SuperAdmin: ['inicio','usuarios','sucursales','categorias','productos, presentaciones','ventas','guiaRemision','cotizaciones','clientes','inventario','compras','proveedores','reportes','configuracion','caja','servicios'], 
+    SuperAdmin: ['inicio', 'usuarios', 'sucursales', 'categorias', 'productos, presentaciones', 'ventas', 'guiaRemision', 'cotizaciones', 'clientes', 'inventario', 'compras', 'proveedores', 'reportes', 'configuracion', 'caja', 'servicios'],
 
 
 
@@ -321,12 +321,12 @@ function DashboardSuperAdmin() {
 
 
 
-    Admin: ['inicio','usuarios','categorias','productos, presentaciones','ventas','guiaRemision','cotizaciones','clientes','inventario','compras','proveedores','reportes','configuracion','caja'],
+    Admin: ['inicio', 'usuarios', 'categorias', 'productos, presentaciones', 'ventas', 'guiaRemision', 'cotizaciones', 'clientes', 'inventario', 'compras', 'proveedores', 'reportes', 'configuracion', 'caja'],
 
 
 
-    Cajero: ['inicio','clientes','ventas','guiaRemision','reportes'],
-    Almacenero: ['inicio','inventario','compras','proveedores','guiaRemision','reportes']
+    Cajero: ['inicio', 'clientes', 'ventas', 'guiaRemision', 'reportes'],
+    Almacenero: ['inicio', 'inventario', 'compras', 'proveedores', 'guiaRemision', 'reportes']
   };
 
   const filtrarMenuItemsPorRol = (rol, items) => {
@@ -408,7 +408,6 @@ function DashboardSuperAdmin() {
 
       case 'productos, presentaciones':
         setProductosExpanded(!productosExpanded);
-        setActiveSection('productos, presentaciones');
         setGuiaRemisionExpanded(false);
         setGuiaRemisionSubsection('');
         setInventarioExpanded(false);
@@ -422,7 +421,7 @@ function DashboardSuperAdmin() {
         if (!productosExpanded) {
           setProductosSubsection('');
         }
-        break;  
+        break;
 
 
 
@@ -442,12 +441,12 @@ function DashboardSuperAdmin() {
         setProveedoresSubsection('');
         setVentasExpanded(false);
         setVentasSubsection('');
-        break; 
+        break;
 
 
 
 
-      case 'servicios': 
+      case 'servicios':
         setActiveSection('servicios');
         setGuiaRemisionExpanded(false);
         setGuiaRemisionSubsection('');
@@ -463,7 +462,6 @@ function DashboardSuperAdmin() {
 
       case 'ventas':
         setVentasExpanded(!ventasExpanded);
-        setActiveSection('ventas');
         setGuiaRemisionExpanded(false);
         setGuiaRemisionSubsection('');
         setInventarioExpanded(false);
@@ -479,7 +477,6 @@ function DashboardSuperAdmin() {
 
       case 'guiaRemision':
         setGuiaRemisionExpanded(!guiaRemisionExpanded);
-        setActiveSection('guiaRemision');
         setInventarioExpanded(false);
         setInventarioSubsection('');
         setComprasExpanded(false);
@@ -495,7 +492,6 @@ function DashboardSuperAdmin() {
 
       case 'inventario':
         setInventarioExpanded(!inventarioExpanded);
-        setActiveSection('inventario');
         setGuiaRemisionExpanded(false);
         setGuiaRemisionSubsection('');
         setComprasExpanded(false);
@@ -511,7 +507,6 @@ function DashboardSuperAdmin() {
 
       case 'compras':
         setComprasExpanded(!comprasExpanded);
-        setActiveSection('compras');
         setGuiaRemisionExpanded(false);
         setGuiaRemisionSubsection('');
         setInventarioExpanded(false);
@@ -527,7 +522,6 @@ function DashboardSuperAdmin() {
 
       case 'proveedores':
         setProveedoresExpanded(!proveedoresExpanded);
-        setActiveSection('proveedores');
         setGuiaRemisionExpanded(false);
         setGuiaRemisionSubsection('');
         setInventarioExpanded(false);
@@ -540,11 +534,11 @@ function DashboardSuperAdmin() {
           setProveedoresSubsection('');
         }
         break;
-        
-      
-      
-      
-        case 'configuracion':
+
+
+
+
+      case 'configuracion':
         setActiveSection('configuracion');
         setGuiaRemisionExpanded(false);
         setGuiaRemisionSubsection('');
@@ -598,8 +592,8 @@ function DashboardSuperAdmin() {
         setProveedoresSubsection('');
         setVentasExpanded(false);
         setVentasSubsection('');
-        break;  
-        
+        break;
+
 
 
 
@@ -684,7 +678,7 @@ function DashboardSuperAdmin() {
           <div className="rounded-xl border border-slate-200 bg-white p-6 shadow-sm">
             <h2 className="mb-4 text-xl font-semibold text-fondo">Gestión de Categorías</h2>
             <div className="module-actions">
-              <button 
+              <button
                 className="primary-btn"
                 onClick={() => navigate('/categorias/gestion')}
               >
@@ -774,7 +768,7 @@ function DashboardSuperAdmin() {
           <div className="rounded-xl border border-slate-200 bg-white p-6 shadow-sm">
             <h2 className="mb-4 text-xl font-semibold text-fondo">Gestión de Usuarios</h2>
             <div className="module-actions">
-              <button 
+              <button
                 className="primary-btn"
                 onClick={() => navigate('/usuarios/gestion')}
               >
@@ -790,24 +784,24 @@ function DashboardSuperAdmin() {
             <h2 className="mb-4 text-xl font-semibold text-fondo">Gestión de Caja</h2>
             <ListaCaja />
           </div>
-        );  
+        );
 
 
 
 
 
-        case 'servicios':
+      case 'servicios':
         return (
-         <div className="rounded-xl border border-slate-200 bg-white p-6 shadow-sm">
+          <div className="rounded-xl border border-slate-200 bg-white p-6 shadow-sm">
             <h2 className="mb-4 text-xl font-semibold text-fondo">Gestión de Caja</h2>
             <Servicios />
           </div>
         )
 
 
-     
 
-       
+
+
 
       case 'guiaRemision':
         return (
@@ -819,13 +813,13 @@ function DashboardSuperAdmin() {
               </div>
             )}
             {guiaRemisionSubsection === 'remitente' && <ListaGuiasRemision />}
-            {guiaRemisionSubsection === 'transportista' && <FormularioGuiaRemisionTrans />} 
+            {guiaRemisionSubsection === 'transportista' && <FormularioGuiaRemisionTrans />}
 
-            {guiaRemisionSubsection === 'transportistas' && <TransportistaLista />} 
-            {guiaRemisionSubsection === 'conductores' && <ConductoresLista />}  
-            {guiaRemisionSubsection === 'vehiculos' && <VehiculoLista />}  
-            {guiaRemisionSubsection === 'direccion-partida' && <DirecciónPartidaLista />}  
-            
+            {guiaRemisionSubsection === 'transportistas' && <TransportistaLista />}
+            {guiaRemisionSubsection === 'conductores' && <ConductoresLista />}
+            {guiaRemisionSubsection === 'vehiculos' && <VehiculoLista />}
+            {guiaRemisionSubsection === 'direccion-partida' && <DirecciónPartidaLista />}
+
           </div>
         );
 
@@ -852,13 +846,13 @@ function DashboardSuperAdmin() {
 
 
 
-        
+
       case 'ventas':
         return (
           <div className="rounded-xl border border-slate-200 bg-white p-6 shadow-sm">
             <h2 className="mb-4 text-xl font-semibold text-fondo">Gestión de Comprobantes</h2>
             {ventasSubsection === 'nueva-venta' && <FormularioVenta />}
-            {ventasSubsection === 'lista-ventas' &&  <ListaVentas />}
+            {ventasSubsection === 'lista-ventas' && <ListaVentas />}
 
 
 
@@ -874,39 +868,37 @@ function DashboardSuperAdmin() {
 
 
 
-            {ventasSubsection === 'Comprobantes no enviados' && ( 
+            {ventasSubsection === 'Comprobantes no enviados' && (
               <ComprobantesNoEnviados />
-             
+
             )}
 
 
 
             {ventasSubsection === 'cpe-rectificar' && (
-              <CPErectificar /> 
-            )} 
+              <CPErectificar />
+            )}
 
-             {ventasSubsection === 'documento-recurrencia' && (
-              <DocumentoRecurrencia /> 
-            )}  
+            {ventasSubsection === 'documento-recurrencia' && (
+              <DocumentoRecurrencia />
+            )}
 
-             {ventasSubsection === 'comprobante-contingencia' && (
-              <ComprobanteContingencia /> 
-            )} 
+            {ventasSubsection === 'comprobante-contingencia' && (
+              <ComprobanteContingencia />
+            )}
 
-             {ventasSubsection === 'resumenes' && (
-              <Resumenes /> 
-            )}  
-
-
-             {ventasSubsection === 'anulaciones' && (
-              <Anulaciones /> 
-            )}    
-
-             {ventasSubsection === 'pedidos' && (
-              <Pedidos /> 
-            )}    
+            {ventasSubsection === 'resumenes' && (
+              <Resumenes />
+            )}
 
 
+            {ventasSubsection === 'anulaciones' && (
+              <Anulaciones />
+            )}
+
+            {ventasSubsection === 'pedidos' && (
+              <Pedidos />
+            )}
 
 
 
@@ -920,7 +912,9 @@ function DashboardSuperAdmin() {
 
 
 
-           
+
+
+
 
             {ventasSubsection === 'creditos' && (
               <div>
@@ -957,7 +951,7 @@ function DashboardSuperAdmin() {
 
 
 
-            
+
           </div>
         );
 
@@ -966,12 +960,12 @@ function DashboardSuperAdmin() {
           <div className="rounded-xl border border-slate-200 bg-white p-6 shadow-sm">
             <h2 className="mb-4 text-xl font-semibold text-fondo">Gestión de Compras</h2>
             {comprasSubsection === 'ordenes-compra' && <FormularioCompras />}
-            {comprasSubsection === 'lista-compras' && <ListaCompras />} 
-            {comprasSubsection === 'liquidacion-compras' && <LiquidacionCompras />} 
-            {comprasSubsection === 'solicitar-cotizacion' && <SolicitarCotizacion />}   
-             {comprasSubsection === 'ordenes-compras' && <OrdenesCompra />} 
-             {comprasSubsection === 'gastos-diversos' && <GastosDiversos />}
-            
+            {comprasSubsection === 'lista-compras' && <ListaCompras />}
+            {comprasSubsection === 'liquidacion-compras' && <LiquidacionCompras />}
+            {comprasSubsection === 'solicitar-cotizacion' && <SolicitarCotizacion />}
+            {comprasSubsection === 'ordenes-compras' && <OrdenesCompra />}
+            {comprasSubsection === 'gastos-diversos' && <GastosDiversos />}
+
 
             {!comprasSubsection && (
               <div>
@@ -1023,7 +1017,7 @@ function DashboardSuperAdmin() {
 
 
 
-        {/*  CONFIGURACION*/}
+        {/*  CONFIGURACION*/ }
       case 'configuracion':
         return (
           <div className="content-section">
